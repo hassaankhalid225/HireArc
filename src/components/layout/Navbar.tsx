@@ -2,12 +2,13 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useTheme } from "next-themes";
-import { usePathname } from "next/navigation";
 import { 
   Sun, Moon, ChevronDown, Monitor, BarChart, Palette, 
   Megaphone, Shield, Database, Layout, Briefcase, Rocket, 
-  Zap, Target, Search, Users, Bookmark 
+  Zap, Target, Users, Bookmark, Bell, Globe, Check
 } from "lucide-react";
+import { useLanguage } from "@/hooks";
+import { LANGUAGES } from "@/lib/i18n";
 
 const COMPANIES = [
   { name: "Google", href: "/company/google" },
@@ -31,21 +32,25 @@ const CATEGORIES = [
   { name: "Sales", icon: <Briefcase className="w-4 h-4" />, href: "/search?cat=sales" },
 ];
 
+const NOTIFICATIONS = [
+  { id: 1, title: "New job match!", desc: "Senior React Developer at Google", time: "2m ago", unread: true },
+  { id: 2, title: "Application update", desc: "Your application at Meta is under review", time: "1h ago", unread: true },
+  { id: 3, title: "Profile viewed", desc: "A recruiter viewed your profile", time: "3h ago", unread: false },
+];
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const pathname = usePathname();
   const navRef = useRef<HTMLDivElement>(null);
+  const { lang, setLang, currentLanguage } = useLanguage();
 
   useEffect(() => {
     setMounted(true);
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    const handleClickOutside = (event: MouseEvent) => {
-      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleClickOutside = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
         setActiveDropdown(null);
       }
     };
@@ -57,67 +62,97 @@ export default function Navbar() {
     };
   }, []);
 
-
-  const toggleDropdown = (name: string) => {
+  const toggleDropdown = (name: string) =>
     setActiveDropdown(activeDropdown === name ? null : name);
-  };
+
+  const unreadCount = NOTIFICATIONS.filter((n) => n.unread).length;
+
+  // Shared icon button style
+  const iconBtn = `p-2.5 rounded-full transition-all duration-200 ${
+    scrolled
+      ? "text-[var(--text-secondary)] hover:bg-gray-100/80 dark:hover:bg-white/10 hover:text-[var(--primary)]"
+      : "text-white/80 hover:bg-white/10 hover:text-white"
+  }`;
+
+  // Dropdown container style
+  const dropdownCls =
+    "absolute top-[calc(100%+12px)] right-0 bg-white/95 dark:bg-[#1C261F]/95 backdrop-blur-xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[110]";
 
   return (
-    <nav 
-      className={`sticky top-0 left-0 right-0 h-[72px] flex items-center z-[100] transition-all duration-300 ${
-        scrolled 
-          ? "bg-[#F0FDF4] dark:bg-[#1C261F] border-b border-[#DCFCE7] dark:border-white/10 shadow-sm" 
-          : "bg-white/80 dark:bg-[var(--bg-card)]/80 backdrop-blur-md border-b border-[var(--border)]"
+    <nav
+      className={`fixed top-0 left-0 right-0 h-[80px] flex items-center z-[100] transition-all duration-700 ${
+        scrolled
+          ? "bg-white/70 dark:bg-[#1C261F]/70 backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.08)] border-b border-white/40 dark:border-white/5"
+          : "bg-transparent border-transparent"
       }`}
       ref={navRef}
     >
       <div className="max-w-[1280px] mx-auto px-6 w-full flex justify-between items-center relative">
+        {/* ── Left: Logo + Nav Links ── */}
         <div className="flex items-center gap-12">
-          <Link href="/" className="flex items-center gap-2 text-[22px] font-extrabold font-headline shrink-0">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]" />
-            <span className={scrolled ? "text-[#166534] dark:text-white" : "text-[var(--text-primary)]"}>JobSphere</span>
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-[22px] font-extrabold font-headline shrink-0"
+          >
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] shadow-sm" />
+            <span className={scrolled ? "text-[var(--text-primary)]" : "text-white"}>
+              JobSphere
+            </span>
           </Link>
-          
+
           <div className="hidden lg:flex items-center gap-8">
-            <Link href="/search" className={`text-sm font-semibold transition-colors ${scrolled ? "text-[#166534] hover:text-[#15803d]" : "text-[var(--text-secondary)] hover:text-[var(--primary)]"}`}>
+            <Link
+              href="/search"
+              className={`text-sm font-bold transition-all ${
+                scrolled
+                  ? "text-[var(--text-secondary)] hover:text-[var(--primary)]"
+                  : "text-white/80 hover:text-white"
+              }`}
+            >
               Find Jobs
             </Link>
-            <Link href="/search?type=remote" className={`text-sm font-semibold transition-colors ${scrolled ? "text-[#166534] hover:text-[#15803d]" : "text-[var(--text-secondary)] hover:text-[var(--primary)]"}`}>
+            <Link
+              href="/search?type=remote"
+              className={`text-sm font-bold transition-all ${
+                scrolled
+                  ? "text-[var(--text-secondary)] hover:text-[var(--primary)]"
+                  : "text-white/80 hover:text-white"
+              }`}
+            >
               Remote
             </Link>
 
-            {/* Companies Dropdown */}
+            {/* Companies */}
             <div className="relative">
-              <button 
+              <button
                 onClick={() => toggleDropdown("companies")}
-                className={`flex items-center gap-1 text-sm font-semibold transition-colors ${
-                  activeDropdown === "companies" 
-                    ? "text-[var(--primary)]" 
-                    : scrolled 
-                      ? "text-[#166534] hover:text-[#15803d]" 
-                      : "text-[var(--text-secondary)] hover:text-[var(--primary)]"
+                className={`flex items-center gap-1 text-sm font-bold transition-all ${
+                  activeDropdown === "companies"
+                    ? scrolled ? "text-[var(--primary)]" : "text-white"
+                    : scrolled
+                    ? "text-[var(--text-secondary)] hover:text-[var(--primary)]"
+                    : "text-white/80 hover:text-white"
                 }`}
               >
                 Companies
-                <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "companies" ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "companies" ? "rotate-180" : ""}`} />
               </button>
-              
               {activeDropdown === "companies" && (
-                <div className="absolute top-[calc(100%+20px)] left-0 w-64 bg-white dark:bg-[var(--bg-card)] border border-[var(--border)] rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-[calc(100%+20px)] left-0 w-64 bg-white/95 dark:bg-[#1C261F]/95 backdrop-blur-xl border border-white/50 dark:border-white/10 rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="grid grid-cols-1 gap-1">
-                    {COMPANIES.map(company => (
-                      <Link 
-                        key={company.name} 
-                        href={company.href} 
+                    {COMPANIES.map((c) => (
+                      <Link
+                        key={c.name}
+                        href={c.href}
                         className="px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[#F0FDF4] hover:text-[#166534] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
                         onClick={() => setActiveDropdown(null)}
                       >
-                        {company.name}
+                        {c.name}
                       </Link>
                     ))}
                     <div className="border-t border-gray-100 dark:border-white/5 mt-2 pt-2">
-                      <Link 
-                        href="/companies" 
+                      <Link
+                        href="/companies"
                         className="block px-3 py-2 rounded-lg text-sm font-bold text-[var(--primary)] hover:bg-[#F0FDF4] dark:hover:bg-white/5 transition-colors"
                         onClick={() => setActiveDropdown(null)}
                       >
@@ -129,29 +164,28 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Categories Dropdown */}
+            {/* Categories */}
             <div className="relative">
-              <button 
+              <button
                 onClick={() => toggleDropdown("categories")}
-                className={`flex items-center gap-1 text-sm font-semibold transition-colors ${
-                  activeDropdown === "categories" 
-                    ? "text-[var(--primary)]" 
-                    : scrolled 
-                      ? "text-[#166534] hover:text-[#15803d]" 
-                      : "text-[var(--text-secondary)] hover:text-[var(--primary)]"
+                className={`flex items-center gap-1 text-sm font-bold transition-all ${
+                  activeDropdown === "categories"
+                    ? scrolled ? "text-[var(--primary)]" : "text-white"
+                    : scrolled
+                    ? "text-[var(--text-secondary)] hover:text-[var(--primary)]"
+                    : "text-white/80 hover:text-white"
                 }`}
               >
                 Categories
-                <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "categories" ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "categories" ? "rotate-180" : ""}`} />
               </button>
-              
               {activeDropdown === "categories" && (
-                <div className="absolute top-[calc(100%+20px)] left-0 w-72 bg-white dark:bg-[var(--bg-card)] border border-[var(--border)] rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-[calc(100%+20px)] left-0 w-72 bg-white/95 dark:bg-[#1C261F]/95 backdrop-blur-xl border border-white/50 dark:border-white/10 rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="grid grid-cols-1 gap-1">
-                    {CATEGORIES.map(cat => (
-                      <Link 
-                        key={cat.name} 
-                        href={cat.href} 
+                    {CATEGORIES.map((cat) => (
+                      <Link
+                        key={cat.name}
+                        href={cat.href}
                         className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[#F0FDF4] hover:text-[#166534] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
                         onClick={() => setActiveDropdown(null)}
                       >
@@ -166,52 +200,184 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 md:gap-6">
+        {/* ── Right: Language → Notifications → Theme → Profile ── */}
+        <div className="flex items-center gap-1.5">
+
+          {/* ── Language Switcher ── */}
+          {mounted && (
+            <div className="relative">
+              <button
+                onClick={() => toggleDropdown("language")}
+                className={`${iconBtn} flex items-center gap-1.5`}
+                aria-label="Change language"
+                title={`Language: ${currentLanguage.nativeLabel}`}
+              >
+                <Globe className="w-5 h-5" />
+                <span className="hidden sm:inline text-xs font-bold uppercase tracking-wide">
+                  {lang}
+                </span>
+              </button>
+
+              {activeDropdown === "language" && (
+                <div className={`${dropdownCls} w-52 right-0`}>
+                  <div className="px-4 py-3 border-b border-gray-100 dark:border-white/5">
+                    <p className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                      Select Language
+                    </p>
+                  </div>
+                  <div className="py-1.5 px-2">
+                    {LANGUAGES.map((l) => (
+                      <button
+                        key={l.code}
+                        onClick={() => {
+                          setLang(l.code);
+                          setActiveDropdown(null);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm transition-colors ${
+                          lang === l.code
+                            ? "bg-[#F0FDF4] text-[#166534] dark:bg-white/10 dark:text-white font-semibold"
+                            : "text-[var(--text-secondary)] hover:bg-gray-50 dark:hover:bg-white/5"
+                        }`}
+                      >
+                        <span className="flex items-center gap-2.5">
+                          <span className="text-base">{l.flag}</span>
+                          <span>{l.nativeLabel}</span>
+                        </span>
+                        {lang === l.code && (
+                          <Check className="w-3.5 h-3.5 text-[#678D63]" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── Notifications ── */}
+          {mounted && (
+            <div className="relative">
+              <button
+                onClick={() => toggleDropdown("notifications")}
+                className={`${iconBtn} relative`}
+                aria-label="Notifications"
+              >
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-[#1C261F] animate-pulse" />
+                )}
+              </button>
+
+              {activeDropdown === "notifications" && (
+                <div className={`${dropdownCls} w-80`}>
+                  <div className="px-4 py-3 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                    <p className="text-sm font-bold text-[var(--text-primary)]">Notifications</p>
+                    <span className="text-xs font-medium text-[var(--primary)] bg-[#F0FDF4] dark:bg-white/10 px-2 py-0.5 rounded-full">
+                      {unreadCount} new
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    {NOTIFICATIONS.map((n) => (
+                      <button
+                        key={n.id}
+                        className={`flex items-start gap-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${n.unread ? "bg-[#F0FDF4]/60 dark:bg-white/[0.03]" : ""}`}
+                      >
+                        <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${n.unread ? "bg-[#678D63]" : "bg-gray-200 dark:bg-white/10"}`} />
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{n.title}</p>
+                          <p className="text-xs text-[var(--text-muted)] truncate">{n.desc}</p>
+                          <p className="text-[10px] text-[var(--text-muted)] mt-0.5">{n.time}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="px-4 py-2.5 border-t border-gray-100 dark:border-white/5">
+                    <Link
+                      href="/notifications"
+                      className="text-xs font-bold text-[var(--primary)] hover:underline"
+                      onClick={() => setActiveDropdown(null)}
+                    >
+                      View all notifications &rarr;
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── Theme Toggle ── */}
           {mounted && theme && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className={`p-2 rounded-full transition-colors ${
-                scrolled 
-                  ? "text-[#166534] hover:bg-[#DCFCE7] dark:text-gray-300 dark:hover:bg-white/10" 
-                  : "text-[var(--text-secondary)] hover:bg-[var(--bg-base)] hover:text-[var(--primary)]"
-              }`}
+              className={iconBtn}
               aria-label="Toggle theme"
             >
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
           )}
 
-          {/* User Section (Simulated Login State) */}
+          {/* ── Profile (icon only) ── */}
           {mounted && (
-            <div className="relative">
-              <button 
+            <div className="relative ml-1">
+              <button
                 onClick={() => toggleDropdown("user")}
-                className="flex items-center gap-2 group"
+                className="group cursor-pointer"
+                aria-label="User menu"
               >
-                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] border-2 border-white dark:border-gray-800 shadow-sm flex items-center justify-center text-white font-bold overflow-hidden">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] border-2 border-white/50 dark:border-[#3E5F43] shadow-md flex items-center justify-center text-white text-sm font-bold overflow-hidden transition-all duration-200 group-hover:scale-110 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-[#678D63]/40">
                   HK
-                </div>
-                <div className="hidden md:block text-left">
-                  <p className="text-xs font-bold text-[var(--text-primary)] leading-none mb-1">Hassaan</p>
-                  <p className="text-[10px] text-[var(--text-muted)] leading-none">Premium Member</p>
                 </div>
               </button>
 
               {activeDropdown === "user" && (
-                <div className="absolute top-[calc(100%+12px)] right-0 w-56 bg-white dark:bg-[var(--bg-card)] border border-[var(--border)] rounded-xl shadow-2xl p-2 animate-in fade-in slide-in-from-top-2 duration-200 z-[110]">
-                  <div className="px-3 py-3 border-b border-gray-100 dark:border-white/5 mb-1">
-                    <p className="text-xs text-[var(--text-muted)] mb-1">Signed in as</p>
-                    <p className="text-sm font-bold text-[var(--text-primary)] truncate">hassaankhalid@jobsphere.com</p>
+                <div className={`${dropdownCls} w-60`}>
+                  {/* User info */}
+                  <div className="px-4 py-3.5 border-b border-gray-100 dark:border-white/5 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                      HK
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-[var(--text-primary)] truncate">Hassaan Khalid</p>
+                      <p className="text-[11px] text-[var(--text-muted)] truncate">hassaankhalid@jobsphere.com</p>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-0.5">
+
+                  {/* Notifications mini */}
+                  <div className="px-4 py-2.5 border-b border-gray-100 dark:border-white/5">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Notifications</p>
+                      {unreadCount > 0 && (
+                        <span className="text-[10px] font-bold text-[var(--primary)] bg-[#F0FDF4] dark:bg-white/10 px-1.5 py-0.5 rounded-full">
+                          {unreadCount} new
+                        </span>
+                      )}
+                    </div>
+                    {NOTIFICATIONS.slice(0, 2).map((n) => (
+                      <div key={n.id} className="flex items-center gap-2 py-1">
+                        <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${n.unread ? "bg-[#678D63]" : "bg-gray-300 dark:bg-white/20"}`} />
+                        <p className="text-xs text-[var(--text-secondary)] truncate">{n.title}</p>
+                      </div>
+                    ))}
+                    <Link
+                      href="/notifications"
+                      className="text-[11px] font-semibold text-[var(--primary)] hover:underline mt-1 inline-block"
+                      onClick={() => setActiveDropdown(null)}
+                    >
+                      See all &rarr;
+                    </Link>
+                  </div>
+
+                  {/* Nav links */}
+                  <div className="py-1.5 px-2">
                     {[
-                      { name: "My Profile", icon: <Users className="w-4 h-4" />, href: "/profile" },
-                      { name: "Saved Jobs", icon: <Bookmark className="w-4 h-4" />, href: "/saved-jobs" },
-                      { name: "Applied Jobs", icon: <Zap className="w-4 h-4" />, href: "/applied-jobs" },
-                      { name: "Settings", icon: <Layout className="w-4 h-4" />, href: "/settings" },
-                    ].map(item => (
-                      <Link 
-                        key={item.name} 
+                      { name: "My Profile",    icon: <Users className="w-4 h-4" />,    href: "/profile" },
+                      { name: "Edit Profile",  icon: <Target className="w-4 h-4" />,   href: "/profile/edit" },
+                      { name: "Saved Jobs",    icon: <Bookmark className="w-4 h-4" />, href: "/saved-jobs" },
+                      { name: "Applied Jobs",  icon: <Zap className="w-4 h-4" />,      href: "/applied-jobs" },
+                      { name: "Settings",      icon: <Layout className="w-4 h-4" />,   href: "/settings" },
+                    ].map((item) => (
+                      <Link
+                        key={item.name}
                         href={item.href}
                         className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[#F0FDF4] hover:text-[#166534] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
                         onClick={() => setActiveDropdown(null)}
@@ -220,15 +386,17 @@ export default function Navbar() {
                         {item.name}
                       </Link>
                     ))}
-                    <div className="border-t border-gray-100 dark:border-white/5 mt-1 pt-1">
-                      <button 
-                        className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        <Rocket className="w-4 h-4 rotate-180" />
-                        Sign Out
-                      </button>
-                    </div>
+                  </div>
+
+                  {/* Sign out */}
+                  <div className="border-t border-gray-100 dark:border-white/5 px-2 pb-2 pt-1">
+                    <button
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                      onClick={() => setActiveDropdown(null)}
+                    >
+                      <Rocket className="w-4 h-4 rotate-180" />
+                      Sign Out
+                    </button>
                   </div>
                 </div>
               )}

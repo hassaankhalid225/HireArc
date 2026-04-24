@@ -37,14 +37,19 @@ export default function Hero() {
           className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-[#A8BA9A] rounded-full blur-[100px]" 
         />
         
-        {/* Noise Texture Overlay */}
+        {/* Dotted Pattern Overlay */}
         <div 
-          className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" 
-          style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }} 
+          className="absolute inset-0 opacity-[0.4] pointer-events-none" 
+          style={{ 
+            backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.15) 1.5px, transparent 1.5px)',
+            backgroundSize: '40px 40px',
+            maskImage: 'radial-gradient(ellipse at center, black, transparent 80%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at center, black, transparent 80%)'
+          }} 
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-dark)]/20 via-transparent to-[var(--bg-dark)]/40 pointer-events-none" />
         
-        {/* Dark Overlay Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--bg-dark)]/40 to-[var(--bg-dark)]" />
+        {/* Animated Mesh Gradient Blobs */}
       </div>
 
       <div className="max-w-[1280px] mx-auto px-6 relative z-10">

@@ -103,10 +103,20 @@
     -moz-osx-font-smoothing: grayscale;
     font-family: var(--font-body);
     @apply bg-background text-foreground;
-    background-image: 
-      linear-gradient(to right, rgba(0, 100, 0, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 100, 0, 0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
+    /* Clean background — no global dots */
+  }
+
+  /* ── Hero dot grid (applied only on the hero section) ── */
+  .hero-dots {
+    background-image:
+      radial-gradient(circle, rgba(46, 70, 51, 0.20) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+  }
+
+  .dark .hero-dots {
+    background-image:
+      radial-gradient(circle, rgba(168, 186, 154, 0.22) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
   }
 
   h1, h2, h3, h4, h5, h6 {

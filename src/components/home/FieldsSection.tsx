@@ -19,51 +19,56 @@ const FIELDS = [
 
 export default function FieldsSection() {
   return (
-    <section className="bg-white dark:bg-[var(--bg-base)] py-20 border-y border-[var(--border)]">
-      <div className="max-w-[1400px] mx-auto px-6">
+    <section className="relative py-14 bg-[var(--bg-base)] overflow-hidden">
+      {/* ── Architectural Grid Background ── */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05]">
+        <div 
+          className="absolute inset-0" 
+          style={{ 
+            backgroundImage: `linear-gradient(to right, var(--primary) 1px, transparent 1px), linear-gradient(to bottom, var(--primary) 1px, transparent 1px)`,
+            backgroundSize: '100px 100px',
+          }} 
+        />
+      </div>
+
+      <div className="max-w-[1400px] mx-auto px-8 relative z-10">
         <FadeIn direction="up">
-          <div className="mb-12">
-            <h2 className="text-[32px] font-bold font-headline text-gray-900 dark:text-white">Popular Services</h2>
-          </div>
-        </FadeIn>
-
-        <div className="relative">
-          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 gap-4">
-            {FIELDS.map((field) => (
-              <StaggerItem key={field.name}>
-                <Link 
-                  href={`/search?field=${field.name.toLowerCase()}`}
-                  className="group relative flex flex-col items-start gap-6 p-6 bg-white dark:bg-[#233027] border border-gray-100 dark:border-gray-800 rounded-xl shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden min-h-[160px]"
-                >
-                  {/* Hover Animation Background */}
-                  <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
-                    <div className="w-0 h-0 bg-[#F0FDF4] dark:bg-[#1C261F] rounded-full transition-all duration-500 ease-out group-hover:w-[300%] group-hover:h-[300%] opacity-0 group-hover:opacity-100" />
-                  </div>
-
-                  {/* Content - Icon and Text */}
-                  <div className="relative z-10 w-full">
-                    <div className="text-gray-700 dark:text-gray-300 group-hover:text-[var(--primary)] transition-colors duration-300 mb-6">
-                      {field.icon}
-                    </div>
-                    <h3 className="font-bold text-[14px] sm:text-[15px] leading-tight text-gray-800 dark:text-gray-100 group-hover:text-[var(--primary)] transition-colors duration-300">
-                      {field.name}
-                    </h3>
-                  </div>
-                </Link>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
-        </div>
-        
-        <FadeIn direction="up" delay={0.4}>
-          <div className="mt-12 flex items-center justify-between border-t border-gray-100 dark:border-gray-800 pt-8">
-            <p className="text-gray-500 dark:text-gray-400 font-medium">Explore more industries and specialized fields</p>
-            <Link href="/categories" className="flex items-center gap-2 text-[var(--primary)] font-bold hover:gap-3 transition-all">
-              Browse all categories
-              <Search className="w-4 h-4" />
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
+            <div className="max-w-[600px]">
+              <div className="inline-block px-4 py-1.5 rounded-full bg-[var(--primary)]/5 border border-[var(--primary)]/10 text-[var(--primary)] text-[10px] font-extrabold uppercase tracking-[0.2em] mb-6">
+                Service Ecosystem
+              </div>
+              <h2 className="text-4xl md:text-5xl font-extrabold font-headline tracking-tight mb-4">Popular Industries</h2>
+              <p className="text-[var(--text-secondary)] text-lg font-medium">Browse high-signal opportunities across the most innovative sectors.</p>
+            </div>
+            <Link href="/categories" className="btn btn-outline h-14 px-8 group border-2">
+              All Categories <Search className="w-5 h-5 ml-2 group-hover:scale-110 transition-transform" />
             </Link>
           </div>
         </FadeIn>
+
+        <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 gap-4">
+          {FIELDS.map((field) => (
+            <StaggerItem key={field.name}>
+              <Link 
+                href={`/search?field=${field.name.toLowerCase()}`}
+                className="group relative flex flex-col items-center justify-center gap-6 p-6 bg-white dark:bg-[#15221B] border border-gray-100 dark:border-white/5 rounded-[24px] hover:shadow-premium hover:-translate-y-1.5 transition-all duration-500 overflow-hidden min-h-[160px] text-center"
+              >
+                {/* Refined Glass Highlight */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/0 to-[var(--primary)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                <div className="relative z-10">
+                  <div className="text-gray-400 group-hover:text-[var(--primary)] dark:group-hover:text-emerald-400 transition-all duration-500 mb-4 transform group-hover:scale-110">
+                    {field.icon}
+                  </div>
+                  <h3 className="font-bold text-[13px] leading-snug text-gray-800 dark:text-gray-200 group-hover:text-[var(--primary)] dark:group-hover:text-white transition-colors">
+                    {field.name}
+                  </h3>
+                </div>
+              </Link>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
       </div>
     </section>
   );

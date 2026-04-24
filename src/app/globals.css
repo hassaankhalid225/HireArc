@@ -5,130 +5,110 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Colors */
-  --primary: #2E4633;
-  --primary-dark: #1C261F;
-  --primary-light: #678D63;
-  --accent: #A8BA9A;
+  /* ── Premium Color Palette (Deep Forest & Mint) ── */
+  --primary: #2D4A3E;        /* Deep Forest */
+  --primary-rgb: 45, 74, 62;
+  --primary-dark: #1A2E26;
+  --primary-light: #4A6D5D;
+  --accent: #94B49F;         /* Sage Green */
+  --mint: #E8F5EE;           /* Light Mint */
   --success: #10B981;
   --warning: #F59E0B;
-  --bg-base: #F8FAFC;
+  
+  /* Neutral scale - cleaner and more professional */
+  --bg-base: #F3F9F6;        /* Ultra Light Mint - Better for card separation */
   --bg-card: #FFFFFF;
-  --bg-dark: #2E4633;
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #94A3B8;
-  --border: oklch(0.922 0 0);
-  --border-focus: #678D63;
+  --bg-dark: #1A2E26;
+  --text-primary: #111827;   /* Slate 900 */
+  --text-secondary: #374151; /* Slate 700 - Darker for visibility */
+  --text-muted: #6B7280;     /* Slate 500 */
+  --border: #E5E7EB;
+  --border-hover: #D1D5DB;
+  --ring: #2D4A3E;
 
-  /* Typography */
-  --font-headline: 'Sora', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
-  --font-mono: 'DM Mono', monospace;
-
-  /* Spacing */
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  --space-2xl: 48px;
-  --space-3xl: 64px;
-
-  /* Border Radius */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-full: 9999px;
-
-  /* Shadows */
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-  --shadow-hover: 0 4px 12px rgba(26,86,219,0.12), 0 8px 32px rgba(0,0,0,0.08);
-  --shadow-modal: 0 24px 64px rgba(0,0,0,0.18);
-  --background: #F8F9F6;
-  --foreground: #1A201C;
-  --card: #FFFFFF;
-  --card-foreground: #1A201C;
-  --popover: #FFFFFF;
-  --popover-foreground: #1A201C;
-  --primary: #2E4633;
-  --primary-foreground: #FFFFFF;
-  --secondary: #678D63;
-  --secondary-foreground: #FFFFFF;
-  --muted: #E1E5D5;
-  --muted-foreground: #446644;
-  --accent: #A8BA9A;
-  --accent-foreground: #2E4633;
-  --destructive: oklch(0.577 0.245 27.325);
-  --input: #A8BA9A;
-  --ring: #2E4633;
-  --chart-1: #678D63;
-  --chart-2: #446644;
-  --chart-3: #A8BA9A;
-  --chart-4: #2E4633;
-  --chart-5: #E1E5D5;
-  --radius: 0.625rem;
-  --sidebar: #F8F9F6;
-  --sidebar-foreground: #1A201C;
-  --sidebar-primary: #678D63;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #E1E5D5;
-  --sidebar-accent-foreground: #1A201C;
-  --sidebar-border: #E1E5D5;
-  --sidebar-ring: #678D63;
+  /* shadcn compat - mapping to HEX for reliability */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary-shad: 153 25% 24%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --input: 214.3 31.8% 91.4%;
+  --radius: 0.75rem;
 }
 
-.dark:root {
-  --primary: #A8BA9A;
-  --primary-dark: #678D63;
-  --primary-light: #2E4633;
-  --accent: #E1E5D5;
-  --bg-base: #1C261F;
-  --bg-card: #233027;
-  --bg-dark: #111A13;
-  --text-primary: #F8FAFC;
-  --text-secondary: #CBD5E1;
-  --text-muted: #8A9D8B;
-  --border: #3E5F43;
-  --border-focus: #A8BA9A;
-  color-scheme: dark;
+.dark {
+  --bg-base: #0F1713;        /* Black Forest */
+  --bg-card: #15221B;
+  --bg-dark: #0A110D;
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+  --border: #23372D;
+  --border-hover: #314C3E;
+  
+  --background: 153 20% 8%;
+  --foreground: 210 40% 98%;
+  --card: 153 20% 10%;
+  --card-foreground: 210 40% 98%;
+  --popover: 153 20% 10%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 153 25% 65%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 153 20% 16%;
+  --input: 153 20% 16%;
+  --ring: 153 25% 65%;
 }
 
 @layer base {
+  * {
+    @apply border-border outline-none;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     background-color: var(--bg-base);
     color: var(--text-primary);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     font-family: var(--font-body);
-    @apply bg-background text-foreground;
-    /* Clean background — no global dots */
-  }
-
-  /* ── Hero dot grid (applied only on the hero section) ── */
-  .hero-dots {
-    background-image:
-      radial-gradient(circle, rgba(46, 70, 51, 0.20) 1.5px, transparent 1.5px);
-    background-size: 28px 28px;
-  }
-
-  .dark .hero-dots {
-    background-image:
-      radial-gradient(circle, rgba(168, 186, 154, 0.22) 1.5px, transparent 1.5px);
-    background-size: 28px 28px;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.011em;
+    @apply transition-colors duration-300;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-weight: 700;
-    line-height: 1.25;
     font-family: var(--font-headline);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--text-primary);
   }
-  * {
-    @apply border-border outline-ring/50;
-  }
-  html {
-    @apply font-sans;
+
+  /* Custom selection */
+  ::selection {
+    background-color: var(--mint);
+    color: var(--primary);
   }
 }
 
@@ -150,23 +130,25 @@
   .btn-primary {
     background-color: var(--primary);
     color: white;
+    box-shadow: 0 4px 14px 0 rgba(45, 74, 62, 0.2);
   }
 
   .btn-primary:hover {
     background-color: var(--primary-dark);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(26,86,219,0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(45, 74, 62, 0.3);
   }
 
   .btn-outline {
     background-color: transparent;
-    border-width: 2px;
-    border-color: var(--primary);
+    border: 2px solid var(--primary);
     color: var(--primary);
   }
 
   .btn-outline:hover {
-    background-color: var(--primary-light);
+    background-color: var(--primary);
+    color: white;
+    transform: translateY(-1px);
   }
 
   .btn-ghost {
@@ -175,7 +157,7 @@
   }
 
   .btn-ghost:hover {
-    background-color: var(--bg-base);
+    background-color: var(--primary)/5;
     color: var(--primary);
   }
 

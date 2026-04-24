@@ -8,24 +8,27 @@ import { Bookmark, MapPin, Globe, DollarSign, ArrowRight } from "lucide-react";
 export default function JobCard({ job }: { job: Job }) {
   return (
     <Link href={`/jobs/${job.id}`} className="block group">
-      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg)] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-hover)] hover:border-[var(--primary)] h-full relative">
-        <div className="flex justify-between items-start mb-6">
-          <div className="flex gap-4">
-            <div className="w-12 h-12 rounded-[var(--radius-md)] bg-[var(--bg-base)] flex items-center justify-center overflow-hidden border border-[var(--border)]">
+      <div className="bg-white dark:bg-[#15221B] border border-gray-100 dark:border-white/5 rounded-[32px] p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-premium hover:border-[var(--primary)] h-full relative overflow-hidden">
+        {/* Subtle Gradient Accent */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/0 to-[var(--primary)]/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        <div className="flex justify-between items-start mb-8 relative z-10">
+          <div className="flex gap-5">
+            <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center overflow-hidden border border-gray-100 dark:border-white/10 group-hover:scale-110 transition-transform duration-500">
               <Image 
                 src="/logo1.png" 
                 alt={job.company} 
-                width={40} 
-                height={40} 
-                className="object-contain p-1"
+                width={48} 
+                height={48} 
+                className="object-contain p-2"
               />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-[var(--text-primary)] group-hover:text-[var(--primary)] transition-colors">
+              <h3 className="text-xl font-extrabold text-[var(--text-primary)] group-hover:text-[var(--primary)] transition-colors tracking-tight mb-1">
                 {job.title}
               </h3>
-              <p className="text-sm text-[var(--text-secondary)]">
-                {job.company} • via {job.source}
+              <p className="text-sm font-bold text-[var(--text-secondary)]">
+                {job.company} <span className="mx-2 opacity-30">•</span> <span className="text-[var(--primary)]/70">via {job.source}</span>
               </p>
             </div>
           </div>
@@ -33,37 +36,36 @@ export default function JobCard({ job }: { job: Job }) {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              // Add bookmark logic here
             }}
-            className="text-[var(--text-muted)] hover:text-blue-600 transition-colors relative z-20 p-1"
+            className="text-gray-300 hover:text-[var(--primary)] transition-all relative z-20 p-2 hover:bg-[var(--primary)]/5 rounded-full"
           >
-            <Bookmark className="w-5 h-5" />
+            <Bookmark className="w-6 h-6" />
           </button>
         </div>
 
-        <div className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] mb-4">
-          <MapPin className="w-4 h-4" /> {job.location}
+        <div className="flex items-center gap-2 text-sm font-bold text-[var(--text-muted)] mb-6 relative z-10">
+          <MapPin className="w-4 h-4 text-[var(--primary)]/60" /> {job.location}
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-6">
-          <Badge variant="secondary" className={`${job.type === 'Full-time' ? 'bg-blue-50 text-blue-700' : 'bg-yellow-50 text-yellow-700'} rounded-sm`}>
+        <div className="flex flex-wrap gap-2.5 mb-8 relative z-10">
+          <div className={`px-4 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-widest ${job.type === 'Full-time' ? 'bg-blue-500/10 text-blue-600' : 'bg-amber-500/10 text-amber-600'}`}>
             {job.type}
-          </Badge>
+          </div>
           {job.isRemote && (
-            <Badge variant="secondary" className="bg-green-50 text-green-700 flex items-center gap-1.5 rounded-sm">
+            <div className="px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[11px] font-extrabold uppercase tracking-widest flex items-center gap-2">
               <Globe className="w-3 h-3" /> Remote
-            </Badge>
+            </div>
           )}
-          <Badge variant="secondary" className="bg-orange-50 text-orange-800 flex items-center gap-1.5 rounded-sm">
+          <div className="px-4 py-1.5 rounded-full bg-gray-500/10 text-gray-600 dark:text-gray-400 text-[11px] font-extrabold uppercase tracking-widest flex items-center gap-2">
             <DollarSign className="w-3 h-3" /> {job.salary}
-          </Badge>
+          </div>
         </div>
 
-        <div className="pt-4 border-t border-[var(--border)] flex justify-between items-center mt-auto">
-          <span className="text-[12px] font-mono text-[var(--text-muted)]">
-            Posted {job.posted}
+        <div className="pt-6 border-t border-gray-100 dark:border-white/5 flex justify-between items-center mt-auto relative z-10">
+          <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+            {job.posted}
           </span>
-          <div className="font-semibold text-blue-600 group-hover:text-blue-700 group-hover:underline flex items-center gap-1 text-sm">
+          <div className="font-extrabold text-[var(--primary)] flex items-center gap-2 text-sm group-hover:translate-x-1 transition-transform">
             Apply Now <ArrowRight className="w-4 h-4" />
           </div>
         </div>

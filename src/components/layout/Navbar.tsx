@@ -1,13 +1,14 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { 
   Sun, Moon, ChevronDown, Monitor, BarChart, Palette, 
   Megaphone, Shield, Database, Layout, Briefcase, Rocket, 
   Zap, Target, Users, Bookmark, Bell, Globe, Check
 } from "lucide-react";
-import { useLanguage } from "@/hooks";
+import { useLanguage, useAuth } from "@/hooks";
 import { LANGUAGES } from "@/lib/i18n";
 
 const COMPANIES = [
@@ -40,27 +41,55 @@ const NOTIFICATIONS = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
   const { lang, setLang, currentLanguage } = useLanguage();
+  const { user, logout, isAuthenticated, login } = useAuth();
+
+  // Only the home page has a dark hero — every other page needs a solid navbar
+  const isHome = pathname === "/";
+  // Treat as "dark background" when on home AND not yet scrolled
+  const isDark = isHome && !scrolled;
 
   useEffect(() => {
     setMounted(true);
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Update scrolled state for background color
+      setScrolled(currentScrollY > 50);
+
+      // Smart Hide/Show logic
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down
+        setVisible(false);
+      } else {
+        // Scrolling up
+        setVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
     const handleClickOutside = (e: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
         setActiveDropdown(null);
       }
     };
-    window.addEventListener("scroll", handleScroll);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [lastScrollY]);
 
   const toggleDropdown = (name: string) =>
     setActiveDropdown(activeDropdown === name ? null : name);
@@ -68,34 +97,36 @@ export default function Navbar() {
   const unreadCount = NOTIFICATIONS.filter((n) => n.unread).length;
 
   // Shared icon button style
-  const iconBtn = `p-2.5 rounded-full transition-all duration-200 ${
-    scrolled
-      ? "text-[var(--text-secondary)] hover:bg-gray-100/80 dark:hover:bg-white/10 hover:text-[var(--primary)]"
-      : "text-white/80 hover:bg-white/10 hover:text-white"
+  const iconBtn = `p-2 rounded-xl transition-all duration-300 ${
+    isDark
+      ? "text-white/70 hover:bg-white/10 hover:text-white"
+      : "text-[var(--text-secondary)] hover:bg-gray-100 dark:hover:bg-white/5 hover:text-[var(--primary)]"
   }`;
 
-  // Dropdown container style
+  // Dropdown container style - UI/UX Pro Max Glassmorphism
   const dropdownCls =
-    "absolute top-[calc(100%+12px)] right-0 bg-white/95 dark:bg-[#1C261F]/95 backdrop-blur-xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[110]";
+    "absolute top-[calc(100%+16px)] right-0 bg-white/95 dark:bg-[#15221B]/95 backdrop-blur-2xl border border-[var(--border)] dark:border-white/10 rounded-2xl shadow-premium overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300 z-[110]";
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 h-[80px] flex items-center z-[100] transition-all duration-700 ${
-        scrolled
-          ? "bg-white/70 dark:bg-[#1C261F]/70 backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.08)] border-b border-white/40 dark:border-white/5"
-          : "bg-transparent border-transparent"
+      className={`fixed top-0 left-0 right-0 h-[88px] flex items-center z-[100] transition-all duration-500 transform ${
+        visible ? "translate-y-0" : "-translate-y-full"
+      } ${
+        isDark
+          ? "bg-transparent border-transparent"
+          : "bg-white/80 dark:bg-[#0F1713]/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5 shadow-sm"
       }`}
       ref={navRef}
     >
-      <div className="max-w-[1280px] mx-auto px-6 w-full flex justify-between items-center relative">
+      <div className="max-w-[1400px] mx-auto px-8 w-full flex justify-between items-center relative">
         {/* ── Left: Logo + Nav Links ── */}
-        <div className="flex items-center gap-12">
+        <div className="flex items-center gap-16">
           <Link
             href="/"
-            className="flex items-center gap-2 text-[22px] font-extrabold font-headline shrink-0"
+            className="flex items-center gap-3 text-2xl font-extrabold font-headline shrink-0 tracking-tighter"
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] shadow-sm" />
-            <span className={scrolled ? "text-[var(--text-primary)]" : "text-white"}>
+            <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-[var(--primary)] to-[var(--primary-light)] shadow-lg shadow-emerald-950/20 rotate-3" />
+            <span className={isDark ? "text-white" : "text-[var(--text-primary)]"}>
               JobSphere
             </span>
           </Link>
@@ -104,9 +135,9 @@ export default function Navbar() {
             <Link
               href="/search"
               className={`text-sm font-bold transition-all ${
-                scrolled
-                  ? "text-[var(--text-secondary)] hover:text-[var(--primary)]"
-                  : "text-white/80 hover:text-white"
+                isDark
+                  ? "text-white/80 hover:text-white"
+                  : "text-[var(--text-secondary)] hover:text-[var(--primary)]"
               }`}
             >
               Find Jobs
@@ -114,9 +145,9 @@ export default function Navbar() {
             <Link
               href="/search?type=remote"
               className={`text-sm font-bold transition-all ${
-                scrolled
-                  ? "text-[var(--text-secondary)] hover:text-[var(--primary)]"
-                  : "text-white/80 hover:text-white"
+                isDark
+                  ? "text-white/80 hover:text-white"
+                  : "text-[var(--text-secondary)] hover:text-[var(--primary)]"
               }`}
             >
               Remote
@@ -128,17 +159,17 @@ export default function Navbar() {
                 onClick={() => toggleDropdown("companies")}
                 className={`flex items-center gap-1 text-sm font-bold transition-all ${
                   activeDropdown === "companies"
-                    ? scrolled ? "text-[var(--primary)]" : "text-white"
-                    : scrolled
-                    ? "text-[var(--text-secondary)] hover:text-[var(--primary)]"
-                    : "text-white/80 hover:text-white"
+                    ? isDark ? "text-white" : "text-[var(--primary)]"
+                    : isDark
+                    ? "text-white/80 hover:text-white"
+                    : "text-[var(--text-secondary)] hover:text-[var(--primary)]"
                 }`}
               >
                 Companies
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "companies" ? "rotate-180" : ""}`} />
               </button>
               {activeDropdown === "companies" && (
-                <div className="absolute top-[calc(100%+20px)] left-0 w-64 bg-white/95 dark:bg-[#1C261F]/95 backdrop-blur-xl border border-white/50 dark:border-white/10 rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-[calc(100%+20px)] left-0 w-64 bg-white dark:bg-[#1C261F] border border-[var(--border)] dark:border-white/10 rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="grid grid-cols-1 gap-1">
                     {COMPANIES.map((c) => (
                       <Link
@@ -170,17 +201,17 @@ export default function Navbar() {
                 onClick={() => toggleDropdown("categories")}
                 className={`flex items-center gap-1 text-sm font-bold transition-all ${
                   activeDropdown === "categories"
-                    ? scrolled ? "text-[var(--primary)]" : "text-white"
-                    : scrolled
-                    ? "text-[var(--text-secondary)] hover:text-[var(--primary)]"
-                    : "text-white/80 hover:text-white"
+                    ? isDark ? "text-white" : "text-[var(--primary)]"
+                    : isDark
+                    ? "text-white/80 hover:text-white"
+                    : "text-[var(--text-secondary)] hover:text-[var(--primary)]"
                 }`}
               >
                 Categories
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "categories" ? "rotate-180" : ""}`} />
               </button>
               {activeDropdown === "categories" && (
-                <div className="absolute top-[calc(100%+20px)] left-0 w-72 bg-white/95 dark:bg-[#1C261F]/95 backdrop-blur-xl border border-white/50 dark:border-white/10 rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-[calc(100%+20px)] left-0 w-72 bg-white dark:bg-[#1C261F] border border-[var(--border)] dark:border-white/10 rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="grid grid-cols-1 gap-1">
                     {CATEGORIES.map((cat) => (
                       <Link
@@ -317,7 +348,7 @@ export default function Navbar() {
           )}
 
           {/* ── Profile (icon only) ── */}
-          {mounted && (
+          {mounted && isAuthenticated ? (
             <div className="relative ml-1">
               <button
                 onClick={() => toggleDropdown("user")}
@@ -325,7 +356,7 @@ export default function Navbar() {
                 aria-label="User menu"
               >
                 <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] border-2 border-white/50 dark:border-[#3E5F43] shadow-md flex items-center justify-center text-white text-sm font-bold overflow-hidden transition-all duration-200 group-hover:scale-110 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-[#678D63]/40">
-                  HK
+                  {user?.name?.split(" ").map(n => n[0]).join("") || "HK"}
                 </div>
               </button>
 
@@ -334,11 +365,11 @@ export default function Navbar() {
                   {/* User info */}
                   <div className="px-4 py-3.5 border-b border-gray-100 dark:border-white/5 flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                      HK
+                      {user?.name?.split(" ").map(n => n[0]).join("") || "HK"}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-bold text-[var(--text-primary)] truncate">Hassaan Khalid</p>
-                      <p className="text-[11px] text-[var(--text-muted)] truncate">hassaankhalid@jobsphere.com</p>
+                      <p className="text-sm font-bold text-[var(--text-primary)] truncate">{user?.name || "User"}</p>
+                      <p className="text-[11px] text-[var(--text-muted)] truncate">{user?.email || "user@example.com"}</p>
                     </div>
                   </div>
 
@@ -392,7 +423,10 @@ export default function Navbar() {
                   <div className="border-t border-gray-100 dark:border-white/5 px-2 pb-2 pt-1">
                     <button
                       className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
-                      onClick={() => setActiveDropdown(null)}
+                      onClick={() => {
+                        setActiveDropdown(null);
+                        logout();
+                      }}
                     >
                       <Rocket className="w-4 h-4 rotate-180" />
                       Sign Out
@@ -400,6 +434,21 @@ export default function Navbar() {
                   </div>
                 </div>
               )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 ml-2">
+              <Link 
+                href="/login" 
+                className={`text-sm font-bold transition-all ${isDark ? "text-white/80 hover:text-white" : "text-[var(--text-secondary)] hover:text-[var(--primary)]"}`}
+              >
+                Log In
+              </Link>
+              <Link 
+                href="/signup" 
+                className="btn btn-primary h-10 px-5 text-sm"
+              >
+                Join Now
+              </Link>
             </div>
           )}
         </div>

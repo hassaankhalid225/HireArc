@@ -7,103 +7,97 @@ import { motion } from "framer-motion";
 
 export default function Hero() {
   return (
-    <section className="relative bg-[var(--bg-dark)] text-white pt-32 pb-24 overflow-hidden text-center">
-      {/* Premium Background Effect */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Animated Mesh Gradient Blobs */}
-        <motion.div 
-          animate={{ 
-            x: [0, 40, -20, 0],
-            y: [0, -50, 30, 0],
-            scale: [1, 1.1, 0.9, 1]
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-[#3E5F43] rounded-full blur-[120px] opacity-60" 
-        />
-        <motion.div 
-          animate={{ 
-            x: [0, -30, 50, 0],
-            y: [0, 40, -40, 0],
-            scale: [1, 0.9, 1.2, 1]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-[#678D63] rounded-full blur-[120px] opacity-40" 
-        />
-        <motion.div 
-          animate={{ 
-            opacity: [0.1, 0.3, 0.1]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-[#A8BA9A] rounded-full blur-[100px]" 
-        />
-        
-        {/* Dotted Pattern Overlay */}
+    <section className="relative pt-32 pb-20 overflow-hidden bg-[var(--bg-dark)] dark:bg-[#0A110D]">
+      {/* ── Premium Background Architecture ── */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Architectural Grid */}
         <div 
-          className="absolute inset-0 opacity-[0.4] pointer-events-none" 
+          className="absolute inset-0 opacity-[0.1] dark:opacity-[0.05]" 
           style={{ 
-            backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.15) 1.5px, transparent 1.5px)',
-            backgroundSize: '40px 40px',
-            maskImage: 'radial-gradient(ellipse at center, black, transparent 80%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at center, black, transparent 80%)'
+            backgroundImage: `
+              linear-gradient(to right, white 1px, transparent 1px),
+              linear-gradient(to bottom, white 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px',
           }} 
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-dark)]/20 via-transparent to-[var(--bg-dark)]/40 pointer-events-none" />
         
-        {/* Animated Mesh Gradient Blobs */}
+        {/* Dynamic Mesh Gradients */}
+        <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] bg-emerald-500/20 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-[var(--primary-light)]/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        
+        {/* Overlay to ensure text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-dark)]/50 via-transparent to-[var(--bg-dark)]" />
       </div>
 
-      <div className="max-w-[1280px] mx-auto px-6 relative z-10">
-        <div className="max-w-[800px] mx-auto space-y-8">
-          <FadeIn delay={0.1}>
-            <div className="flex flex-wrap items-center justify-center gap-4 text-sm font-medium text-[var(--text-secondary)]">
-              <span className="flex items-center gap-2">
-                <Globe className="w-4 h-4 text-[var(--primary)]" /> Aggregating 100,000+ jobs from top companies
+      <div className="max-w-[1400px] mx-auto px-8 relative z-10">
+        <div className="max-w-[1000px] mx-auto text-center">
+          <FadeIn>
+            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-10 group hover:border-emerald-500/30 transition-all duration-500">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-[10px] font-extrabold uppercase tracking-[0.3em] text-white/60 group-hover:text-white transition-colors">
+                The Future of Career Finding
               </span>
             </div>
           </FadeIn>
+
           <FadeIn delay={0.2}>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold font-headline leading-[1.1]">
-              Find Your Next Career Move.
+            <h1 className="text-5xl md:text-7xl lg:text-[92px] font-extrabold font-headline leading-[0.95] mb-8 tracking-[-0.04em]">
+              The future of<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-100 to-white/40">
+                career finding.
+              </span>
             </h1>
           </FadeIn>
+
           <FadeIn delay={0.3}>
-            <p className="text-lg md:text-xl text-[var(--text-muted)] max-w-[600px] mx-auto">
-              Every job. One place. Sourced directly from Greenhouse, Lever, and 10+ platforms.
+            <p className="text-lg md:text-xl text-white/50 max-w-[620px] mx-auto leading-relaxed mb-12">
+              Aggregating the world's highest-signal job data into one unified, 
+              AI-enhanced interface. No sponsored noise, just your next big move.
             </p>
           </FadeIn>
 
           <FadeIn delay={0.4}>
-            <div className="bg-[var(--bg-card)] p-4 rounded-[var(--radius-xl)] shadow-[var(--shadow-modal)] flex flex-col md:flex-row gap-4 max-w-[760px] mx-auto hover:shadow-xl transition-shadow duration-500">
-              <div className="flex-1 flex items-center gap-2 px-3 border-b md:border-b-0 md:border-r border-[var(--border)]">
-                <Search className="w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-                <input 
-                  type="text" 
-                  placeholder="Job title, keyword, or company" 
-                  className="w-full h-12 outline-none text-[var(--text-primary)] text-sm bg-transparent"
-                />
+            <div className="relative group max-w-[800px] mx-auto">
+              {/* Outer Glow */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/20 to-sage-500/20 rounded-[40px] blur-xl opacity-0 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
+              
+              <div className="relative bg-white dark:bg-[#1A2E26] p-2 rounded-[32px] shadow-2xl flex flex-col md:flex-row gap-2 hover:translate-y-[-2px] transition-all duration-500 border border-gray-100 dark:border-white/10">
+                <div className="flex-1 flex items-center gap-3 px-6 py-4">
+                  <Search className="w-5 h-5 text-gray-400" />
+                  <input 
+                    type="text" 
+                    placeholder="Search by role or company..." 
+                    className="w-full bg-transparent outline-none text-gray-900 dark:text-white text-base font-medium placeholder:text-gray-400"
+                  />
+                </div>
+                <div className="hidden md:block w-[1px] h-8 self-center bg-gray-100 dark:bg-white/5" />
+                <div className="flex-1 flex items-center gap-3 px-6 py-4">
+                  <MapPin className="w-5 h-5 text-gray-400" />
+                  <input 
+                    type="text" 
+                    placeholder="Location or Remote" 
+                    className="w-full bg-transparent outline-none text-gray-900 dark:text-white text-base font-medium placeholder:text-gray-400"
+                  />
+                </div>
+                <button className="bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white font-bold px-10 py-4 rounded-[24px] shadow-lg shadow-emerald-950/20 transition-all active:scale-[0.98]">
+                  Find Talent
+                </button>
               </div>
-              <div className="flex-1 flex items-center gap-2 px-3">
-                <MapPin className="w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-                <input 
-                  type="text" 
-                  placeholder="Location or Remote" 
-                  className="w-full h-12 outline-none text-[var(--text-primary)] text-sm bg-transparent"
-                />
-              </div>
-              <button className="btn btn-primary h-12 md:h-14 px-8 whitespace-nowrap hover:scale-105 active:scale-95 transition-transform">
-                Search Jobs
-              </button>
             </div>
           </FadeIn>
 
           <FadeIn delay={0.5}>
-            <div className="flex flex-wrap justify-center items-center gap-3 pt-6">
-              <span className="text-[12px] font-mono text-[var(--text-muted)]">Popular:</span>
-              {["Software Engineer", "Product Manager", "Remote", "Data Analyst"].map(tag => (
-                <Link key={tag} href="/search" className="chip chip-primary hover:bg-blue-100 transition-colors">
-                  {tag}
-                </Link>
-              ))}
+            <div className="flex flex-wrap justify-center items-center gap-6 mt-12">
+              <span className="text-xs font-bold uppercase tracking-widest text-white/30">Trusted by innovators at:</span>
+              <div className="flex gap-8 opacity-40 grayscale contrast-125">
+                {['Stripe', 'Linear', 'OpenAI', 'Vercel'].map(brand => (
+                  <span key={brand} className="text-sm font-bold font-headline tracking-tighter">{brand}</span>
+                ))}
+              </div>
             </div>
           </FadeIn>
         </div>

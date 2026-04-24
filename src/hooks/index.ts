@@ -3,3 +3,4 @@
 
 export { useSavedJobs } from "@/context/SavedJobsContext";
 export { useLanguage } from "@/context/LanguageContext";
+export { useAuth } from "@/context/AuthContext";

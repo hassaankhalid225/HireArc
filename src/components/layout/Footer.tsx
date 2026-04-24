@@ -6,24 +6,24 @@ export default function Footer() {
   const pathname = usePathname();
 
   return (
-    <footer className="bg-[var(--bg-dark)] text-white pt-20 pb-10">
-      <div className="max-w-[1280px] mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          <div className="space-y-6">
-            <Link href="/" className="flex items-center gap-2 text-2xl font-extrabold font-headline">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]" />
+    <footer className="bg-[var(--bg-dark)] text-white pt-24 pb-12">
+      <div className="max-w-[1400px] mx-auto px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
+          <div className="space-y-8">
+            <Link href="/" className="flex items-center gap-3 text-3xl font-extrabold font-headline tracking-tighter">
+              <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-[var(--primary)] to-[var(--primary-light)]" />
               <span>JobSphere</span>
             </Link>
-            <p className="text-[var(--text-muted)] text-base max-w-[280px]">
-              Aggregating the world's best jobs in one simple interface. No noise, just opportunities.
+            <p className="text-white/40 text-[15px] leading-relaxed max-w-[300px] font-medium">
+              Aggregating 100,000+ jobs from the world's most innovative company job boards. No noise, just your next big move.
             </p>
           </div>
 
           <div>
-            <h4 className="text-base font-semibold mb-6">Explore</h4>
-            <div className="flex flex-col gap-3">
-              {["Find Jobs", "Remote Jobs", "Browse Categories", "Browse Locations"].map(link => (
-                <Link key={link} href="#" className="text-sm text-[var(--text-muted)] hover:text-white transition-colors">
+            <h4 className="text-sm font-extrabold uppercase tracking-[0.2em] text-[var(--primary-light)] mb-8">Explore</h4>
+            <div className="flex flex-col gap-4">
+              {["Find Jobs", "Remote Jobs", "Browse Companies", "Browse Categories"].map(link => (
+                <Link key={link} href="#" className="text-[15px] font-bold text-white/50 hover:text-white transition-colors">
                   {link}
                 </Link>
               ))}
@@ -31,10 +31,10 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-base font-semibold mb-6">Company</h4>
-            <div className="flex flex-col gap-3">
+            <h4 className="text-sm font-extrabold uppercase tracking-[0.2em] text-[var(--primary-light)] mb-8">Company</h4>
+            <div className="flex flex-col gap-4">
               {["About Us", "FAQ", "Contact", "Privacy Policy"].map(link => (
-                <Link key={link} href="#" className="text-sm text-[var(--text-muted)] hover:text-white transition-colors">
+                <Link key={link} href="#" className="text-[15px] font-bold text-white/50 hover:text-white transition-colors">
                   {link}
                 </Link>
               ))}
@@ -42,15 +42,27 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-base font-semibold mb-6">Source Data</h4>
-            <div className="flex flex-col gap-3">
+            <h4 className="text-sm font-extrabold uppercase tracking-[0.2em] text-[var(--primary-light)] mb-8">Source Data</h4>
+            <div className="flex flex-col gap-4">
               {["Greenhouse", "Lever", "Arbeitnow", "Remotive"].map(link => (
-                <span key={link} className="text-sm text-[var(--text-muted)]">{link}</span>
+                <span key={link} className="text-[15px] font-bold text-white/30">{link}</span>
               ))}
             </div>
           </div>
         </div>
 
+        <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-xs font-bold text-white/20 uppercase tracking-widest">
+            &copy; {new Date().getFullYear()} JobSphere Premium. All rights reserved.
+          </p>
+          <div className="flex gap-8">
+            {["Twitter", "LinkedIn", "GitHub"].map(social => (
+              <Link key={social} href="#" className="text-xs font-bold text-white/20 hover:text-white transition-colors uppercase tracking-widest">
+                {social}
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </footer>
   );

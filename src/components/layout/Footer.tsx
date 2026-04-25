@@ -25,9 +25,14 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-extrabold uppercase tracking-[0.2em] text-[var(--primary-light)] mb-8">Explore</h4>
             <div className="flex flex-col gap-4">
-              {["Find Jobs", "Remote Jobs", "Browse Companies", "Browse Categories"].map(link => (
-                <Link key={link} href="#" className="text-[15px] font-bold text-white/50 hover:text-white transition-colors">
-                  {link}
+              {[
+                { name: "Find Jobs", href: "/search" },
+                { name: "Remote Jobs", href: "/search?type=remote" },
+                { name: "Browse Companies", href: "/companies" },
+                { name: "Browse Categories", href: "/categories" }
+              ].map(link => (
+                <Link key={link.name} href={link.href} className="text-[15px] font-bold text-white/50 hover:text-white transition-colors">
+                  {link.name}
                 </Link>
               ))}
             </div>
@@ -36,9 +41,14 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-extrabold uppercase tracking-[0.2em] text-[var(--primary-light)] mb-8">Company</h4>
             <div className="flex flex-col gap-4">
-              {["About Us", "FAQ", "Contact", "Privacy Policy"].map(link => (
-                <Link key={link} href="#" className="text-[15px] font-bold text-white/50 hover:text-white transition-colors">
-                  {link}
+              {[
+                { name: "About Us", href: "/about" },
+                { name: "FAQ", href: "/faq" },
+                { name: "Contact", href: "/contact" },
+                { name: "Privacy Policy", href: "/privacy" }
+              ].map(link => (
+                <Link key={link.name} href={link.href} className="text-[15px] font-bold text-white/50 hover:text-white transition-colors">
+                  {link.name}
                 </Link>
               ))}
             </div>

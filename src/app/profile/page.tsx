@@ -132,7 +132,7 @@ export default function ProfilePage() {
                     </div>
                     <div>
                       <p className="text-xs text-[var(--text-muted)] font-bold uppercase tracking-wider">Email</p>
-                      <p className="text-sm font-bold truncate">hassaankhalid@jobsphere.com</p>
+                      <p className="text-sm font-bold truncate">hassaankhalid@HireArc.com</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">

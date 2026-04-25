@@ -9,7 +9,7 @@
  *   const data = await apiClient.get<Job[]>("/jobs");
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://api.jobsphere.dev/v1";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://api.HireArc.dev/v1";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 

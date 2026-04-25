@@ -22,7 +22,7 @@ interface SavedJobsContextValue {
 // ─── Context ──────────────────────────────────────────────────────────────────
 const SavedJobsContext = createContext<SavedJobsContextValue | null>(null);
 
-const STORAGE_KEY = "jobsphere_saved_jobs";
+const STORAGE_KEY = "HireArc_saved_jobs";
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 export function SavedJobsProvider({ children }: { children: ReactNode }) {

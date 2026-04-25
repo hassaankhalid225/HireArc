@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Link href="/" className="flex items-center gap-3">
               <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold shadow-md">JS</div>
               <div className="leading-tight">
-                <span className="text-[17px] font-extrabold text-[var(--text-primary)] block">JobSphere</span>
+                <span className="text-[17px] font-extrabold text-[var(--text-primary)] block">HireArc</span>
                 <span className="text-[10px] font-bold text-[var(--text-muted)] tracking-wider uppercase block">Career Portal</span>
               </div>
             </Link>

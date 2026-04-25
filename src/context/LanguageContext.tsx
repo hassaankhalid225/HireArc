@@ -23,7 +23,7 @@ interface LanguageContextValue {
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 // ─── Provider ────────────────────────────────────────────────────────────────
-const STORAGE_KEY = "jobsphere_lang";
+const STORAGE_KEY = "HireArc_lang";
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<LanguageCode>("en");

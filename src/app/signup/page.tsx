@@ -14,7 +14,7 @@ export default function SignupPage() {
             <span className="text-white font-bold text-xl">JS</span>
           </div>
           <h1 className="text-2xl font-bold font-headline mb-2">Create an Account</h1>
-          <p className="text-[var(--text-secondary)] text-sm">Join JobSphere and find your next career move</p>
+          <p className="text-[var(--text-secondary)] text-sm">Join HireArc and find your next career move</p>
         </div>
 
         {/* Form Section */}

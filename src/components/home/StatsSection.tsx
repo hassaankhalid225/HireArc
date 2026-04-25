@@ -45,7 +45,7 @@ const FEATURES = [
   {
     icon: <Zap className="w-6 h-6" />,
     title: "Lightning Fast Apply",
-    desc: "One-click applications using your saved JobSphere profile. No re-entering data, ever.",
+    desc: "One-click applications using your saved HireArc profile. No re-entering data, ever.",
     badge: "2× faster",
     gradient: "from-amber-500/20 to-yellow-500/5",
     iconBg: "bg-amber-400/10 text-amber-400",
@@ -102,7 +102,7 @@ const TESTIMONIALS = [
     color: "from-rose-400 to-pink-500",
   },
   {
-    quote: "JobSphere's recruiter signals helped me negotiate a 20% higher salary.",
+    quote: "HireArc's recruiter signals helped me negotiate a 20% higher salary.",
     name: "James T.",
     role: "Fullstack Lead → Vercel",
     initials: "JT",

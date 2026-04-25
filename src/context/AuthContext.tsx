@@ -29,7 +29,7 @@ interface AuthContextValue {
 // ─── Context ──────────────────────────────────────────────────────────────────
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const STORAGE_KEY = "jobsphere_user";
+const STORAGE_KEY = "HireArc_user";
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const mockUser = {
         id: "1",
         name: "Hassaan Khalid",
-        email: "hassaankhalid@jobsphere.com",
+        email: "hassaankhalid@HireArc.com",
         role: "admin"
       };
       setUser(mockUser);

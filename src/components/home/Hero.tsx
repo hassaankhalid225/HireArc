@@ -5,7 +5,7 @@ import JobSphereGlobe from "./JobSphereGlobe";
 
 export default function Hero() {
   return (
-    <section className="relative pt-24 pb-12 overflow-hidden bg-[var(--bg-dark)] dark:bg-[#0A110D]">
+    <section className="relative min-h-screen overflow-hidden bg-[var(--bg-dark)] dark:bg-[#0A110D] flex flex-col justify-center">
       {/* ── Premium Background Architecture ── */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Architectural Grid */}
@@ -89,6 +89,18 @@ export default function Hero() {
                 </div>
               </div>
             </FadeIn>
+
+            {/* Trusted by — below search bar */}
+            <FadeIn delay={0.5}>
+              <div className="flex flex-wrap items-center gap-5 mt-6">
+                <span className="text-[11px] font-bold uppercase tracking-widest text-white/30">Trusted by:</span>
+                <div className="flex gap-6">
+                  {['Stripe', 'Linear', 'OpenAI', 'Vercel'].map(brand => (
+                    <span key={brand} className="text-sm font-bold font-headline tracking-tighter text-white/40 hover:text-white/70 transition-colors">{brand}</span>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
           </div>
 
           {/* Right Side: 3D Model */}
@@ -103,16 +115,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <FadeIn delay={0.6}>
-          <div className="flex flex-wrap justify-center lg:justify-start items-center gap-6 mt-16">
-            <span className="text-xs font-bold uppercase tracking-widest text-white/30">Trusted by innovators at:</span>
-            <div className="flex gap-8 opacity-40 grayscale contrast-125">
-              {['Stripe', 'Linear', 'OpenAI', 'Vercel'].map(brand => (
-                <span key={brand} className="text-sm font-bold font-headline tracking-tighter text-white">{brand}</span>
-              ))}
-            </div>
-          </div>
-        </FadeIn>
+
       </div>
     </section>
   );

@@ -125,7 +125,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-3 group cursor-pointer">
             <Logo className="w-10 h-10" isDark={isDark} />
             <span className={`text-xl font-extrabold font-headline tracking-tighter ${isDark ? 'text-white' : 'text-[var(--text-primary)]'}`}>
-              JobSphere
+              HireArc
             </span>
           </Link>
 

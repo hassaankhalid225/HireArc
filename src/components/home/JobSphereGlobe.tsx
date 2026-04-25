@@ -9,7 +9,7 @@ export default function JobSphereGlobe({ size = 400 }: { size?: number }) {
     const mount = mountRef.current;
     if (!mount) return;
 
-    // ── Clear ALL existing canvases (fixes React StrictMode double-mount) ──
+    // Clear any existing canvas (StrictMode fix)
     while (mount.firstChild) mount.removeChild(mount.firstChild);
 
     let cancelled = false;
@@ -51,29 +51,23 @@ export default function JobSphereGlobe({ size = 400 }: { size?: number }) {
     const dotMat  = new THREE.MeshBasicMaterial({ color: DOT_COLOR });
     const dotGeo  = new THREE.SphereGeometry(DOT_RADIUS, 8, 8);
 
-    // Latitude lines
     for (let i = 1; i < LAT_LINES; i++) {
       const lat = -90 + (180 / LAT_LINES) * i;
       const pts: THREE.Vector3[] = [];
       for (let j = 0; j <= 64; j++) pts.push(spherePt(lat, -180 + (360 / 64) * j));
       group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
     }
-
-    // Longitude lines
     for (let i = 0; i < LON_LINES; i++) {
       const lon = -180 + (360 / LON_LINES) * i;
       const pts: THREE.Vector3[] = [];
       for (let j = 0; j <= 64; j++) pts.push(spherePt(-90 + (180 / 64) * j, lon));
       group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
     }
-
-    // Dots
     for (let i = 1; i < LAT_LINES; i++) {
       const lat = -90 + (180 / LAT_LINES) * i;
       for (let j = 0; j < LON_LINES; j++) {
-        const lon  = -180 + (360 / LON_LINES) * j;
         const mesh = new THREE.Mesh(dotGeo, dotMat);
-        mesh.position.copy(spherePt(lat, lon));
+        mesh.position.copy(spherePt(lat, -180 + (360 / LON_LINES) * j));
         mesh.scale.setScalar(Math.max(0.5, Math.cos(lat * Math.PI / 180)));
         group.add(mesh);
       }
@@ -84,16 +78,48 @@ export default function JobSphereGlobe({ size = 400 }: { size?: number }) {
       group.add(p);
     });
 
-    // ── Drag Interaction ──────────────────────────────────
-    let isDragging = false;
-    let prev = { x: 0, y: 0 };
-    let autoRotate = true;
+    // ── Physics State ─────────────────────────────────────
+    let isDragging  = false;
+    let prev        = { x: 0, y: 0 };
+    // Velocity (inertia)
+    let velX        = 0;   // rotation.x velocity
+    let velY        = 0;   // rotation.y velocity
+    // Auto-rotate base speed
+    const AUTO_SPEED_Y = 0.004;
+    const AUTO_SPEED_X = 0.0006;
+    const DAMPING      = 0.92;   // how fast inertia fades (0=instant stop, 1=no stop)
+    const SENSITIVITY  = 0.007;  // drag sensitivity
+    let autoRotate     = true;
     let resumeTimer: ReturnType<typeof setTimeout> | null = null;
 
-    const onDown  = (x: number, y: number) => { isDragging = true; autoRotate = false; if (resumeTimer) clearTimeout(resumeTimer); prev = { x, y }; };
-    const onMove  = (x: number, y: number) => { if (!isDragging) return; group.rotation.x += (y - prev.y) * 0.005; group.rotation.y += (x - prev.x) * 0.005; prev = { x, y }; };
-    const onUp    = () => { isDragging = false; resumeTimer = setTimeout(() => { autoRotate = true; }, 2000); };
+    const onDown = (x: number, y: number) => {
+      isDragging = true;
+      autoRotate = false;
+      if (resumeTimer) clearTimeout(resumeTimer);
+      prev = { x, y };
+      velX = 0;
+      velY = 0;
+    };
 
+    const onMove = (x: number, y: number) => {
+      if (!isDragging) return;
+      const dx = x - prev.x;
+      const dy = y - prev.y;
+      // Set velocity directly from drag delta (feels snappy)
+      velY = dx * SENSITIVITY;
+      velX = dy * SENSITIVITY;
+      group.rotation.x += velX;
+      group.rotation.y += velY;
+      prev = { x, y };
+    };
+
+    const onUp = () => {
+      isDragging = false;
+      // Let inertia play out, then resume auto-rotate after it fades
+      resumeTimer = setTimeout(() => { autoRotate = true; }, 2500);
+    };
+
+    // Pointer event handlers
     const md = (e: MouseEvent) => onDown(e.clientX, e.clientY);
     const mm = (e: MouseEvent) => onMove(e.clientX, e.clientY);
     const ts = (e: TouchEvent) => onDown(e.touches[0].clientX, e.touches[0].clientY);
@@ -107,15 +133,28 @@ export default function JobSphereGlobe({ size = 400 }: { size?: number }) {
     canvas.addEventListener("touchmove",  tm, { passive: true });
     canvas.addEventListener("touchend",   onUp);
 
-    // ── Animation Loop ────────────────────────────────────
+    // ── Animation Loop with Physics ───────────────────────
     let animId: number;
     const animate = () => {
-      if (cancelled) return; // stop if cleaned up
+      if (cancelled) return;
       animId = requestAnimationFrame(animate);
-      if (autoRotate) {
-        group.rotation.y += 0.004;
-        group.rotation.x += 0.0006;
+
+      if (isDragging) {
+        // While dragging: velocity is set by onMove, no damping yet
+      } else if (autoRotate) {
+        // Auto-rotate: blend inertia into auto-speed smoothly
+        velY += (AUTO_SPEED_Y - velY) * 0.05;
+        velX += (AUTO_SPEED_X - velX) * 0.05;
+        group.rotation.y += velY;
+        group.rotation.x += velX;
+      } else {
+        // Released: apply inertia with damping
+        velX *= DAMPING;
+        velY *= DAMPING;
+        group.rotation.x += velX;
+        group.rotation.y += velY;
       }
+
       renderer.render(scene, camera);
     };
     animate();

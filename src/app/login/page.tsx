@@ -15,7 +15,7 @@ export default function LoginPage() {
             <span className="text-white font-bold text-xl">JS</span>
           </div>
           <h1 className="text-2xl font-bold font-headline mb-2">Welcome Back</h1>
-          <p className="text-[var(--text-secondary)] text-sm">Sign in to continue to JobSphere</p>
+          <p className="text-[var(--text-secondary)] text-sm">Sign in to continue to HireArc</p>
         </div>
 
         {/* Form Section */}

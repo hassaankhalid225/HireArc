@@ -13,7 +13,7 @@ const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-body" });
 const dmMono = DM_Mono({ weight: "400", subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-  title: "JobSphere — Every Job. One Place.",
+  title: "HireArc — Every Job. One Place.",
   description:
     "Aggregating 100,000+ jobs from top company job boards. Find your next career move with zero friction.",
 };

@@ -146,7 +146,7 @@ export default function CompanyProfile() {
                   ))
                 ) : (
                   <div className="p-8 rounded-2xl bg-gray-50 dark:bg-white/5 border border-dashed border-[var(--border)] text-center">
-                    <p className="text-[var(--text-secondary)]">No active positions currently listed on JobSphere.</p>
+                    <p className="text-[var(--text-secondary)]">No active positions currently listed on HireArc.</p>
                   </div>
                 )}
               </StaggerContainer>

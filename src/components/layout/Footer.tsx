@@ -14,7 +14,7 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-8 group cursor-pointer">
               <Logo className="w-10 h-10" />
               <span className="text-2xl font-extrabold font-headline tracking-tighter text-white">
-                JobSphere
+                HireArc
               </span>
             </div>
             <p className="text-white/40 text-[15px] leading-relaxed max-w-[300px] font-medium">
@@ -56,7 +56,7 @@ export default function Footer() {
 
         <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-xs font-bold text-white/20 uppercase tracking-widest">
-            &copy; {new Date().getFullYear()} JobSphere Premium. All rights reserved.
+            &copy; {new Date().getFullYear()} HireArc Premium. All rights reserved.
           </p>
           <div className="flex gap-8">
             {["Twitter", "LinkedIn", "GitHub"].map(social => (

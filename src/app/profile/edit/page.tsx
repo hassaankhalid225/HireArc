@@ -162,7 +162,7 @@ export default function EditProfilePage() {
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
                   <input
                     type="email"
-                    defaultValue="hassaankhalid@jobsphere.com"
+                    defaultValue="hassaankhalid@HireArc.com"
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
                   />
                 </div>

@@ -1,4 +1,6 @@
 "use client";
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Target, Globe, Users, Briefcase, Building2, TrendingUp, CheckCircle2, ArrowRight, Rocket } from "lucide-react";
 import { CountUp } from "@/components/ui/CountUp";
 import { FadeIn } from "@/components/ui/fade-in";
@@ -368,5 +370,4 @@ function TestimonialCarousel() {
   );
 }
 
-import { motion, AnimatePresence } from "framer-motion";
-import React from "react";
+

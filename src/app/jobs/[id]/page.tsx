@@ -28,7 +28,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
               
               <div className="flex gap-6 items-center">
-                <div className="w-20 h-20 rounded-xl bg-white border border-[var(--border)] flex items-center justify-center flex-shrink-0 shadow-sm">
+                <div className="w-20 h-20 rounded-xl bg-white dark:bg-white/5 border border-[var(--border)] flex items-center justify-center flex-shrink-0 shadow-premium-sm">
                   {/* Placeholder for Airbnb Logo */}
                   <span className="text-3xl font-bold text-red-500">A</span>
                 </div>
@@ -205,15 +205,16 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Similar Job Cards */}
             {[
               { title: "Senior Product Engineer", company: "Dropbox • Remote", tag: "FULL-TIME", salary: "$170k - $220k", icon: "📦" },
               { title: "Staff Backend Engineer", company: "Stripe • Seattle, WA", tag: "HYBRID", salary: "$200k - $260k", icon: "S" },
               { title: "Senior Systems Engineer", company: "Slack • New York, NY", tag: "FULL-TIME", salary: "$160k - $210k", icon: "💬" }
             ].map((job, i) => (
-              <Card key={i} className="hover:shadow-md transition-shadow border-[var(--border)]">
+              <Card key={i} className="hover:shadow-premium-sm transition-all duration-300 border-[var(--border)] bg-white dark:bg-[var(--bg-card)] group">
                 <CardContent className="p-6">
                   <div className="flex gap-3 mb-4">
-                    <div className="w-10 h-10 rounded bg-[var(--bg-base)] border border-[var(--border)] flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                    <div className="w-10 h-10 rounded-lg bg-[var(--bg-base)] border border-[var(--border)] flex items-center justify-center flex-shrink-0 text-xl font-bold group-hover:scale-110 transition-transform">
                       {job.icon}
                     </div>
                     <div>
@@ -222,10 +223,10 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                     </div>
                   </div>
                   <div className="flex gap-2 mb-4">
-                    <Badge variant="secondary" className="text-[10px] bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 py-0.5">{job.tag}</Badge>
-                    <Badge variant="secondary" className="text-[10px] bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300 py-0.5">{job.salary}</Badge>
+                    <Badge variant="secondary" className="text-[10px] bg-blue-500/10 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300 py-0.5 border-none font-bold">{job.tag}</Badge>
+                    <Badge variant="secondary" className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300 py-0.5 border-none font-bold">{job.salary}</Badge>
                   </div>
-                  <Button variant="outline" className="w-full h-9 text-xs font-semibold bg-[var(--bg-base)] hover:bg-[var(--border)] border-none">
+                  <Button variant="outline" className="w-full h-9 text-xs font-bold bg-[var(--bg-base)] hover:bg-[var(--border)] border-none transition-colors">
                     View Details
                   </Button>
                 </CardContent>

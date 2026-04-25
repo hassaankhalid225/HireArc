@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "@/components/ui/Logo";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -10,10 +11,12 @@ export default function Footer() {
       <div className="max-w-[1400px] mx-auto px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
           <div className="space-y-8">
-            <Link href="/" className="flex items-center gap-3 text-3xl font-extrabold font-headline tracking-tighter">
-              <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-[var(--primary)] to-[var(--primary-light)]" />
-              <span>JobSphere</span>
-            </Link>
+            <div className="flex items-center gap-3 mb-8 group cursor-pointer">
+              <Logo className="w-10 h-10" />
+              <span className="text-2xl font-extrabold font-headline tracking-tighter text-white">
+                JobSphere
+              </span>
+            </div>
             <p className="text-white/40 text-[15px] leading-relaxed max-w-[300px] font-medium">
               Aggregating 100,000+ jobs from the world's most innovative company job boards. No noise, just your next big move.
             </p>

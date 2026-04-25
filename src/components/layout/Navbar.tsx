@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
+import { Logo } from "@/components/ui/Logo";
 import { 
   Sun, Moon, ChevronDown, Monitor, BarChart, Palette, 
   Megaphone, Shield, Database, Layout, Briefcase, Rocket, 
@@ -114,19 +115,16 @@ export default function Navbar() {
       } ${
         isDark
           ? "bg-transparent border-transparent"
-          : "bg-white/80 dark:bg-[#0F1713]/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5 shadow-sm"
+          : "bg-white/80 dark:bg-[#0F1713]/80 backdrop-blur-xl border-b border-[var(--border)] dark:border-white/5 shadow-sm"
       }`}
       ref={navRef}
     >
       <div className="max-w-[1400px] mx-auto px-8 w-full flex justify-between items-center relative">
         {/* ── Left: Logo + Nav Links ── */}
         <div className="flex items-center gap-16">
-          <Link
-            href="/"
-            className="flex items-center gap-3 text-2xl font-extrabold font-headline shrink-0 tracking-tighter"
-          >
-            <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-[var(--primary)] to-[var(--primary-light)] shadow-lg shadow-emerald-950/20 rotate-3" />
-            <span className={isDark ? "text-white" : "text-[var(--text-primary)]"}>
+          <Link href="/" className="flex items-center gap-3 group cursor-pointer">
+            <Logo className="w-10 h-10" isDark={isDark} />
+            <span className={`text-xl font-extrabold font-headline tracking-tighter ${isDark ? 'text-white' : 'text-[var(--text-primary)]'}`}>
               JobSphere
             </span>
           </Link>
@@ -181,7 +179,7 @@ export default function Navbar() {
                         {c.name}
                       </Link>
                     ))}
-                    <div className="border-t border-gray-100 dark:border-white/5 mt-2 pt-2">
+                    <div className="border-t border-[var(--border)] dark:border-white/5 mt-2 pt-2">
                       <Link
                         href="/companies"
                         className="block px-3 py-2 rounded-lg text-sm font-bold text-[var(--primary)] hover:bg-[#F0FDF4] dark:hover:bg-white/5 transition-colors"
@@ -251,7 +249,7 @@ export default function Navbar() {
 
               {activeDropdown === "language" && (
                 <div className={`${dropdownCls} w-52 right-0`}>
-                  <div className="px-4 py-3 border-b border-gray-100 dark:border-white/5">
+                  <div className="px-4 py-3 border-b border-[var(--border)] dark:border-white/5">
                     <p className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
                       Select Language
                     </p>
@@ -301,7 +299,7 @@ export default function Navbar() {
 
               {activeDropdown === "notifications" && (
                 <div className={`${dropdownCls} w-80`}>
-                  <div className="px-4 py-3 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                  <div className="px-4 py-3 border-b border-[var(--border)] dark:border-white/5 flex items-center justify-between">
                     <p className="text-sm font-bold text-[var(--text-primary)]">Notifications</p>
                     <span className="text-xs font-medium text-[var(--primary)] bg-[#F0FDF4] dark:bg-white/10 px-2 py-0.5 rounded-full">
                       {unreadCount} new
@@ -322,7 +320,7 @@ export default function Navbar() {
                       </button>
                     ))}
                   </div>
-                  <div className="px-4 py-2.5 border-t border-gray-100 dark:border-white/5">
+                  <div className="px-4 py-2.5 border-t border-[var(--border)] dark:border-white/5">
                     <Link
                       href="/notifications"
                       className="text-xs font-bold text-[var(--primary)] hover:underline"
@@ -363,7 +361,7 @@ export default function Navbar() {
               {activeDropdown === "user" && (
                 <div className={`${dropdownCls} w-60`}>
                   {/* User info */}
-                  <div className="px-4 py-3.5 border-b border-gray-100 dark:border-white/5 flex items-center gap-3">
+                  <div className="px-4 py-3.5 border-b border-[var(--border)] dark:border-white/5 flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                       {user?.name?.split(" ").map(n => n[0]).join("") || "HK"}
                     </div>
@@ -374,7 +372,7 @@ export default function Navbar() {
                   </div>
 
                   {/* Notifications mini */}
-                  <div className="px-4 py-2.5 border-b border-gray-100 dark:border-white/5">
+                  <div className="px-4 py-2.5 border-b border-[var(--border)] dark:border-white/5">
                     <div className="flex items-center justify-between mb-1.5">
                       <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Notifications</p>
                       {unreadCount > 0 && (
@@ -420,7 +418,7 @@ export default function Navbar() {
                   </div>
 
                   {/* Sign out */}
-                  <div className="border-t border-gray-100 dark:border-white/5 px-2 pb-2 pt-1">
+                  <div className="border-t border-[var(--border)] dark:border-white/5 px-2 pb-2 pt-1">
                     <button
                       className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                       onClick={() => {

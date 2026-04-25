@@ -147,7 +147,7 @@ export default function CompaniesPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-6 border-t border-gray-100 dark:border-white/5">
+                    <div className="flex items-center justify-between pt-6 border-t border-[var(--border)] dark:border-white/5">
                       <div className="flex items-center gap-2">
                         <span className="text-lg font-bold text-[var(--text-primary)]">{company.roles}</span>
                         <span className="text-sm text-[var(--text-muted)]">Open Roles</span>

@@ -6,25 +6,41 @@
 
 :root {
   /* ── Premium Color Palette (Deep Forest & Mint) ── */
-  --primary: #2D4A3E;        /* Deep Forest */
+  --primary: #2D4A3E;
+  /* Deep Forest */
   --primary-rgb: 45, 74, 62;
   --primary-dark: #1A2E26;
   --primary-light: #4A6D5D;
-  --accent: #94B49F;         /* Sage Green */
-  --mint: #E8F5EE;           /* Light Mint */
+  --accent: #94B49F;
+  /* Sage Green */
+  --mint: #E8F5EE;
+  /* Light Mint */
   --success: #10B981;
   --warning: #F59E0B;
-  
+
   /* Neutral scale - cleaner and more professional */
-  --bg-base: #F3F9F6;        /* Ultra Light Mint - Better for card separation */
+  --bg-base: #F3F9F6;
+  /* Ultra Light Mint */
   --bg-card: #FFFFFF;
   --bg-dark: #1A2E26;
-  --text-primary: #111827;   /* Slate 900 */
-  --text-secondary: #374151; /* Slate 700 - Darker for visibility */
-  --text-muted: #6B7280;     /* Slate 500 */
-  --border: #E5E7EB;
-  --border-hover: #D1D5DB;
+  --text-primary: #111827;
+  /* Slate 900 */
+  --text-secondary: #374151;
+  /* Slate 700 */
+  --text-muted: #6B7280;
+  /* Slate 500 */
+  --border: #D1D5DB;
+  /* Gray 300 - Darker for better visibility */
+  --border-hover: #9CA3AF;
+  /* Gray 400 */
   --ring: #2D4A3E;
+
+  /* ── Premium Shadows Refined for Light Mode ── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --shadow-premium-sm: 0 10px 20px -5px rgba(45, 74, 62, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --shadow-premium: 0 25px 50px -12px rgba(45, 74, 62, 0.15), 0 15px 25px -10px rgba(0, 0, 0, 0.1);
 
   /* shadcn compat - mapping to HEX for reliability */
   --background: 0 0% 100%;
@@ -46,7 +62,8 @@
 }
 
 .dark {
-  --bg-base: #0F1713;        /* Black Forest */
+  --bg-base: #0F1713;
+  /* Black Forest */
   --bg-card: #15221B;
   --bg-dark: #0A110D;
   --text-primary: #F9FAFB;
@@ -54,7 +71,7 @@
   --text-muted: #6B7280;
   --border: #23372D;
   --border-hover: #314C3E;
-  
+
   --background: 153 20% 8%;
   --foreground: 210 40% 98%;
   --card: 153 20% 10%;
@@ -97,7 +114,12 @@
     @apply transition-colors duration-300;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-headline);
     font-weight: 800;
     letter-spacing: -0.03em;
@@ -193,7 +215,7 @@
   --color-blue-800: #2E4633;
   --color-blue-900: #1C261F;
   --color-blue-950: #111A13;
-  
+
   --color-sky-50: #F8F9F6;
   --color-sky-100: #E1E5D5;
   --color-sky-200: #D0D8C3;
@@ -258,6 +280,9 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  --shadow-premium-sm: var(--shadow-premium-sm);
+  --shadow-premium: var(--shadow-premium);
 }
 
 .dark {

@@ -2,7 +2,7 @@
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
 import { 
   Users, Mail, MapPin, Building, Calendar, Edit2, Shield, 
-  Link as LinkIcon, Globe, Twitter, Award, Briefcase, GraduationCap, Share2 
+  Link as LinkIcon, Globe, Award, Briefcase, GraduationCap, Share2 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

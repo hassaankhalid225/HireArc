@@ -267,84 +267,106 @@ export default function StatsSection() {
 }
 
 function TestimonialCarousel() {
-  const [activeIndex, setActiveIndex] = React.useState(2);
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [direction, setDirection] = React.useState(0);
 
-  const next = () => setActiveIndex((prev) => (prev + 1) % TESTIMONIALS.length);
-  const prev = () => setActiveIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
+  const next = () => {
+    setDirection(1);
+    setActiveIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+  };
+  const prev = () => {
+    setDirection(-1);
+    setActiveIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
+  };
 
   return (
-    <div className="relative">
-      <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 px-4 overflow-visible">
-        {TESTIMONIALS.map((t, i) => {
-          // Calculate distance from active index to determine scale/opacity
-          const diff = (i - activeIndex + TESTIMONIALS.length) % TESTIMONIALS.length;
-          const distance = diff > TESTIMONIALS.length / 2 ? TESTIMONIALS.length - diff : diff;
-          
-          const isActive = distance === 0;
-          const isNear = distance === 1;
-          const isFar = distance === 2;
-          const isVisible = distance <= 2; // Show 5 items (2 left, 1 center, 2 right)
+    <div className="relative max-w-full overflow-hidden py-10 px-4">
+      <div className="relative flex justify-center items-center h-[450px]">
+        <AnimatePresence initial={false} mode="popLayout">
+          {[-2, -1, 0, 1, 2].map((offset) => {
+            const index = (activeIndex + offset + TESTIMONIALS.length) % TESTIMONIALS.length;
+            const t = TESTIMONIALS[index];
+            const isActive = offset === 0;
+            const isNear = Math.abs(offset) === 1;
 
-          return (
-            <motion.div
-              key={i}
-              initial={false}
-              animate={{
-                scale: isActive ? 1.05 : isNear ? 0.9 : 0.75,
-                opacity: isActive ? 1 : isNear ? 0.4 : 0.15,
-                x: isActive ? 0 : (diff < TESTIMONIALS.length / 2 ? 10 : -10) * distance,
-                filter: isActive ? "blur(0px)" : isNear ? "blur(1px)" : "blur(4px)",
-                display: isVisible ? "block" : "none"
-              }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className={`relative w-full max-w-[380px] shrink-0 bg-white/[0.02] border border-white/10 rounded-[32px] p-8 md:p-10 shadow-2xl transition-all duration-500 ${isActive ? 'z-30 bg-white/[0.06] border-emerald-500/40' : isNear ? 'z-20' : 'z-10'}`}
-            >
-              {isActive && (
-                <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-500/30 to-transparent rounded-[32px] blur opacity-60" />
-              )}
-              
-              <div className="relative z-10">
-                <div className="flex gap-1.5 mb-6">
-                  {[...Array(5)].map((_, s) => (
-                    <div key={s} className={`w-1 h-1 rounded-full ${isActive ? 'bg-emerald-400' : 'bg-white/20'}`} />
-                  ))}
-                </div>
-                <p className={`text-base md:text-lg font-medium italic leading-relaxed mb-10 ${isActive ? 'text-white' : 'text-white/40'}`}>
-                  "{t.quote}"
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${t.color} flex items-center justify-center text-white font-extrabold text-base shadow-xl`}>
-                    {t.initials}
+            return (
+              <motion.div
+                key={`${index}-${offset}`}
+                initial={{ 
+                  opacity: 0, 
+                  scale: 0.8, 
+                  x: direction > 0 ? (offset + 1) * 450 : (offset - 1) * 450,
+                  filter: "blur(10px)"
+                }}
+                animate={{
+                  opacity: isActive ? 1 : isNear ? 0.4 : 0,
+                  scale: isActive ? 1 : isNear ? 0.85 : 0.7,
+                  x: offset * (typeof window !== 'undefined' && window.innerWidth < 768 ? 320 : 420),
+                  filter: isActive ? "blur(0px)" : "blur(4px)",
+                  zIndex: isActive ? 30 : isNear ? 20 : 10,
+                  display: Math.abs(offset) > 2 ? "none" : "block"
+                }}
+                exit={{ 
+                  opacity: 0, 
+                  scale: 0.8, 
+                  x: direction > 0 ? (offset - 1) * 450 : (offset + 1) * 450,
+                  filter: "blur(10px)"
+                }}
+                transition={{ 
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 25,
+                  opacity: { duration: 0.3 }
+                }}
+                className={`absolute w-full max-w-[380px] bg-white/[0.03] border border-white/10 rounded-[40px] p-10 shadow-2xl backdrop-blur-xl ${isActive ? 'bg-white/[0.08] border-emerald-500/40' : ''}`}
+              >
+                {isActive && (
+                  <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-500/30 to-transparent rounded-[40px] blur-xl opacity-60" />
+                )}
+                
+                <div className="relative z-10">
+                  <div className="flex gap-1.5 mb-8">
+                    {[...Array(5)].map((_, s) => (
+                      <div key={s} className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-400' : 'bg-white/20'}`} />
+                    ))}
                   </div>
-                  <div className="min-w-0">
-                    <p className={`font-bold text-base tracking-tight truncate ${isActive ? 'text-white' : 'text-white/30'}`}>{t.name}</p>
-                    <p className={`text-xs font-medium truncate ${isActive ? 'text-white/30' : 'text-white/10'}`}>{t.role}</p>
+                  <p className={`text-lg md:text-xl font-medium italic leading-relaxed mb-12 ${isActive ? 'text-white' : 'text-white/40'}`}>
+                    "{t.quote}"
+                  </p>
+                  <div className="flex items-center gap-5 mt-auto">
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${t.color} flex items-center justify-center text-white font-black text-lg shadow-2xl`}>
+                      {t.initials}
+                    </div>
+                    <div className="min-w-0">
+                      <p className={`font-bold text-lg tracking-tight truncate ${isActive ? 'text-white' : 'text-white/30'}`}>{t.name}</p>
+                      <p className={`text-sm font-semibold truncate ${isActive ? 'text-emerald-400/60' : 'text-white/10'}`}>{t.role}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          );
-        })}
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
 
       {/* Navigation Controls */}
-      <div className="flex justify-center gap-8 mt-12">
+      <div className="flex justify-center gap-10 mt-16">
         <button 
           onClick={prev}
-          className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 transition-all hover:scale-110 active:scale-95 group"
+          className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 transition-all hover:scale-110 active:scale-95 group backdrop-blur-md"
         >
-          <ArrowRight className="w-5 h-5 rotate-180 text-white/40 group-hover:text-white transition-colors" />
+          <ArrowRight className="w-6 h-6 rotate-180 text-white/40 group-hover:text-white transition-colors" />
         </button>
         <button 
           onClick={next}
-          className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 transition-all hover:scale-110 active:scale-95 group"
+          className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/5 transition-all hover:scale-110 active:scale-95 group backdrop-blur-md"
         >
-          <ArrowRight className="w-5 h-5 text-white/40 group-hover:text-white transition-colors" />
+          <ArrowRight className="w-6 h-6 text-white/40 group-hover:text-white transition-colors" />
         </button>
       </div>
     </div>
   );
 }
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import React from "react";

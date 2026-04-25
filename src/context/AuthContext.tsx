@@ -46,16 +46,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (e) {
         localStorage.removeItem(STORAGE_KEY);
       }
-    } else {
-      // For demo purposes: Set a mock user if none exists
-      const mockUser = {
-        id: "1",
-        name: "Hassaan Khalid",
-        email: "hassaankhalid@HireArc.com",
-        role: "admin"
-      };
-      setUser(mockUser);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(mockUser));
     }
     setIsLoading(false);
   }, []);

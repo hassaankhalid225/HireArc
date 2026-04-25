@@ -1,7 +1,36 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
+import { useAuth } from "@/hooks";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      login({
+        id: Math.random().toString(36).substr(2, 9),
+        name: `${firstName} ${lastName}`,
+        email: email,
+        role: "user"
+      });
+      setIsLoading(false);
+      router.push("/dashboard");
+    }, 1000);
+  };
+
   return (
     <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center p-6 pt-24 pb-24">
       <div className="w-full max-w-[480px] bg-[var(--bg-card)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] overflow-hidden">
@@ -19,7 +48,7 @@ export default function SignupPage() {
 
         {/* Form Section */}
         <div className="p-8 pt-6">
-          <form className="space-y-5" action="#">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
@@ -27,8 +56,10 @@ export default function SignupPage() {
                 <input 
                   type="text" 
                   id="firstName" 
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   placeholder="John" 
-                  className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm"
+                  className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm text-black dark:text-white"
                   required
                 />
               </div>
@@ -37,8 +68,10 @@ export default function SignupPage() {
                 <input 
                   type="text" 
                   id="lastName" 
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   placeholder="Doe" 
-                  className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm"
+                  className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm text-black dark:text-white"
                   required
                 />
               </div>
@@ -49,8 +82,10 @@ export default function SignupPage() {
               <input 
                 type="email" 
                 id="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com" 
-                className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm"
+                className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm text-black dark:text-white"
                 required
               />
             </div>
@@ -60,15 +95,21 @@ export default function SignupPage() {
               <input 
                 type="password" 
                 id="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Create a strong password" 
-                className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm"
+                className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm text-black dark:text-white"
                 required
               />
               <p className="text-[12px] text-[var(--text-muted)] mt-1">Must be at least 8 characters long.</p>
             </div>
 
-            <button type="button" className="btn btn-primary w-full mt-2 h-12 text-base">
-              Create Account
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className="btn btn-primary w-full mt-2 h-12 text-base"
+            >
+              {isLoading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
 

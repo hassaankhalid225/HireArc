@@ -1,7 +1,34 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
+import { useAuth } from "@/hooks";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      login({
+        id: "1",
+        name: "Hassaan Khalid",
+        email: email,
+        role: "user"
+      });
+      setIsLoading(false);
+      router.push("/dashboard");
+    }, 1000);
+  };
+
   return (
     <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center p-6 pt-24">
       <div className="w-full max-w-[440px] bg-[var(--bg-card)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] overflow-hidden">
@@ -20,15 +47,17 @@ export default function LoginPage() {
 
         {/* Form Section */}
         <div className="p-8 pt-6">
-          <form className="space-y-5" action="#">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             
             <div className="space-y-1.5">
               <label htmlFor="email" className="block text-sm font-semibold text-[var(--text-primary)]">Email Address</label>
               <input 
                 type="email" 
                 id="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com" 
-                className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm"
+                className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm text-black dark:text-white"
                 required
               />
             </div>
@@ -41,15 +70,21 @@ export default function LoginPage() {
               <input 
                 type="password" 
                 id="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••" 
-                className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm"
+                className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm text-black dark:text-white"
                 required
               />
             </div>
 
-            <Link href="/dashboard" className="btn btn-primary w-full mt-2 h-12 text-base flex items-center justify-center">
-              Sign In
-            </Link>
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className="btn btn-primary w-full mt-2 h-12 text-base flex items-center justify-center"
+            >
+              {isLoading ? "Signing In..." : "Sign In"}
+            </button>
           </form>
 
           <div className="mt-8 relative flex items-center justify-center">

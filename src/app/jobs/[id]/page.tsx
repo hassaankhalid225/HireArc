@@ -1,3 +1,6 @@
+"use client";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +9,18 @@ import Image from "next/image";
 import { Building, MapPin, Clock, Bookmark, Check, Leaf, ExternalLink, Banknote, Briefcase, Star, ArrowRight } from "lucide-react";
 
 export default function JobDetailPage({ params }: { params: { id: string } }) {
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  const handleAuthAction = () => {
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+    // Proceed with action if authenticated
+    alert("Action triggered! API call can go here.");
+  };
+
   return (
     <div className="min-h-screen bg-[var(--bg-base)] pt-24 pb-20">
       
@@ -52,10 +67,10 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
               </div>
 
               <div className="flex gap-3 w-full md:w-auto">
-                <Button variant="outline" className="flex-1 md:flex-none border-[var(--primary)] text-[var(--primary)] hover:bg-blue-50 dark:hover:bg-blue-950 font-semibold h-11 px-6 gap-2">
+                <Button onClick={handleAuthAction} variant="outline" className="flex-1 md:flex-none border-[var(--primary)] text-[var(--primary)] hover:bg-blue-50 dark:hover:bg-blue-950 font-semibold h-11 px-6 gap-2">
                   <Bookmark className="w-4 h-4" /> Save Job
                 </Button>
-                <Button className="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 font-semibold h-11 px-8 text-white">
+                <Button onClick={handleAuthAction} className="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 font-semibold h-11 px-8 text-white">
                   Apply Now
                 </Button>
               </div>
@@ -146,11 +161,11 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                   By clicking "Apply Now" you will be redirected to Airbnb's official careers portal hosted on Greenhouse.
                 </p>
                 <div className="space-y-3">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold h-11 flex justify-between px-4">
+                  <Button onClick={handleAuthAction} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold h-11 flex justify-between px-4">
                     <span>Apply Now</span>
                     <ExternalLink className="w-4 h-4" />
                   </Button>
-                  <Button variant="outline" className="w-full border-[var(--border)] text-[var(--text-primary)] hover:bg-[var(--bg-base)] font-semibold h-11 flex items-center justify-center gap-2">
+                  <Button onClick={handleAuthAction} variant="outline" className="w-full border-[var(--border)] text-[var(--text-primary)] hover:bg-[var(--bg-base)] font-semibold h-11 flex items-center justify-center gap-2">
                     <Bookmark className="w-4 h-4" /> Save this job
                   </Button>
                 </div>

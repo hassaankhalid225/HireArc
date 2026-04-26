@@ -284,7 +284,7 @@ export default function Navbar() {
           )}
 
           {/* ── Notifications ── */}
-          {mounted && (
+          {mounted && isAuthenticated && (
             <div className="relative">
               <button
                 onClick={() => toggleDropdown("notifications")}

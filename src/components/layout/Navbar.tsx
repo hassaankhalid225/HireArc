@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Logo } from "@/components/ui/Logo";
+import HireArcGlobe from "@/components/home/HireArcGlobe";
 import { 
   Sun, Moon, ChevronDown, Monitor, BarChart, Palette, 
   Megaphone, Shield, Database, Layout, Briefcase, Rocket, 
@@ -122,8 +122,10 @@ export default function Navbar() {
       <div className="max-w-[1400px] mx-auto px-8 w-full flex justify-between items-center relative">
         {/* ── Left: Logo + Nav Links ── */}
         <div className="flex items-center gap-16">
-          <Link href="/" className="flex items-center gap-3 group cursor-pointer">
-            <Logo className="w-10 h-10" isDark={isDark} />
+          <Link href="/" className="flex items-center gap-2 group cursor-pointer">
+            <div className="w-10 h-10 flex items-center justify-center">
+              <HireArcGlobe size={40} />
+            </div>
             <span className={`text-xl font-extrabold font-headline tracking-tighter ${isDark ? 'text-white' : 'text-[var(--text-primary)]'}`}>
               HireArc
             </span>

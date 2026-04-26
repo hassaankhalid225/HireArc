@@ -1,13 +1,19 @@
 // ─── Job Types ────────────────────────────────────────────────────────────────
 export interface Job {
-  id: number;
+  id?: number;
+  job_id: string;
   title: string;
   company: string;
   location: string;
-  type: string;
-  salary: string;
-  isRemote: boolean;
-  posted: string;
+  type?: string;
+  job_type?: string;
+  salary?: string;
+  salary_min?: number;
+  salary_max?: number;
+  isRemote?: boolean;
+  is_remote?: boolean;
+  posted?: string;
+  posted_at?: string;
   source: string;
   description?: string;
   tags?: string[];

@@ -1,31 +1,117 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Calendar, Send, Users, Bookmark, Eye, ArrowUp, ArrowDown, Minus, MoreVertical, Sparkles } from "lucide-react";
+import { 
+  Calendar, Send, Users, Bookmark, Eye, 
+  ArrowUp, ArrowDown, Minus, MoreVertical, Sparkles,
+  Loader2, Briefcase
+} from "lucide-react";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
+import { useAuth } from "@/context/AuthContext";
+import { dashboardService, DashboardStats } from "@/services/dashboard.service";
+import { jobsService } from "@/services/jobs.service";
+import { Job } from "@/types";
 
 export default function DashboardPage() {
+  const { user } = useAuth();
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [recommendedJobs, setRecommendedJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [statsData, jobsData] = await Promise.all([
+          dashboardService.getStats(),
+          jobsService.getJobs({ pageSize: 2 })
+        ]);
+        setStats(statsData);
+        setRecommendedJobs(jobsData.data || []);
+      } catch (error) {
+        console.error("Failed to load dashboard data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <Loader2 className="w-10 h-10 animate-spin text-[var(--primary)]" />
+        <p className="text-[var(--text-secondary)] font-medium animate-pulse">Loading your dashboard...</p>
+      </div>
+    );
+  }
+
+  const statCards = [
+    { 
+      title: "Total Applications", 
+      value: stats?.total_applications || 0, 
+      change: "+0%", 
+      color: "text-[#678D63]", 
+      bg: "bg-[#678D63]/10", 
+      icon: <Send className="w-5 h-5" />,
+      neutral: true
+    },
+    { 
+      title: "Interviews", 
+      value: stats?.interviews || 0, 
+      change: "+0%", 
+      color: "text-[#166534]", 
+      bg: "bg-[#166534]/10", 
+      icon: <Users className="w-5 h-5" />,
+      neutral: true
+    },
+    { 
+      title: "Saved Jobs", 
+      value: stats?.saved_jobs || 0, 
+      change: "+0%", 
+      color: "text-[#88A682]", 
+      bg: "bg-[#88A682]/10", 
+      icon: <Bookmark className="w-5 h-5" />, 
+      neutral: true 
+    },
+    { 
+      title: "Profile Views", 
+      value: stats?.profile_views || 0, 
+      change: "+0%", 
+      color: "text-[#4A6E46]", 
+      bg: "bg-[#4A6E46]/10", 
+      icon: <Eye className="w-5 h-5" />, 
+      neutral: true 
+    }
+  ];
+
   return (
-    <>
+    <div className="space-y-8">
       {/* Welcome Area */}
       <FadeIn direction="down" delay={0.1}>
-        <div>
-          <h1 className="text-3xl font-bold font-headline text-[var(--text-primary)] mb-4">Welcome back, Alex!</h1>
-          <div className="inline-flex items-center gap-2 bg-[#678D63]/10 text-[#166534] dark:text-green-400 px-4 py-2 rounded-xl text-sm font-bold border-2 border-[#678D63]/20">
-            <Calendar className="w-4 h-4" /> You have 3 interview requests this week.
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold font-headline text-[var(--text-primary)] mb-2">
+              Welcome back, {user?.name?.split(' ')[0] || 'User'}!
+            </h1>
+            <p className="text-[var(--text-secondary)] font-medium">
+              Here's what's happening with your job search today.
+            </p>
           </div>
+          {stats?.interviews && stats.interviews > 0 ? (
+            <div className="inline-flex items-center gap-2 bg-[#678D63]/10 text-[#166534] dark:text-green-400 px-4 py-2 rounded-xl text-sm font-bold border-2 border-[#678D63]/20">
+              <Calendar className="w-4 h-4" /> You have {stats.interviews} interview requests this week.
+            </div>
+          ) : null}
         </div>
       </FadeIn>
 
       {/* Stat Cards */}
       <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { title: "Total Applications", value: "45", change: "+12%", color: "text-[#678D63]", bg: "bg-[#678D63]/10", icon: <Send className="w-5 h-5" /> },
-          { title: "Interviews", value: "12", change: "+5%", color: "text-[#166534]", bg: "bg-[#166534]/10", icon: <Users className="w-5 h-5" /> },
-          { title: "Saved Jobs", value: "28", change: "0%", color: "text-[#88A682]", bg: "bg-[#88A682]/10", icon: <Bookmark className="w-5 h-5" />, neutral: true },
-          { title: "Profile Views", value: "342", change: "-2%", color: "text-[#4A6E46]", bg: "bg-[#4A6E46]/10", icon: <Eye className="w-5 h-5" />, negative: true }
-        ].map((stat, i) => (
+        {statCards.map((stat, i) => (
           <StaggerItem key={i}>
             <Card className="border-2 border-[var(--border)] shadow-sm hover:shadow-premium-sm transition-all hover:-translate-y-1 duration-300 bg-white dark:bg-white/5">
               <CardContent className="p-5 flex flex-col justify-between h-full">
@@ -33,8 +119,8 @@ export default function DashboardPage() {
                   <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.bg} ${stat.color}`}>
                     {stat.icon}
                   </div>
-                  <span className={`flex items-center gap-1 text-xs font-bold ${stat.negative ? 'text-red-500' : stat.neutral ? 'text-gray-400' : 'text-[#678D63]'}`}>
-                    {stat.change} {stat.negative ? <ArrowDown className="w-3 h-3" /> : stat.neutral ? <Minus className="w-3 h-3" /> : <ArrowUp className="w-3 h-3" />}
+                  <span className={`flex items-center gap-1 text-xs font-bold ${stat.neutral ? 'text-gray-400' : 'text-[#678D63]'}`}>
+                    {stat.change} <Minus className="w-3 h-3" />
                   </span>
                 </div>
                 <div>
@@ -48,128 +134,126 @@ export default function DashboardPage() {
       </StaggerContainer>
 
       {/* Bottom Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Left Column (Tables) */}
-        <div className="lg:col-span-2 space-y-6">
+        {/* Left Column (Tables & Activity) */}
+        <div className="lg:col-span-2 space-y-8">
           
           {/* Application Status */}
-          <FadeIn delay={0.4} direction="up">
-            <Card className="shadow-sm bg-white dark:bg-white/5 overflow-hidden">
-              <CardContent className="p-0">
-                <div className="p-6 border-b-2 border-[var(--border)] flex justify-between items-center">
-                  <h3 className="text-lg font-bold font-headline">Application Status</h3>
-                  <button className="text-sm font-bold text-[var(--primary)] hover:underline">View All</button>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm text-left">
-                    <thead className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-base)]">
-                      <tr>
-                        <th className="px-6 py-4 font-bold">Company</th>
-                        <th className="px-6 py-4 font-bold">Position</th>
-                        <th className="px-6 py-4 font-bold">Status</th>
-                        <th className="px-6 py-4 font-bold">Date</th>
-                        <th className="px-6 py-4 font-bold text-right"></th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y-2 divide-[var(--border)]">
-                      {[
-                        { company: "Google", pos: "Senior UX Designer", status: "Interviewing", statusColor: "text-[#678D63] bg-[#678D63]/10", date: "Oct 24, 2023", initial: "G" },
-                        { company: "Figma", pos: "Product Lead", status: "Applied", statusColor: "text-green-600 bg-green-50 dark:bg-green-900/20", date: "Oct 22, 2023", initial: "F" },
-                        { company: "Stripe", pos: "Visual Designer", status: "Closed", statusColor: "text-gray-500 bg-gray-100 dark:bg-gray-800", date: "Oct 18, 2023", initial: "S" },
-                        { company: "Airbnb", pos: "UX Architect", status: "Interviewing", statusColor: "text-[#678D63] bg-[#678D63]/10", date: "Oct 15, 2023", initial: "A" }
-                      ].map((app, i) => (
-                        <tr key={i} className="hover:bg-[var(--bg-base)] transition-colors group">
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded bg-[var(--bg-base)] border-2 border-[var(--border)] flex items-center justify-center font-bold text-xs group-hover:border-[var(--primary)] transition-colors">{app.initial}</div>
-                              <span className="font-semibold group-hover:text-[var(--primary)] transition-colors">{app.company}</span>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-[var(--text-secondary)] font-medium">{app.pos}</td>
-                          <td className="px-6 py-4">
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${app.statusColor}`}>
-                              {app.status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-[var(--text-secondary)]">{app.date}</td>
-                          <td className="px-6 py-4 text-right text-[var(--text-muted)] cursor-pointer hover:text-[var(--text-primary)] flex justify-end">
-                            <MoreVertical className="w-4 h-4" />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-          </FadeIn>
-
-          {/* Recent Activity */}
-          <FadeIn delay={0.5} direction="up">
-            <Card className="shadow-sm bg-white dark:bg-white/5">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-bold font-headline mb-6">Recent Activity</h3>
-                <div className="relative border-l-2 border-[var(--border)] ml-3 pl-6 space-y-6">
-                  <div className="relative group cursor-pointer">
-                    <div className="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-[var(--primary)] border-2 border-white dark:border-[var(--bg-card)] group-hover:scale-125 transition-transform shadow-sm"></div>
-                    <p className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--primary)] transition-colors">New message from Recruiting Team at Google</p>
-                    <p className="text-sm text-[var(--text-secondary)] mt-1">"Hi Alex, we'd like to schedule your next round of interviews..."</p>
-                    <span className="text-xs text-[var(--text-muted)] mt-2 block font-medium">2 hours ago</span>
+          {stats?.recent_applications && stats.recent_applications.length > 0 ? (
+            <FadeIn delay={0.4} direction="up">
+              <Card className="shadow-sm bg-white dark:bg-white/5 overflow-hidden border-2 border-[var(--border)]">
+                <CardContent className="p-0">
+                  <div className="p-6 border-b-2 border-[var(--border)] flex justify-between items-center">
+                    <h3 className="text-lg font-bold font-headline">Application Status</h3>
+                    <Link href="/dashboard/applied-jobs" className="text-sm font-bold text-[var(--primary)] hover:underline">View All</Link>
                   </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                      <thead className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-base)]">
+                        <tr>
+                          <th className="px-6 py-4 font-bold">Company</th>
+                          <th className="px-6 py-4 font-bold">Position</th>
+                          <th className="px-6 py-4 font-bold">Status</th>
+                          <th className="px-6 py-4 font-bold">Date</th>
+                          <th className="px-6 py-4 font-bold text-right"></th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y-2 divide-[var(--border)]">
+                        {stats.recent_applications.map((app: any, i: number) => (
+                          <tr key={i} className="hover:bg-[var(--bg-base)] transition-colors group">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded bg-[var(--bg-base)] border-2 border-[var(--border)] flex items-center justify-center font-bold text-xs group-hover:border-[var(--primary)] transition-colors">
+                                  {app.company.charAt(0)}
+                                </div>
+                                <span className="font-semibold group-hover:text-[var(--primary)] transition-colors">{app.company}</span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 text-[var(--text-secondary)] font-medium">{app.title}</td>
+                            <td className="px-6 py-4">
+                              <span className={`px-3 py-1 rounded-full text-xs font-bold bg-[#678D63]/10 text-[#166534]`}>
+                                {app.status}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-[var(--text-secondary)]">{new Date(app.date).toLocaleDateString()}</td>
+                            <td className="px-6 py-4 text-right text-[var(--text-muted)] cursor-pointer hover:text-[var(--text-primary)] flex justify-end">
+                              <MoreVertical className="w-4 h-4" />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </FadeIn>
+          ) : (
+            <FadeIn delay={0.4} direction="up">
+              <Card className="shadow-sm bg-white dark:bg-white/5 p-8 border-2 border-dashed border-[var(--border)] flex flex-col items-center justify-center text-center">
+                <div className="w-16 h-16 bg-[var(--bg-base)] rounded-full flex items-center justify-center mb-4">
+                  <Briefcase className="w-8 h-8 text-[var(--text-muted)]" />
                 </div>
-              </CardContent>
-            </Card>
-          </FadeIn>
+                <h3 className="text-xl font-bold mb-2">No applications yet</h3>
+                <p className="text-[var(--text-secondary)] mb-6 max-w-md">Start applying to jobs to track your progress here. Your application status will appear once you've applied.</p>
+                <Link href="/jobs">
+                  <Button className="bg-[var(--primary)] text-white px-8">Find Jobs</Button>
+                </Link>
+              </Card>
+            </FadeIn>
+          )}
 
+          {/* Profile Strength - Moved here for better mobile flow if desired, or keep as card */}
         </div>
 
         {/* Right Column (Sidebar cards) */}
-        <div className="space-y-6">
+        <div className="space-y-8">
           
           {/* Recommended for You */}
-          <FadeIn delay={0.6} direction="left">
-            <Card className="shadow-sm bg-white dark:bg-white/5">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-bold font-headline mb-6">Recommended for You</h3>
-                <div className="space-y-4">
-                  
-                  {/* Rec Job 1 */}
-                  <div className="p-4 border-2 border-[var(--border)] rounded-xl hover:border-[var(--primary)] transition-all duration-300 hover:shadow-premium-sm group bg-white dark:bg-transparent">
-                    <div className="flex gap-3 mb-3">
-                      <div className="w-8 h-8 bg-black rounded-lg flex flex-shrink-0"></div>
-                      <div>
-                        <h4 className="font-bold text-sm text-[var(--text-primary)] group-hover:text-[var(--primary)] transition-colors">Senior UI Designer</h4>
-                        <p className="text-xs text-[var(--text-secondary)] font-medium">Spotify • Remote</p>
+          {recommendedJobs.length > 0 ? (
+            <FadeIn delay={0.6} direction="left">
+              <Card className="shadow-sm bg-white dark:bg-white/5 border-2 border-[var(--border)]">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-bold font-headline mb-6 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-yellow-500" /> Recommended for You
+                  </h3>
+                  <div className="space-y-4">
+                    {recommendedJobs.map((job) => (
+                      <div key={job.job_id} className="p-4 border-2 border-[var(--border)] rounded-xl hover:border-[var(--primary)] transition-all duration-300 hover:shadow-premium-sm group bg-white dark:bg-transparent">
+                        <div className="flex gap-3 mb-3">
+                          <div className="w-10 h-10 bg-[var(--bg-base)] rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-[var(--primary)]">
+                            {job.company.charAt(0)}
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-sm text-[var(--text-primary)] group-hover:text-[var(--primary)] transition-colors line-clamp-1">{job.title}</h4>
+                            <p className="text-xs text-[var(--text-secondary)] font-medium">{job.company} • {job.location}</p>
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {job.salary_max && (
+                            <Badge variant="secondary" className="text-[10px] bg-[#678D63]/10 text-[#166534] dark:bg-green-900/30 dark:text-green-300 py-0.5 px-2 border-none font-bold">
+                              ${Math.round(job.salary_min!/1000)}k - ${Math.round(job.salary_max!/1000)}k
+                            </Badge>
+                          )}
+                          <Badge variant="secondary" className="text-[10px] bg-[#678D63]/5 text-[#678D63] dark:bg-green-900/10 dark:text-green-400 py-0.5 px-2 border-none font-bold">
+                            {job.job_type}
+                          </Badge>
+                        </div>
+                        <Link href={`/jobs/${job.job_id}`}>
+                          <Button className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white h-9 text-xs font-bold transition-all duration-300 rounded-lg active:scale-[0.98]">
+                            View Details
+                          </Button>
+                        </Link>
                       </div>
-                    </div>
-                    <div className="flex gap-2 mb-4">
-                      <Badge variant="secondary" className="text-[10px] bg-[#678D63]/10 text-[#166534] dark:bg-green-900/30 dark:text-green-300 py-0.5 px-2 border-none font-bold">$140k - $180k</Badge>
-                      <Badge variant="secondary" className="text-[10px] bg-[#678D63]/5 text-[#678D63] dark:bg-green-900/10 dark:text-green-400 py-0.5 px-2 border-none font-bold">Full-time</Badge>
-                    </div>
-                    <Button className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white h-9 text-xs font-bold transition-all duration-300 rounded-lg active:scale-[0.98]">Quick Apply</Button>
+                    ))}
                   </div>
-
-                  {/* Rec Job 2 */}
-                  <div className="p-4 border-2 border-[var(--border)] rounded-xl hover:border-[var(--primary)] transition-all duration-300 hover:shadow-premium-sm group bg-white dark:bg-transparent">
-                    <div className="flex gap-3 mb-3">
-                      <div className="w-8 h-8 bg-black rounded-lg flex flex-shrink-0"></div>
-                      <div>
-                        <h4 className="font-bold text-sm text-[var(--text-primary)] group-hover:text-[var(--primary)] transition-colors">Interaction Designer</h4>
-                        <p className="text-xs text-[var(--text-secondary)] font-medium">Netflix • Los Gatos, CA</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2 mb-4">
-                      <Badge variant="secondary" className="text-[10px] bg-[#678D63]/10 text-[#166534] dark:bg-green-900/30 dark:text-green-300 py-0.5 px-2 border-none font-bold">$160k - $210k</Badge>
-                      <Badge variant="secondary" className="text-[10px] bg-[#678D63]/5 text-[#678D63] dark:bg-green-900/10 dark:text-green-400 py-0.5 px-2 border-none font-bold">On-site</Badge>
-                    </div>
-                    <Button className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white h-9 text-xs font-bold transition-all duration-300 rounded-lg active:scale-[0.98]">Quick Apply</Button>
-                  </div>
-
-                </div>
-              </CardContent>
-            </Card>
-          </FadeIn>
+                  <Link href="/jobs" className="mt-6 block text-center text-sm font-bold text-[var(--primary)] hover:underline">
+                    Explore more jobs
+                  </Link>
+                </CardContent>
+              </Card>
+            </FadeIn>
+          ) : null}
 
           {/* Profile Strength */}
           <FadeIn delay={0.7} direction="up">
@@ -182,14 +266,14 @@ export default function DashboardPage() {
                   <h3 className="font-bold font-headline text-lg">Profile Strength</h3>
                   <Badge className="bg-white/20 hover:bg-white/30 text-white border-none font-bold transition-colors duration-300">Excellent</Badge>
                 </div>
-                <p className="text-sm text-green-100 mb-6">You're in the top 5% of designers this month.</p>
+                <p className="text-sm text-green-100 mb-6">Complete your profile to stand out to employers.</p>
                 
                 <div className="w-full bg-black/30 rounded-full h-2 mb-2">
                   <div className="bg-white h-2 rounded-full w-[92%]"></div>
                 </div>
                 <div className="flex justify-between text-xs text-green-200 font-medium">
                   <span>92% Complete</span>
-                  <a href="#" className="text-white hover:underline">Improve profile</a>
+                  <Link href="/profile" className="text-white hover:underline font-bold">Improve profile</Link>
                 </div>
               </CardContent>
             </Card>
@@ -197,6 +281,6 @@ export default function DashboardPage() {
 
         </div>
       </div>
-    </>
+    </div>
   );
 }

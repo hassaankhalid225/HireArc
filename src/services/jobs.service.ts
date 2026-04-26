@@ -18,7 +18,7 @@ export interface JobsFilter {
 }
 
 // ─── Mock ──────────────────────────────────────────────────────────────────────
-const USE_MOCK = true; // ← flip to false once real API is ready
+const USE_MOCK = false; // ← flip to false once real API is ready
 
 export const jobsService = {
   /** Fetch paginated job listings */
@@ -42,9 +42,19 @@ export const jobsService = {
         pagination: { page: 1, pageSize: data.length, total: data.length, totalPages: 1 },
       };
     }
-    return apiClient.get<ApiResponse<Job[]>>(
-      `/jobs?${new URLSearchParams(filter as Record<string, string>)}`
+    const response = await apiClient.get<any>(
+      `/search?${new URLSearchParams(filter as Record<string, string>)}`
     );
+    return {
+      success: true,
+      data: response.jobs,
+      pagination: {
+        page: response.page,
+        pageSize: response.limit,
+        total: response.total,
+        totalPages: response.total_pages,
+      },
+    };
   },
 
   /** Fetch a single job by ID */

@@ -106,7 +106,7 @@ export default function Navbar() {
 
   // Dropdown container style - UI/UX Pro Max Glassmorphism
   const dropdownCls =
-    "absolute top-[calc(100%+16px)] right-0 bg-white/95 dark:bg-[#15221B]/95 backdrop-blur-2xl border border-[var(--border)] dark:border-white/10 rounded-2xl shadow-premium overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300 z-[110]";
+    "absolute top-[calc(100%+16px)] right-0 bg-white/95 dark:bg-[#15221B]/95 backdrop-blur-2xl border-2 border-[var(--border)] dark:border-white/10 rounded-2xl shadow-premium overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300 z-[110]";
 
   return (
     <nav
@@ -115,7 +115,7 @@ export default function Navbar() {
       } ${
         isDark
           ? "bg-transparent border-transparent"
-          : "bg-white/80 dark:bg-[#0F1713]/80 backdrop-blur-xl border-b border-[var(--border)] dark:border-white/5 shadow-sm"
+          : "bg-white/80 dark:bg-[#0F1713]/80 backdrop-blur-xl border-b-2 border-[var(--border)] dark:border-white/5 shadow-sm"
       }`}
       ref={navRef}
     >
@@ -167,7 +167,7 @@ export default function Navbar() {
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "companies" ? "rotate-180" : ""}`} />
               </button>
               {activeDropdown === "companies" && (
-                <div className="absolute top-[calc(100%+20px)] left-0 w-64 bg-white dark:bg-[#1C261F] border border-[var(--border)] dark:border-white/10 rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-[calc(100%+20px)] left-0 w-64 bg-white dark:bg-[#1C261F] border-2 border-[var(--border)] dark:border-white/10 rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="grid grid-cols-1 gap-1">
                     {COMPANIES.map((c) => (
                       <Link
@@ -179,7 +179,7 @@ export default function Navbar() {
                         {c.name}
                       </Link>
                     ))}
-                    <div className="border-t border-[var(--border)] dark:border-white/5 mt-2 pt-2">
+                    <div className="border-t-2 border-[var(--border)] dark:border-white/5 mt-2 pt-2">
                       <Link
                         href="/companies"
                         className="block px-3 py-2 rounded-lg text-sm font-bold text-[var(--primary)] hover:bg-[#F0FDF4] dark:hover:bg-white/5 transition-colors"
@@ -209,7 +209,7 @@ export default function Navbar() {
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "categories" ? "rotate-180" : ""}`} />
               </button>
               {activeDropdown === "categories" && (
-                <div className="absolute top-[calc(100%+20px)] left-0 w-72 bg-white dark:bg-[#1C261F] border border-[var(--border)] dark:border-white/10 rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-[calc(100%+20px)] left-0 w-72 bg-white dark:bg-[#1C261F] border-2 border-[var(--border)] dark:border-white/10 rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="grid grid-cols-1 gap-1">
                     {CATEGORIES.map((cat) => (
                       <Link
@@ -249,7 +249,7 @@ export default function Navbar() {
 
               {activeDropdown === "language" && (
                 <div className={`${dropdownCls} w-52 right-0`}>
-                  <div className="px-4 py-3 border-b border-[var(--border)] dark:border-white/5">
+                  <div className="px-4 py-3 border-b-2 border-[var(--border)] dark:border-white/5">
                     <p className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
                       Select Language
                     </p>
@@ -299,7 +299,7 @@ export default function Navbar() {
 
               {activeDropdown === "notifications" && (
                 <div className={`${dropdownCls} w-80`}>
-                  <div className="px-4 py-3 border-b border-[var(--border)] dark:border-white/5 flex items-center justify-between">
+                  <div className="px-4 py-3 border-b-2 border-[var(--border)] dark:border-white/5 flex items-center justify-between">
                     <p className="text-sm font-bold text-[var(--text-primary)]">Notifications</p>
                     <span className="text-xs font-medium text-[var(--primary)] bg-[#F0FDF4] dark:bg-white/10 px-2 py-0.5 rounded-full">
                       {unreadCount} new
@@ -320,7 +320,7 @@ export default function Navbar() {
                       </button>
                     ))}
                   </div>
-                  <div className="px-4 py-2.5 border-t border-[var(--border)] dark:border-white/5">
+                  <div className="px-4 py-2.5 border-t-2 border-[var(--border)] dark:border-white/5">
                     <Link
                       href="/notifications"
                       className="text-xs font-bold text-[var(--primary)] hover:underline"
@@ -361,7 +361,7 @@ export default function Navbar() {
               {activeDropdown === "user" && (
                 <div className={`${dropdownCls} w-60`}>
                   {/* User info */}
-                  <div className="px-4 py-3.5 border-b border-[var(--border)] dark:border-white/5 flex items-center gap-3">
+                  <div className="px-4 py-3.5 border-b-2 border-[var(--border)] dark:border-white/5 flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                       {user?.name?.split(" ").map(n => n[0]).join("") || "HK"}
                     </div>
@@ -372,7 +372,7 @@ export default function Navbar() {
                   </div>
 
                   {/* Notifications mini */}
-                  <div className="px-4 py-2.5 border-b border-[var(--border)] dark:border-white/5">
+                  <div className="px-4 py-2.5 border-b-2 border-[var(--border)] dark:border-white/5">
                     <div className="flex items-center justify-between mb-1.5">
                       <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Notifications</p>
                       {unreadCount > 0 && (
@@ -399,6 +399,7 @@ export default function Navbar() {
                   {/* Nav links */}
                   <div className="py-1.5 px-2">
                     {[
+                      { name: "Dashboard",     icon: <BarChart className="w-4 h-4" />, href: "/dashboard" },
                       { name: "My Profile",    icon: <Users className="w-4 h-4" />,    href: "/profile" },
                       { name: "Edit Profile",  icon: <Target className="w-4 h-4" />,   href: "/profile/edit" },
                       { name: "Saved Jobs",    icon: <Bookmark className="w-4 h-4" />, href: "/saved-jobs" },
@@ -418,7 +419,7 @@ export default function Navbar() {
                   </div>
 
                   {/* Sign out */}
-                  <div className="border-t border-[var(--border)] dark:border-white/5 px-2 pb-2 pt-1">
+                  <div className="border-t-2 border-[var(--border)] dark:border-white/5 px-2 pb-2 pt-1">
                     <button
                       className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                       onClick={() => {

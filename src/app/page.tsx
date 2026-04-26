@@ -5,6 +5,13 @@ import StatsSection from "@/components/home/StatsSection";
 import JobCard from "@/components/ui/JobCard";
 import { jobs } from "@/data/jobs";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Home() {
   return (
@@ -37,7 +44,7 @@ export default function Home() {
 
         <div className="relative max-w-[1400px] mx-auto px-8">
           <FadeIn direction="up">
-            <div className="bg-white/40 dark:bg-[#15221B]/40 backdrop-blur-xl rounded-[48px] p-10 md:p-16 border border-[var(--border)] dark:border-white/5 shadow-premium">
+            <div className="bg-white/40 dark:bg-[#15221B]/40 backdrop-blur-xl rounded-[48px] p-10 md:p-16 border-2 border-[var(--border)] dark:border-white/5 shadow-premium">
               <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-10 mb-12">
                 <div className="max-w-[600px]">
                   <div className="inline-block px-4 py-1.5 rounded-full bg-[var(--primary)]/5 border border-[var(--primary)]/10 text-[var(--primary)] text-[10px] font-extrabold uppercase tracking-[0.2em] mb-4">
@@ -46,13 +53,18 @@ export default function Home() {
                   <h2 className="text-4xl md:text-5xl font-extrabold font-headline tracking-tight mb-3">Latest Openings</h2>
                   <p className="text-[var(--text-secondary)] text-lg font-medium">Curated roles from top company job boards, updated in real-time.</p>
                 </div>
-                <div className="flex items-center gap-4 p-2 bg-[var(--bg-base)]/50 rounded-2xl border border-[var(--border)]">
+                <div className="flex items-center gap-4 p-2 bg-[var(--bg-base)]/50 rounded-2xl border-2 border-[var(--border)]">
                   <span className="pl-4 text-[10px] font-extrabold uppercase tracking-widest text-[var(--text-muted)]">Sort:</span>
-                  <select className="bg-transparent border-none font-extrabold text-sm outline-none cursor-pointer pr-4 py-2 text-[var(--primary)]">
-                    <option>Newest First</option>
-                    <option>High Salary</option>
-                    <option>Remote Only</option>
-                  </select>
+                  <Select defaultValue="newest">
+                    <SelectTrigger className="bg-transparent border-none font-extrabold text-sm outline-none cursor-pointer pr-4 py-2 text-[var(--primary)] h-auto shadow-none focus:ring-0">
+                      <SelectValue placeholder="Sort" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="newest">Newest First</SelectItem>
+                      <SelectItem value="salary">High Salary</SelectItem>
+                      <SelectItem value="remote">Remote Only</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 

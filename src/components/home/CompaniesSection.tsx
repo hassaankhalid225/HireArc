@@ -57,7 +57,7 @@ export default function CompaniesSection() {
             <StaggerItem key={company.name}>
               <Link
                 href={`/company/${company.name.toLowerCase()}`}
-                className="group relative flex flex-col items-center justify-center p-10 bg-white dark:bg-[#15221B] border border-[var(--border)] dark:border-white/5 rounded-[32px] hover:shadow-premium hover:-translate-y-2 transition-all duration-500 overflow-hidden"
+                className="group relative flex flex-col items-center justify-center p-10 bg-white dark:bg-[#15221B] border-2 border-[var(--border)] dark:border-white/5 rounded-[32px] hover:shadow-premium hover:-translate-y-2 transition-all duration-500 overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/0 to-[var(--primary)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 

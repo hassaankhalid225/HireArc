@@ -118,7 +118,7 @@ export default function CompanyProfile() {
               <h2 className="text-2xl font-bold mb-8">Why work with us?</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {company.benefits.map((benefit: any, idx: number) => (
-                  <div key={idx} className="p-6 rounded-2xl bg-white dark:bg-[#233027] border border-[var(--border)] hover:border-[var(--primary)] transition-all group">
+                  <div key={idx} className="p-6 rounded-2xl bg-white dark:bg-[#233027] border-2 border-[var(--border)] hover:border-[var(--primary)] transition-all group">
                     <div className="w-12 h-12 rounded-xl bg-[var(--primary)]/10 text-[var(--primary)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       {benefit.icon}
                     </div>
@@ -155,7 +155,7 @@ export default function CompanyProfile() {
 
           {/* Right Column: Sidebar Stats */}
           <div className="space-y-8">
-            <div className="p-8 rounded-3xl bg-white dark:bg-[#233027] border border-[var(--border)] shadow-sm space-y-6">
+            <div className="p-8 rounded-3xl bg-white dark:bg-[#233027] border-2 border-[var(--border)] shadow-sm space-y-6">
               <h3 className="font-bold text-lg mb-2">Company Information</h3>
               
               <div className="space-y-4">

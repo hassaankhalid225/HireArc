@@ -55,7 +55,7 @@ export default function FAQPage() {
             <input 
               type="text" 
               placeholder="Search questions..." 
-              className="w-full pl-12 pr-4 py-4 rounded-2xl border border-[var(--border)] bg-white/50 dark:bg-white/5 backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-[#678D63]/20 focus:border-[#678D63] transition-all"
+              className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-[#678D63]/20 focus:border-[#678D63] transition-all"
             />
           </div>
         </FadeIn>
@@ -64,7 +64,7 @@ export default function FAQPage() {
         <div className="space-y-4">
           {FAQS.map((faq, i) => (
             <FadeIn key={i} delay={i * 0.1}>
-              <div className="border border-[var(--border)] rounded-2xl bg-white/50 dark:bg-white/5 backdrop-blur-xl overflow-hidden transition-all duration-300">
+              <div className="border-2 border-[var(--border)] rounded-2xl bg-white/50 dark:bg-white/5 backdrop-blur-xl overflow-hidden transition-all duration-300">
                 <button 
                   onClick={() => setActiveIndex(activeIndex === i ? null : i)}
                   className="w-full flex items-center justify-between p-6 text-left hover:bg-[#F0FDF4]/30 dark:hover:bg-white/5 transition-colors"

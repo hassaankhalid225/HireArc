@@ -24,7 +24,7 @@ export default function SavedJobsPage() {
           <Card key={i} className="hover:shadow-md transition-shadow border-[var(--border)] overflow-hidden">
             <CardContent className="p-6">
               <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-lg bg-[var(--bg-base)] border border-[var(--border)] flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-lg bg-[var(--bg-base)] border-2 border-[var(--border)] flex items-center justify-center flex-shrink-0">
                   <span className="text-xl font-bold">{job.icon}</span>
                 </div>
                 <div className="flex-1">
@@ -40,7 +40,7 @@ export default function SavedJobsPage() {
                     ))}
                   </div>
                   
-                  <div className="flex justify-between items-center text-xs text-[var(--text-muted)] pt-4 border-t border-[var(--border)]">
+                  <div className="flex justify-between items-center text-xs text-[var(--text-muted)] pt-4 border-t-2 border-[var(--border)]">
                     <span>{job.time}</span>
                     <Button className="h-8 px-4 text-xs bg-blue-600 hover:bg-blue-700">Apply Now</Button>
                   </div>

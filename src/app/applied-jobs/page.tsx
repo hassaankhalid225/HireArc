@@ -36,10 +36,10 @@ export default function AppliedJobsPage() {
         <StaggerContainer className="space-y-4">
           {appliedJobs.map((app) => (
             <StaggerItem key={app.id}>
-              <div className="bg-white dark:bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 hover:shadow-lg transition-all group">
+              <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-2xl p-6 hover:shadow-lg transition-all group">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                   <div className="flex gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-gray-50 dark:bg-white/5 border border-[var(--border)] flex items-center justify-center flex-shrink-0">
+                    <div className="w-14 h-14 rounded-xl bg-gray-50 dark:bg-white/5 border-2 border-[var(--border)] flex items-center justify-center flex-shrink-0">
                       <span className="text-xl font-bold text-[var(--primary)]">{app.company.charAt(0)}</span>
                     </div>
                     <div>

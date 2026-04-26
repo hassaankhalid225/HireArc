@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-export default function JobSphereGlobe({ size = 400 }: { size?: number }) {
+export default function HireArcGlobe({ size = 400 }: { size?: number }) {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -160,7 +160,7 @@ export default function EditProfilePage() {
                     <input
                       type="text"
                       defaultValue="Hassaan"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
                     />
                   </div>
                 </div>
@@ -171,7 +171,7 @@ export default function EditProfilePage() {
                     <input
                       type="text"
                       defaultValue="Khalid"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
                     />
                   </div>
                 </div>
@@ -184,7 +184,7 @@ export default function EditProfilePage() {
                   <input
                     type="email"
                     defaultValue="hassaankhalid@HireArc.com"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
                   />
                 </div>
               </div>
@@ -196,7 +196,7 @@ export default function EditProfilePage() {
                   <input
                     type="tel"
                     defaultValue="+92 300 1234567"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
                   />
                 </div>
               </div>
@@ -208,7 +208,7 @@ export default function EditProfilePage() {
                   <input
                     type="text"
                     defaultValue="Lahore, Pakistan"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
                   />
                 </div>
               </div>
@@ -220,7 +220,7 @@ export default function EditProfilePage() {
                   <input
                     type="text"
                     defaultValue="Full Stack Developer"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
                   />
                 </div>
               </div>
@@ -230,7 +230,7 @@ export default function EditProfilePage() {
                 <textarea
                   rows={4}
                   defaultValue="Passionate full-stack developer with 4+ years of experience building scalable web applications using React, Next.js, and Node.js."
-                  className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all resize-none"
                 />
               </div>
             </div>
@@ -258,7 +258,7 @@ export default function EditProfilePage() {
                     onChange={e => setSkillInput(e.target.value)}
                     onKeyDown={e => { if (e.key === "Enter") addSkill(skillInput); }}
                     placeholder="Add a skill..."
-                    className="flex-1 px-4 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                    className="flex-1 px-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
                   />
                   <button
                     onClick={() => addSkill(skillInput)}
@@ -272,7 +272,7 @@ export default function EditProfilePage() {
                     <button
                       key={s}
                       onClick={() => addSkill(s)}
-                      className="text-xs px-2.5 py-1 border border-[var(--border)] rounded-full text-[var(--text-muted)] hover:border-[#678D63] hover:text-[#678D63] transition-colors"
+                      className="text-xs px-2.5 py-1 border-2 border-[var(--border)] rounded-full text-[var(--text-muted)] hover:border-[#678D63] hover:text-[#678D63] transition-colors"
                     >
                       + {s}
                     </button>
@@ -311,7 +311,7 @@ export default function EditProfilePage() {
                       type="url"
                       defaultValue={defaultVal}
                       placeholder={placeholder}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
                     />
                   </div>
                 </div>
@@ -329,7 +329,7 @@ export default function EditProfilePage() {
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
                   />
                   <button
                     onClick={() => setShowPassword(!showPassword)}
@@ -346,7 +346,7 @@ export default function EditProfilePage() {
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
                   />
                 </div>
               </div>
@@ -357,7 +357,7 @@ export default function EditProfilePage() {
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
                   />
                 </div>
               </div>

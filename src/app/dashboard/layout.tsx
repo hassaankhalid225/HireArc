@@ -9,7 +9,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Sidebar */}
       <aside className="w-[260px] bg-white dark:bg-[var(--bg-card)] border-r border-[var(--border)] flex flex-col justify-between">
         <div>
-          <div className="h-[72px] flex items-center px-6 border-b border-[var(--border)]">
+          <div className="h-[72px] flex items-center px-6 border-b-2 border-[var(--border)]">
             <Link href="/" className="flex items-center gap-3">
               <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold shadow-md">JS</div>
               <div className="leading-tight">
@@ -62,8 +62,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <main className="flex-1 flex flex-col overflow-hidden">
         
         {/* Topbar */}
-        <header className="h-[72px] bg-white dark:bg-[var(--bg-card)] border-b border-[var(--border)] px-8 flex items-center justify-between flex-shrink-0">
-          <div className="w-[400px] h-10 bg-[var(--bg-base)] border border-[var(--border)] rounded-md flex items-center px-4">
+        <header className="h-[72px] bg-white dark:bg-[var(--bg-card)] border-b-2 border-[var(--border)] px-8 flex items-center justify-between flex-shrink-0">
+          <div className="w-[400px] h-10 bg-[var(--bg-base)] border-2 border-[var(--border)] rounded-md flex items-center px-4">
             <Search className="w-4 h-4 text-gray-400 mr-2" />
             <input type="text" placeholder="Search for jobs, companies..." className="bg-transparent border-none outline-none w-full text-sm text-[var(--text-primary)]" />
           </div>

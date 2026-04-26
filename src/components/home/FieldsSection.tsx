@@ -52,7 +52,7 @@ export default function FieldsSection() {
             <StaggerItem key={field.name}>
               <Link 
                 href={`/search?field=${field.name.toLowerCase()}`}
-                className="group relative flex flex-col items-center justify-center gap-6 p-6 bg-white dark:bg-[#15221B] border border-[var(--border)] dark:border-white/5 rounded-[24px] hover:shadow-premium hover:-translate-y-1.5 transition-all duration-500 overflow-hidden min-h-[160px] text-center"
+                className="group relative flex flex-col items-center justify-center gap-6 p-6 bg-white dark:bg-[#15221B] border-2 border-[var(--border)] dark:border-white/5 rounded-[24px] hover:shadow-premium hover:-translate-y-1.5 transition-all duration-500 overflow-hidden min-h-[160px] text-center"
               >
                 {/* Refined Glass Highlight */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/0 to-[var(--primary)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

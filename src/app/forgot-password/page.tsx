@@ -6,7 +6,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-[440px] bg-[var(--bg-card)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] overflow-hidden">
         
         {/* Header Section */}
-        <div className="p-8 pb-6 border-b border-[var(--border)] text-center relative overflow-hidden">
+        <div className="p-8 pb-6 border-b-2 border-[var(--border)] text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]" />
           
           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] mx-auto mb-4 flex items-center justify-center shadow-lg">
@@ -26,7 +26,7 @@ export default function ForgotPasswordPage() {
                 type="email" 
                 id="email" 
                 placeholder="you@company.com" 
-                className="w-full h-12 px-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm"
+                className="w-full h-12 px-4 rounded-[var(--radius-md)] border-2 border-[var(--border)] bg-[var(--bg-base)] outline-none focus:border-[var(--primary-dark)] focus:bg-white transition-colors text-sm"
                 required
               />
             </div>
@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         {/* Footer Section */}
-        <div className="p-6 bg-[var(--bg-base)] text-center border-t border-[var(--border)]">
+        <div className="p-6 bg-[var(--bg-base)] text-center border-t-2 border-[var(--border)]">
           <p className="text-sm text-[var(--text-secondary)]">
             Remembered your password? <Link href="/login" className="font-semibold text-[var(--primary)] hover:underline">Back to Sign in</Link>
           </p>

@@ -2,10 +2,17 @@
 import { FadeIn } from "@/components/ui/fade-in";
 import { 
   Settings, User, Bell, Shield, Lock, Eye, 
-  CreditCard, Globe, LogOut, ChevronRight, Check
+  CreditCard, Globe, LogOut, ChevronRight, Check, ChevronDown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useState } from "react";
 
 export default function SettingsPage() {
@@ -35,7 +42,7 @@ export default function SettingsPage() {
           
           {/* Sidebar Navigation */}
           <FadeIn delay={0.1} direction="right" className="lg:col-span-1">
-            <div className="bg-white dark:bg-[var(--bg-card)] border border-[var(--border)] rounded-[32px] p-4 shadow-sm sticky top-28">
+            <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-[32px] p-4 shadow-sm sticky top-28">
               <div className="space-y-1">
                 {menuItems.map((item) => (
                   <button
@@ -66,7 +73,7 @@ export default function SettingsPage() {
 
           {/* Settings Content */}
           <FadeIn delay={0.2} direction="up" className="lg:col-span-3">
-            <div className="bg-white dark:bg-[var(--bg-card)] border border-[var(--border)] rounded-[40px] p-8 md:p-12 shadow-sm min-h-[600px]">
+            <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-[40px] p-8 md:p-12 shadow-sm min-h-[600px]">
               
               {activeTab === "general" && (
                 <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -80,12 +87,17 @@ export default function SettingsPage() {
                           <p className="font-bold mb-1">Language</p>
                           <p className="text-sm text-[var(--text-muted)]">Select your preferred display language.</p>
                         </div>
-                        <select className="bg-white dark:bg-gray-800 border border-[var(--border)] rounded-xl px-4 py-2 text-sm font-bold outline-none focus:ring-2 focus:ring-[var(--primary)] transition-all">
-                          <option>English (US)</option>
-                          <option>Urdu</option>
-                          <option>German</option>
-                          <option>Spanish</option>
-                        </select>
+                        <Select defaultValue="en">
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select Language" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="en">English (US)</SelectItem>
+                            <SelectItem value="ur">Urdu</SelectItem>
+                            <SelectItem value="de">German</SelectItem>
+                            <SelectItem value="es">Spanish</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
 
                       <div className="flex items-center justify-between p-6 rounded-3xl bg-gray-50 dark:bg-white/5 border border-transparent hover:border-[var(--border)] transition-all">

@@ -28,7 +28,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
               
               <div className="flex gap-6 items-center">
-                <div className="w-20 h-20 rounded-xl bg-white dark:bg-white/5 border border-[var(--border)] flex items-center justify-center flex-shrink-0 shadow-premium-sm">
+                <div className="w-20 h-20 rounded-xl bg-white dark:bg-white/5 border-2 border-[var(--border)] flex items-center justify-center flex-shrink-0 shadow-premium-sm">
                   {/* Placeholder for Airbnb Logo */}
                   <span className="text-3xl font-bold text-red-500">A</span>
                 </div>
@@ -124,7 +124,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
               <h2 className="text-lg font-bold font-headline mb-4">Required Skills</h2>
               <div className="flex flex-wrap gap-2">
                 {['Java', 'Kotlin', 'GraphQL', 'Distributed Systems', 'AWS', 'React', 'System Design'].map((skill) => (
-                  <Badge key={skill} variant="secondary" className="bg-[var(--bg-base)] text-[var(--text-primary)] border border-[var(--border)] font-medium px-4 py-1.5 rounded-md hover:bg-[var(--border)] transition-colors">
+                  <Badge key={skill} variant="secondary" className="bg-[var(--bg-base)] text-[var(--text-primary)] border-2 border-[var(--border)] font-medium px-4 py-1.5 rounded-md hover:bg-[var(--border)] transition-colors">
                     {skill}
                   </Badge>
                 ))}
@@ -160,7 +160,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
             {/* Job Summary Card */}
             <Card className="border-[var(--border)] shadow-sm bg-white dark:bg-[var(--bg-card)]">
               <CardContent className="p-0">
-                <div className="p-5 border-b border-[var(--border)]">
+                <div className="p-5 border-b-2 border-[var(--border)]">
                   <h3 className="font-semibold text-[var(--text-primary)]">Job Summary</h3>
                 </div>
                 <div className="p-5 space-y-4">
@@ -196,7 +196,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
         </div>
 
         {/* Similar Jobs Section */}
-        <section className="mt-16 pt-10 border-t border-[var(--border)]">
+        <section className="mt-16 pt-10 border-t-2 border-[var(--border)]">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold font-headline">Similar Jobs You Might Like</h2>
             <Link href="/search" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
@@ -214,7 +214,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
               <Card key={i} className="hover:shadow-premium-sm transition-all duration-300 border-[var(--border)] bg-white dark:bg-[var(--bg-card)] group">
                 <CardContent className="p-6">
                   <div className="flex gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-[var(--bg-base)] border border-[var(--border)] flex items-center justify-center flex-shrink-0 text-xl font-bold group-hover:scale-110 transition-transform">
+                    <div className="w-10 h-10 rounded-lg bg-[var(--bg-base)] border-2 border-[var(--border)] flex items-center justify-center flex-shrink-0 text-xl font-bold group-hover:scale-110 transition-transform">
                       {job.icon}
                     </div>
                     <div>

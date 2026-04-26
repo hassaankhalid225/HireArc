@@ -14,7 +14,7 @@ export default function ApplicationsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-4 border-b border-[var(--border)] mb-6">
+      <div className="flex gap-4 border-b-2 border-[var(--border)] mb-6">
         <button className="pb-3 border-b-2 border-blue-600 font-semibold text-blue-600 px-2">All Applications (45)</button>
         <button className="pb-3 border-b-2 border-transparent font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] px-2">Interviewing (12)</button>
         <button className="pb-3 border-b-2 border-transparent font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] px-2">Applied (28)</button>
@@ -45,7 +45,7 @@ export default function ApplicationsPage() {
                   <tr key={i} className="hover:bg-[var(--bg-base)] transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded bg-[var(--bg-base)] border border-[var(--border)] flex items-center justify-center font-bold text-sm flex-shrink-0">{app.initial}</div>
+                        <div className="w-10 h-10 rounded bg-[var(--bg-base)] border-2 border-[var(--border)] flex items-center justify-center font-bold text-sm flex-shrink-0">{app.initial}</div>
                         <div>
                           <div className="font-bold text-[var(--text-primary)]">{app.pos}</div>
                           <div className="text-xs text-[var(--text-secondary)]">{app.company}</div>

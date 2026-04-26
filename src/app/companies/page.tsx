@@ -88,7 +88,7 @@ export default function CompaniesPage() {
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all text-left ${
                         selectedCategory === cat 
                           ? "bg-[var(--primary)] text-white" 
-                          : "bg-white dark:bg-[#233027] text-[var(--text-secondary)] hover:bg-gray-100 dark:hover:bg-white/5 border border-[var(--border)]"
+                          : "bg-white dark:bg-[#233027] text-[var(--text-secondary)] hover:bg-gray-100 dark:hover:bg-white/5 border-2 border-[var(--border)]"
                       }`}
                     >
                       {cat}
@@ -147,7 +147,7 @@ export default function CompaniesPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-6 border-t border-[var(--border)] dark:border-white/5">
+                    <div className="flex items-center justify-between pt-6 border-t-2 border-[var(--border)] dark:border-white/5">
                       <div className="flex items-center gap-2">
                         <span className="text-lg font-bold text-[var(--text-primary)]">{company.roles}</span>
                         <span className="text-sm text-[var(--text-muted)]">Open Roles</span>

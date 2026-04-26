@@ -8,13 +8,13 @@ import { Bookmark, MapPin, Globe, DollarSign, ArrowRight } from "lucide-react";
 export default function JobCard({ job }: { job: Job }) {
   return (
     <Link href={`/jobs/${job.id}`} className="block group">
-      <div className="bg-white dark:bg-[#15221B] border border-[var(--border)] dark:border-white/5 rounded-[32px] p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-premium hover:border-[var(--primary)] h-full relative overflow-hidden">
+      <div className="bg-white dark:bg-[#15221B] border-2 border-[var(--border)] dark:border-white/5 rounded-[32px] p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-premium hover:border-[var(--primary)] h-full relative overflow-hidden">
         {/* Subtle Gradient Accent */}
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/0 to-[var(--primary)]/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         
         <div className="flex justify-between items-start mb-8 relative z-10">
           <div className="flex gap-5">
-            <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center overflow-hidden border border-[var(--border)] dark:border-white/10 group-hover:scale-110 transition-transform duration-500">
+            <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center overflow-hidden border-2 border-[var(--border)] dark:border-white/10 group-hover:scale-110 transition-transform duration-500">
               <Image 
                 src="/logo1.png" 
                 alt={job.company} 
@@ -61,7 +61,7 @@ export default function JobCard({ job }: { job: Job }) {
           </div>
         </div>
 
-        <div className="pt-6 border-t border-[var(--border)] dark:border-white/5 flex justify-between items-center mt-auto relative z-10">
+        <div className="pt-6 border-t-2 border-[var(--border)] dark:border-white/5 flex justify-between items-center mt-auto relative z-10">
           <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
             {job.posted}
           </span>

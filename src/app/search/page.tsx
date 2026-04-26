@@ -16,26 +16,26 @@ export default function SearchPage() {
       
       {/* Search Header */}
       <FadeIn direction="down" delay={0.1}>
-        <div className="bg-white dark:bg-[var(--bg-card)] border-b border-[var(--border)] py-6">
+        <div className="bg-white dark:bg-[var(--bg-card)] border-b-2 border-[var(--border)] py-6">
           <div className="container-custom">
             <div className="flex flex-col md:flex-row gap-4 max-w-5xl">
-              <div className="flex-1 flex items-center gap-2 px-4 h-12 rounded-md border border-[var(--border)] bg-white dark:bg-black/20 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
+              <div className="flex-1 flex items-center gap-2 px-4 h-12 rounded-xl border-2 border-[var(--border)] bg-white dark:bg-black/20 focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/20 transition-all">
                 <Search className="w-5 h-5 text-gray-400" />
                 <input 
                   type="text" 
                   defaultValue="Product Designer"
-                  className="w-full h-full outline-none bg-transparent text-sm"
+                  className="w-full h-full outline-none bg-transparent text-sm font-medium"
                 />
               </div>
-              <div className="flex-1 flex items-center gap-2 px-4 h-12 rounded-md border border-[var(--border)] bg-white dark:bg-black/20 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
+              <div className="flex-1 flex items-center gap-2 px-4 h-12 rounded-xl border-2 border-[var(--border)] bg-white dark:bg-black/20 focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/20 transition-all">
                 <MapPin className="w-5 h-5 text-gray-400" />
                 <input 
                   type="text" 
                   defaultValue="Remote"
-                  className="w-full h-full outline-none bg-transparent text-sm"
+                  className="w-full h-full outline-none bg-transparent text-sm font-medium"
                 />
               </div>
-              <Button className="h-12 px-8 bg-blue-600 hover:bg-blue-700 hover:scale-105 active:scale-95 transition-transform">Find Jobs</Button>
+              <Button className="h-12 px-8 bg-[var(--primary)] hover:bg-[var(--primary-dark)] rounded-xl font-bold transition-all hover:scale-105 active:scale-95">Find Jobs</Button>
             </div>
           </div>
         </div>
@@ -74,78 +74,78 @@ export default function SearchPage() {
             <div>
               <h4 className="text-xs font-bold text-[var(--text-primary)] mb-3 uppercase tracking-wider">Active Filters</h4>
               <div className="flex flex-wrap gap-2 items-center">
-                <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded-sm hover:bg-blue-100 flex items-center gap-1">
+                <Badge variant="secondary" className="bg-[#678D63]/10 text-[#166534] dark:bg-green-900/30 dark:text-green-300 rounded-lg hover:bg-[#678D63]/20 border-none font-bold py-1 px-3">
                   Remote <span className="text-xs cursor-pointer ml-1">×</span>
                 </Badge>
-                <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded-sm hover:bg-blue-100 flex items-center gap-1">
+                <Badge variant="secondary" className="bg-[#678D63]/10 text-[#166534] dark:bg-green-900/30 dark:text-green-300 rounded-lg hover:bg-[#678D63]/20 border-none font-bold py-1 px-3">
                   $100k+ <span className="text-xs cursor-pointer ml-1">×</span>
                 </Badge>
-                <button className="text-xs text-[var(--text-muted)] hover:text-[var(--primary)] ml-2">Clear all</button>
+                <button className="text-xs text-[var(--text-muted)] hover:text-[var(--primary)] ml-2 font-bold">Clear all</button>
               </div>
             </div>
 
             {/* Job Type */}
-            <div>
-              <h4 className="text-xs font-bold text-[var(--text-primary)] mb-3 uppercase tracking-wider">Job Type</h4>
+            <div className="p-6 rounded-2xl border-2 border-[var(--border)] bg-white dark:bg-white/5 space-y-4">
+              <h4 className="text-xs font-bold text-[var(--text-primary)] mb-1 uppercase tracking-wider">Job Type</h4>
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="type-full" defaultChecked />
-                  <label htmlFor="type-full" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Full-time</label>
+                  <Checkbox id="type-full" defaultChecked className="border-2 border-[var(--border)] data-[state=checked]:bg-[var(--primary)] data-[state=checked]:border-[var(--primary)]" />
+                  <label htmlFor="type-full" className="text-sm font-bold leading-none cursor-pointer">Full-time</label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="type-contract" />
-                  <label htmlFor="type-contract" className="text-sm font-medium leading-none text-[var(--text-secondary)]">Contract</label>
+                  <Checkbox id="type-contract" className="border-2 border-[var(--border)] data-[state=checked]:bg-[var(--primary)] data-[state=checked]:border-[var(--primary)]" />
+                  <label htmlFor="type-contract" className="text-sm font-medium leading-none text-[var(--text-secondary)] cursor-pointer">Contract</label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="type-part" />
-                  <label htmlFor="type-part" className="text-sm font-medium leading-none text-[var(--text-secondary)]">Part-time</label>
+                  <Checkbox id="type-part" className="border-2 border-[var(--border)] data-[state=checked]:bg-[var(--primary)] data-[state=checked]:border-[var(--primary)]" />
+                  <label htmlFor="type-part" className="text-sm font-medium leading-none text-[var(--text-secondary)] cursor-pointer">Part-time</label>
                 </div>
               </div>
             </div>
 
             {/* Experience Level */}
-            <div>
-              <h4 className="text-xs font-bold text-[var(--text-primary)] mb-3 uppercase tracking-wider">Experience Level</h4>
+            <div className="p-6 rounded-2xl border-2 border-[var(--border)] bg-white dark:bg-white/5 space-y-4">
+              <h4 className="text-xs font-bold text-[var(--text-primary)] mb-1 uppercase tracking-wider">Experience Level</h4>
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="exp-entry" />
-                  <label htmlFor="exp-entry" className="text-sm font-medium leading-none text-[var(--text-secondary)]">Entry Level</label>
+                  <Checkbox id="exp-entry" className="border-2 border-[var(--border)] data-[state=checked]:bg-[var(--primary)] data-[state=checked]:border-[var(--primary)]" />
+                  <label htmlFor="exp-entry" className="text-sm font-medium leading-none text-[var(--text-secondary)] cursor-pointer">Entry Level</label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="exp-senior" defaultChecked />
-                  <label htmlFor="exp-senior" className="text-sm font-medium leading-none">Senior</label>
+                  <Checkbox id="exp-senior" defaultChecked className="border-2 border-[var(--border)] data-[state=checked]:bg-[var(--primary)] data-[state=checked]:border-[var(--primary)]" />
+                  <label htmlFor="exp-senior" className="text-sm font-bold leading-none cursor-pointer">Senior</label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="exp-lead" />
-                  <label htmlFor="exp-lead" className="text-sm font-medium leading-none text-[var(--text-secondary)]">Lead / Director</label>
+                  <Checkbox id="exp-lead" className="border-2 border-[var(--border)] data-[state=checked]:bg-[var(--primary)] data-[state=checked]:border-[var(--primary)]" />
+                  <label htmlFor="exp-lead" className="text-sm font-medium leading-none text-[var(--text-secondary)] cursor-pointer">Lead / Director</label>
                 </div>
               </div>
             </div>
 
             {/* Salary Range */}
-            <div>
-              <h4 className="text-xs font-bold text-[var(--text-primary)] mb-3 uppercase tracking-wider">Salary Range</h4>
+            <div className="p-6 rounded-2xl border-2 border-[var(--border)] bg-white dark:bg-white/5 space-y-4">
+              <h4 className="text-xs font-bold text-[var(--text-primary)] mb-1 uppercase tracking-wider">Salary Range</h4>
               <RadioGroup defaultValue="120">
-                <div className="flex items-center space-x-2 mb-2">
-                  <RadioGroupItem value="50" id="sal-50" />
-                  <label htmlFor="sal-50" className="text-sm text-[var(--text-secondary)]">$50k - $80k</label>
+                <div className="flex items-center space-x-3 mb-2">
+                  <RadioGroupItem value="50" id="sal-50" className="border-2 border-[var(--border)] text-[var(--primary)]" />
+                  <label htmlFor="sal-50" className="text-sm text-[var(--text-secondary)] font-medium cursor-pointer">$50k - $80k</label>
                 </div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <RadioGroupItem value="80" id="sal-80" />
-                  <label htmlFor="sal-80" className="text-sm text-[var(--text-secondary)]">$80k - $120k</label>
+                <div className="flex items-center space-x-3 mb-2">
+                  <RadioGroupItem value="80" id="sal-80" className="border-2 border-[var(--border)] text-[var(--primary)]" />
+                  <label htmlFor="sal-80" className="text-sm text-[var(--text-secondary)] font-medium cursor-pointer">$80k - $120k</label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="120" id="sal-120" />
-                  <label htmlFor="sal-120" className="text-sm font-medium">$120k+</label>
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="120" id="sal-120" className="border-2 border-[var(--border)] text-[var(--primary)]" />
+                  <label htmlFor="sal-120" className="text-sm font-bold cursor-pointer">$120k+</label>
                 </div>
               </RadioGroup>
             </div>
 
             {/* Date Posted */}
-            <div>
-              <h4 className="text-xs font-bold text-[var(--text-primary)] mb-3 uppercase tracking-wider">Date Posted</h4>
+            <div className="p-6 rounded-2xl border-2 border-[var(--border)] bg-white dark:bg-white/5 space-y-4">
+              <h4 className="text-xs font-bold text-[var(--text-primary)] mb-1 uppercase tracking-wider">Date Posted</h4>
               <Select defaultValue="any">
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full border-2 border-[var(--border)] rounded-xl font-bold">
                   <SelectValue placeholder="Select timeframe" />
                 </SelectTrigger>
                 <SelectContent>
@@ -163,38 +163,38 @@ export default function SearchPage() {
             {/* Job Card 1 */}
             <StaggerItem>
               <Link href="/jobs/1" className="block group">
-                <Card className="hover:shadow-lg transition-all hover:-translate-y-1 duration-300 border-[var(--border)] overflow-hidden cursor-pointer relative">
+                <Card className="hover:shadow-premium transition-all hover:-translate-y-1 duration-300 overflow-hidden cursor-pointer relative bg-white dark:bg-white/5">
                   <CardContent className="p-6">
-                    <div className="flex gap-4">
-                      <div className="w-12 h-12 rounded-lg bg-[var(--bg-base)] border border-[var(--border)] flex items-center justify-center flex-shrink-0">
+                    <div className="flex gap-6">
+                      <div className="w-14 h-14 rounded-xl bg-[var(--bg-base)] border-2 border-[var(--border)] flex items-center justify-center flex-shrink-0 group-hover:border-[var(--primary)] transition-colors">
                         <span className="text-xl font-bold">SF</span>
                       </div>
                       <div className="flex-1">
                         <div className="flex justify-between items-start mb-1">
-                          <h3 className="text-lg font-bold group-hover:text-blue-600 transition-colors">Senior Product Designer</h3>
+                          <h3 className="text-xl font-bold group-hover:text-[var(--primary)] transition-colors">Senior Product Designer</h3>
                           <button 
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
                             }}
-                            className="text-gray-400 hover:text-blue-600 relative z-20 p-1"
+                            className="text-gray-400 hover:text-[var(--primary)] relative z-20 p-1"
                           >
                             <Bookmark className="w-5 h-5" />
                           </button>
                         </div>
-                        <p className="text-sm text-[var(--text-secondary)] mb-3">Streamline Flow • California, US (Remote)</p>
-                        <p className="text-sm text-[var(--text-muted)] mb-4 leading-relaxed">We are looking for a Senior Product Designer to join our core team and help shape the future of visual collaboration tools. You will lead design systems and complex user journeys...</p>
+                        <p className="text-sm text-[var(--text-secondary)] font-medium mb-3">Streamline Flow • California, US (Remote)</p>
+                        <p className="text-sm text-[var(--text-muted)] mb-4 leading-relaxed font-medium">We are looking for a Senior Product Designer to join our core team and help shape the future of visual collaboration tools. You will lead design systems and complex user journeys...</p>
                         
                         <div className="flex flex-wrap gap-2 mb-4">
-                          <Badge variant="secondary" className="bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300 hover:bg-green-100 rounded-sm">Full-time</Badge>
-                          <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 hover:bg-blue-100 rounded-sm">$140k - $180k</Badge>
-                          <Badge variant="outline" className="rounded-sm border-[var(--border)] text-[var(--text-secondary)]">Design System</Badge>
-                          <Badge variant="outline" className="rounded-sm border-[var(--border)] text-[var(--text-secondary)]">Figma</Badge>
+                          <Badge variant="secondary" className="bg-[#678D63]/10 text-[#166534] dark:bg-green-900/30 dark:text-green-300 border-none font-bold py-1 px-3">Full-time</Badge>
+                          <Badge variant="secondary" className="bg-[#678D63]/10 text-[#166534] dark:bg-green-900/30 dark:text-green-300 border-none font-bold py-1 px-3">$140k - $180k</Badge>
+                          <Badge variant="outline" className="rounded-lg border-2 border-[var(--border)] text-[var(--text-secondary)] font-bold">Design System</Badge>
+                          <Badge variant="outline" className="rounded-lg border-2 border-[var(--border)] text-[var(--text-secondary)] font-bold">Figma</Badge>
                         </div>
                         
-                        <div className="flex justify-between items-center text-xs text-[var(--text-muted)] pt-4 border-t border-[var(--border)]">
+                        <div className="flex justify-between items-center text-xs text-[var(--text-muted)] pt-5 border-t-2 border-[var(--border)] font-bold uppercase tracking-wider">
                           <span>Posted 2 hours ago</span>
-                          <span className="flex items-center gap-1"><Users className="w-4 h-4" /> 12 Applicants</span>
+                          <span className="flex items-center gap-1.5"><Users className="w-4 h-4" /> 12 Applicants</span>
                         </div>
                       </div>
                     </div>
@@ -206,37 +206,37 @@ export default function SearchPage() {
             {/* Job Card 2 */}
             <StaggerItem>
               <Link href="/jobs/2" className="block group">
-                <Card className="hover:shadow-lg transition-all hover:-translate-y-1 duration-300 border-[var(--border)] overflow-hidden cursor-pointer relative">
+                <Card className="hover:shadow-premium transition-all hover:-translate-y-1 duration-300 overflow-hidden cursor-pointer relative bg-white dark:bg-white/5">
                   <CardContent className="p-6">
-                    <div className="flex gap-4">
-                      <div className="w-12 h-12 rounded-lg bg-blue-50 border border-[var(--border)] flex items-center justify-center flex-shrink-0 text-blue-600">
+                    <div className="flex gap-6">
+                      <div className="w-14 h-14 rounded-xl bg-[#678D63]/10 border-2 border-[var(--border)] flex items-center justify-center flex-shrink-0 text-[#166534] group-hover:border-[var(--primary)] transition-colors">
                         <span className="text-xl font-bold">UX</span>
                       </div>
                       <div className="flex-1">
                         <div className="flex justify-between items-start mb-1">
-                          <h3 className="text-lg font-bold group-hover:text-blue-600 transition-colors">UX Designer (Fintech)</h3>
+                          <h3 className="text-xl font-bold group-hover:text-[var(--primary)] transition-colors">UX Designer (Fintech)</h3>
                           <button 
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
                             }}
-                            className="text-blue-600 relative z-20 p-1"
+                            className="text-[var(--primary)] relative z-20 p-1"
                           >
                             <Bookmark className="w-5 h-5 fill-current" />
                           </button>
                         </div>
-                        <p className="text-sm text-[var(--text-secondary)] mb-3">NeoBank Systems • London, UK (Hybrid)</p>
-                        <p className="text-sm text-[var(--text-muted)] mb-4 leading-relaxed">Help us revolutionize the way people manage their finances. We need a UX expert who understands data visualization and complex transaction flows...</p>
+                        <p className="text-sm text-[var(--text-secondary)] font-medium mb-3">NeoBank Systems • London, UK (Hybrid)</p>
+                        <p className="text-sm text-[var(--text-muted)] mb-4 leading-relaxed font-medium">Help us revolutionize the way people manage their finances. We need a UX expert who understands data visualization and complex transaction flows...</p>
                         
                         <div className="flex flex-wrap gap-2 mb-4">
-                          <Badge variant="secondary" className="bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300 hover:bg-green-100 rounded-sm">Full-time</Badge>
-                          <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 hover:bg-blue-100 rounded-sm">$90k - $130k</Badge>
-                          <Badge variant="outline" className="rounded-sm border-[var(--border)] text-[var(--text-secondary)]">Fintech</Badge>
+                          <Badge variant="secondary" className="bg-[#678D63]/10 text-[#166534] dark:bg-green-900/30 dark:text-green-300 border-none font-bold py-1 px-3">Full-time</Badge>
+                          <Badge variant="secondary" className="bg-[#678D63]/10 text-[#166534] dark:bg-green-900/30 dark:text-green-300 border-none font-bold py-1 px-3">$90k - $130k</Badge>
+                          <Badge variant="outline" className="rounded-lg border-2 border-[var(--border)] text-[var(--text-secondary)] font-bold">Fintech</Badge>
                         </div>
                         
-                        <div className="flex justify-between items-center text-xs text-[var(--text-muted)] pt-4 border-t border-[var(--border)]">
+                        <div className="flex justify-between items-center text-xs text-[var(--text-muted)] pt-5 border-t-2 border-[var(--border)] font-bold uppercase tracking-wider">
                           <span>Posted 5 hours ago</span>
-                          <span className="flex items-center gap-1"><Users className="w-4 h-4" /> 45 Applicants</span>
+                          <span className="flex items-center gap-1.5"><Users className="w-4 h-4" /> 45 Applicants</span>
                         </div>
                       </div>
                     </div>

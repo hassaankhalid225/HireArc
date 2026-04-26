@@ -39,7 +39,7 @@ export default function SavedJobsPage() {
           </StaggerContainer>
         ) : (
           <FadeIn delay={0.2}>
-            <div className="bg-white dark:bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-20 text-center">
+            <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-3xl p-20 text-center">
               <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Bookmark className="w-10 h-10 text-gray-300" />
               </div>

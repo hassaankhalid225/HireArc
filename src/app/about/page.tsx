@@ -35,7 +35,7 @@ export default function AboutPage() {
             { label: "Countries", value: "50+" },
           ].map((stat, i) => (
             <FadeIn key={i} delay={i * 0.1}>
-              <div className="text-center p-8 bg-white/50 dark:bg-white/5 border border-[var(--border)] rounded-3xl backdrop-blur-xl">
+              <div className="text-center p-8 bg-white/50 dark:bg-white/5 border-2 border-[var(--border)] rounded-3xl backdrop-blur-xl">
                 <div className="text-3xl font-extrabold text-[var(--primary)] mb-2">{stat.value}</div>
                 <div className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wide">{stat.label}</div>
               </div>
@@ -55,7 +55,7 @@ export default function AboutPage() {
             </div>
           </FadeIn>
           <FadeIn direction="left" delay={0.2}>
-            <div className="h-full p-10 bg-white/80 dark:bg-[#1C261F]/80 border border-[var(--border)] rounded-[40px] backdrop-blur-xl">
+            <div className="h-full p-10 bg-white/80 dark:bg-[#1C261F]/80 border-2 border-[var(--border)] rounded-[40px] backdrop-blur-xl">
               <Rocket className="w-12 h-12 text-[var(--primary)] mb-6" />
               <h2 className="text-3xl font-extrabold text-[var(--text-primary)] mb-4">Our Vision</h2>
               <p className="text-[var(--text-muted)] leading-relaxed text-lg">

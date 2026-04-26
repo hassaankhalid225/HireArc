@@ -1,6 +1,6 @@
 "use client";
 import { FadeIn } from "@/components/ui/fade-in";
-import { ShieldCheck, Lock, Eye, FileText, Clock } from "lucide-react";
+import { Shield, Lock, Eye, FileText, Clock } from "lucide-react";
 
 export default function PrivacyPage() {
   const sections = [
@@ -15,7 +15,7 @@ export default function PrivacyPage() {
       content: "We use industry-standard encryption and security measures to protect your personal data from unauthorized access, alteration, or disclosure. Your trust is our most valuable asset."
     },
     {
-      icon: <ShieldCheck className="w-6 h-6" />,
+      icon: <Shield className="w-6 h-6" />,
       title: "Your Choices",
       content: "You have the right to access, update, or delete your personal information at any time. You can also manage your communication preferences through your account settings."
     }
@@ -29,7 +29,7 @@ export default function PrivacyPage() {
           <FadeIn>
             <div className="flex items-center gap-4 mb-6">
               <div className="w-12 h-12 rounded-2xl bg-[#678D63]/10 flex items-center justify-center text-[var(--primary)]">
-                <ShieldCheck className="w-7 h-7" />
+                <Shield className="w-7 h-7" />
               </div>
               <h1 className="text-4xl font-extrabold font-headline text-[var(--text-primary)] tracking-tight">Privacy Policy</h1>
             </div>
@@ -51,7 +51,7 @@ export default function PrivacyPage() {
               
               <div className="grid md:grid-cols-3 gap-6 mb-12">
                 {sections.map((sec, i) => (
-                  <div key={i} className="p-6 bg-white/50 dark:bg-white/5 border border-[var(--border)] rounded-2xl backdrop-blur-xl hover:border-[#678D63]/30 transition-all group">
+                  <div key={i} className="p-6 bg-white/50 dark:bg-white/5 border-2 border-[var(--border)] rounded-2xl backdrop-blur-xl hover:border-[#678D63]/30 transition-all group">
                     <div className="text-[var(--primary)] mb-4 group-hover:scale-110 transition-transform">{sec.icon}</div>
                     <h3 className="font-bold text-[var(--text-primary)] mb-2">{sec.title}</h3>
                     <p className="text-sm text-[var(--text-muted)] leading-relaxed">{sec.content}</p>

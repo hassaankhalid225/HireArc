@@ -13,11 +13,11 @@ export default function MessagesPage() {
       <Card className="flex-1 border-[var(--border)] shadow-sm flex overflow-hidden">
         {/* Chat List */}
         <div className="w-[300px] border-r border-[var(--border)] bg-[var(--bg-base)] overflow-y-auto">
-          <div className="p-4 border-b border-[var(--border)]">
+          <div className="p-4 border-b-2 border-[var(--border)]">
             <input 
               type="text" 
               placeholder="Search messages..." 
-              className="w-full h-10 px-3 rounded-md border border-[var(--border)] bg-white dark:bg-[var(--bg-card)] outline-none text-sm"
+              className="w-full h-10 px-3 rounded-md border-2 border-[var(--border)] bg-white dark:bg-[var(--bg-card)] outline-none text-sm"
             />
           </div>
           
@@ -26,7 +26,7 @@ export default function MessagesPage() {
             { name: "Figma Team", role: "Product", time: "Yesterday", active: false },
             { name: "Airbnb Careers", role: "Design", time: "Oct 15", active: false },
           ].map((chat, i) => (
-            <div key={i} className={`p-4 border-b border-[var(--border)] cursor-pointer transition-colors ${chat.active ? 'bg-white dark:bg-[var(--bg-card)] border-l-4 border-l-blue-600' : 'hover:bg-white/50 dark:hover:bg-[var(--bg-card)]/50 border-l-4 border-l-transparent'}`}>
+            <div key={i} className={`p-4 border-b-2 border-[var(--border)] cursor-pointer transition-colors ${chat.active ? 'bg-white dark:bg-[var(--bg-card)] border-l-4 border-l-blue-600' : 'hover:bg-white/50 dark:hover:bg-[var(--bg-card)]/50 border-l-4 border-l-transparent'}`}>
               <div className="flex justify-between items-start mb-1">
                 <span className="font-bold text-sm text-[var(--text-primary)]">{chat.name}</span>
                 <span className="text-[10px] text-[var(--text-muted)] font-medium">{chat.time}</span>
@@ -39,7 +39,7 @@ export default function MessagesPage() {
         {/* Chat Window */}
         <div className="flex-1 flex flex-col bg-white dark:bg-[var(--bg-card)]">
           {/* Chat Header */}
-          <div className="h-[72px] border-b border-[var(--border)] px-6 flex items-center justify-between">
+          <div className="h-[72px] border-b-2 border-[var(--border)] px-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">G</div>
               <div>
@@ -78,7 +78,7 @@ export default function MessagesPage() {
           </div>
 
           {/* Input Area */}
-          <div className="p-4 border-t border-[var(--border)] bg-[var(--bg-base)]">
+          <div className="p-4 border-t-2 border-[var(--border)] bg-[var(--bg-base)]">
             <div className="flex gap-2">
               <button className="w-10 h-10 flex items-center justify-center text-[var(--text-secondary)] hover:text-blue-600 transition-colors">
                 <Paperclip className="w-5 h-5" />
@@ -86,7 +86,7 @@ export default function MessagesPage() {
               <input 
                 type="text" 
                 placeholder="Type your message..." 
-                className="flex-1 h-10 px-4 rounded-full border border-[var(--border)] bg-white dark:bg-[var(--bg-card)] outline-none text-sm"
+                className="flex-1 h-10 px-4 rounded-full border-2 border-[var(--border)] bg-white dark:bg-[var(--bg-card)] outline-none text-sm"
               />
               <Button className="h-10 px-6 bg-blue-600 hover:bg-blue-700 rounded-full">Send</Button>
             </div>

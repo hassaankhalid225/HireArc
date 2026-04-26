@@ -1,7 +1,7 @@
 "use client";
 import { Search, MapPin } from "lucide-react";
 import { FadeIn } from "@/components/ui/fade-in";
-import JobSphereGlobe from "./JobSphereGlobe";
+import HireArcGlobe from "./HireArcGlobe";
 
 export default function Hero() {
   return (
@@ -65,7 +65,7 @@ export default function Hero() {
                 {/* Outer Glow */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/20 to-sage-500/20 rounded-[40px] blur-xl opacity-0 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
                 
-                <div className="relative bg-white dark:bg-[#1A2E26] p-2 rounded-[32px] shadow-2xl flex flex-col md:flex-row gap-2 hover:translate-y-[-2px] transition-all duration-500 border border-[var(--border)] dark:border-white/10">
+                <div className="relative bg-white dark:bg-[#1A2E26] p-2 rounded-[32px] shadow-2xl flex flex-col md:flex-row gap-2 hover:translate-y-[-2px] transition-all duration-500 border-2 border-[var(--border)] dark:border-white/10">
                   <div className="flex-1 flex items-center gap-3 px-6 py-4">
                     <Search className="w-5 h-5 text-gray-400" />
                     <input 
@@ -109,7 +109,7 @@ export default function Hero() {
               <div className="relative">
                 {/* Ambient Glow behind the globe */}
                 <div className="absolute inset-0 bg-emerald-500/15 rounded-full blur-[80px] -z-10 scale-75" />
-                <JobSphereGlobe size={480} />
+                <HireArcGlobe size={480} />
               </div>
             </FadeIn>
           </div>

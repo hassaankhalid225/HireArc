@@ -14,14 +14,16 @@ interface User {
   id: string;
   name: string;
   email: string;
-  avatar?: string;
-  role: string;
+  avatar_url?: string;
+  provider?: string;
+  role?: string;
 }
 
 interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
-  login: (userData: User) => void;
+  loginGoogle: () => void;
+  loginGithub: () => void;
   logout: () => void;
   isLoading: boolean;
 }
@@ -29,7 +31,9 @@ interface AuthContextValue {
 // ─── Context ──────────────────────────────────────────────────────────────────
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const STORAGE_KEY = "HireArc_user";
+import { config } from "@/config";
+
+const BACKEND_URL = config.BACKEND_URL;
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -37,31 +41,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  // Rehydrate from localStorage
+  // Fetch user from backend on load
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
+    async function checkAuth() {
       try {
-        setUser(JSON.parse(stored));
-      } catch (e) {
-        localStorage.removeItem(STORAGE_KEY);
+        const res = await fetch(`${BACKEND_URL}/auth/me`, {
+          credentials: "include",
+        });
+        if (res.ok) {
+          const userData = await res.json();
+          setUser(userData);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Auth check failed:", error);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
       }
     }
-    setIsLoading(false);
+    checkAuth();
   }, []);
 
-  const login = useCallback((userData: User) => {
-    setUser(userData);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
-    router.push("/dashboard"); // or home
-  }, [router]);
+  const loginGoogle = useCallback(() => {
+    window.location.href = `${BACKEND_URL}/auth/google`;
+  }, []);
 
-  const logout = useCallback(() => {
-    setUser(null);
-    localStorage.removeItem(STORAGE_KEY);
-    router.push("/");
-    // Reload to clear all states if necessary, or just rely on state
-    window.location.reload(); 
+  const loginGithub = useCallback(() => {
+    window.location.href = `${BACKEND_URL}/auth/github`;
+  }, []);
+
+  const logout = useCallback(async () => {
+    try {
+      await fetch(`${BACKEND_URL}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Logout failed:", err);
+    } finally {
+      setUser(null);
+      router.push("/");
+      router.refresh();
+    }
   }, [router]);
 
   return (
@@ -69,7 +92,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         isAuthenticated: !!user,
-        login,
+        loginGoogle,
+        loginGithub,
         logout,
         isLoading,
       }}

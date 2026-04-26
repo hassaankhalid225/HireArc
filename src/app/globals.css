@@ -29,8 +29,8 @@
   /* Slate 700 */
   --text-muted: #6B7280;
   /* Slate 500 */
-  --border: #D1D5DB;
-  /* Gray 300 - Darker for better visibility */
+  --border: #CBD5E1;
+  /* Slate 300 - Slightly darker and more distinct in light mode */
   --border-hover: #9CA3AF;
   /* Gray 400 */
   --ring: #2D4A3E;

@@ -14,7 +14,7 @@ export default function ProfilePage() {
         
         {/* Header Section */}
         <FadeIn direction="down">
-          <div className="bg-white dark:bg-[var(--bg-card)] border border-[var(--border)] rounded-[40px] overflow-hidden mb-8 shadow-sm">
+          <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-[40px] overflow-hidden mb-8 shadow-sm">
             <div className="h-48 bg-gradient-to-r from-[#2E4633] via-[#446644] to-[#678D63] relative">
               <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
             </div>
@@ -65,7 +65,7 @@ export default function ProfilePage() {
             
             {/* About Section */}
             <FadeIn delay={0.1} direction="up">
-              <div className="bg-white dark:bg-[var(--bg-card)] border border-[var(--border)] rounded-[32px] p-8 shadow-sm">
+              <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-[32px] p-8 shadow-sm">
                 <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                   <Shield className="w-6 h-6 text-[var(--primary)]" /> About Me
                 </h2>
@@ -74,7 +74,7 @@ export default function ProfilePage() {
                 </p>
                 <div className="mt-8 flex flex-wrap gap-2">
                   {['Product Design', 'UI/UX', 'Design Systems', 'Figma', 'React', 'User Research'].map(skill => (
-                    <Badge key={skill} variant="secondary" className="bg-[#F8FAFC] dark:bg-white/5 text-[var(--text-secondary)] px-4 py-1.5 rounded-xl border border-[var(--border)]">
+                    <Badge key={skill} variant="secondary" className="bg-[#F8FAFC] dark:bg-white/5 text-[var(--text-secondary)] px-4 py-1.5 rounded-xl border-2 border-[var(--border)]">
                       {skill}
                     </Badge>
                   ))}
@@ -84,7 +84,7 @@ export default function ProfilePage() {
 
             {/* Experience Section */}
             <FadeIn delay={0.2} direction="up">
-              <div className="bg-white dark:bg-[var(--bg-card)] border border-[var(--border)] rounded-[32px] p-8 shadow-sm">
+              <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-[32px] p-8 shadow-sm">
                 <h2 className="text-xl font-bold mb-8 flex items-center gap-2">
                   <Briefcase className="w-6 h-6 text-[var(--primary)]" /> Experience
                 </h2>
@@ -123,7 +123,7 @@ export default function ProfilePage() {
             
             {/* Contact Info */}
             <FadeIn delay={0.3} direction="left">
-              <div className="bg-white dark:bg-[var(--bg-card)] border border-[var(--border)] rounded-[32px] p-8 shadow-sm">
+              <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-[32px] p-8 shadow-sm">
                 <h3 className="text-lg font-bold mb-6">Contact Information</h3>
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
@@ -159,7 +159,7 @@ export default function ProfilePage() {
 
             {/* Certifications */}
             <FadeIn delay={0.4} direction="left">
-              <div className="bg-white dark:bg-[var(--bg-card)] border border-[var(--border)] rounded-[32px] p-8 shadow-sm">
+              <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-[32px] p-8 shadow-sm">
                 <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
                   <Award className="w-5 h-5 text-yellow-500" /> Certifications
                 </h3>

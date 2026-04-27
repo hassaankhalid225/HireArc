@@ -102,13 +102,18 @@ function AppliedBanner({ company }: { company: string }) {
   );
 }
 
+import React from "react";
+
 // ─── Main Page ─────────────────────────────────────────────────────────────────
 export default function JobDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const resolvedParams = React.use(params);
+  const id = resolvedParams.id;
   const router = useRouter();
+
   const { applyJob, isApplied } = useAppliedJobs();
 
   const [job, setJob] = useState<Job | null>(null);
@@ -116,14 +121,13 @@ export default function JobDetailPage({
   const [showPopup, setShowPopup] = useState(false);
   const [justApplied, setJustApplied] = useState(false);
 
-  // Track whether this is a return visit (already visited before)
-  const VISITED_KEY = `HireArc_visited_job_${params.id}`;
+  const VISITED_KEY = `HireArc_visited_job_${id}`;
   const hasMarkedVisit = useRef(false);
 
   useEffect(() => {
     async function loadJob() {
       try {
-        const data = await jobsService.getJob(params.id);
+        const data = await jobsService.getJob(id);
         setJob(data);
       } catch (error) {
         console.error("Failed to load job:", error);
@@ -132,7 +136,7 @@ export default function JobDetailPage({
       }
     }
     loadJob();
-  }, [params.id]);
+  }, [id]);
 
   // After job loads, check for return visit
   useEffect(() => {

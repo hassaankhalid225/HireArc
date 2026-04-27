@@ -9,7 +9,7 @@ import {
   Megaphone, Shield, Database, Layout, Briefcase, Rocket, 
   Zap, Target, Users, Bookmark, Bell, Globe, Check
 } from "lucide-react";
-import { useLanguage, useAuth } from "@/hooks";
+import { useLanguage, useAuth, useNotifications } from "@/hooks";
 import { LANGUAGES } from "@/lib/i18n";
 
 const COMPANIES = [
@@ -50,7 +50,8 @@ export default function Navbar() {
   const navRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const { lang, setLang, currentLanguage } = useLanguage();
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, isLoading } = useAuth();
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   // Only the home page has a dark hero — every other page needs a solid navbar
   const isHome = pathname === "/";
@@ -303,24 +304,44 @@ export default function Navbar() {
                 <div className={`${dropdownCls} w-80`}>
                   <div className="px-4 py-3 border-b-2 border-[var(--border)] dark:border-white/5 flex items-center justify-between">
                     <p className="text-sm font-bold text-[var(--text-primary)]">Notifications</p>
-                    <span className="text-xs font-medium text-[var(--primary)] bg-[#F0FDF4] dark:bg-white/10 px-2 py-0.5 rounded-full">
-                      {unreadCount} new
-                    </span>
+                    <div className="flex items-center gap-2">
+                      {unreadCount > 0 && (
+                        <button 
+                          onClick={markAllAsRead}
+                          className="text-[10px] font-bold text-[var(--primary)] hover:underline"
+                        >
+                          Mark all read
+                        </button>
+                      )}
+                      <span className="text-xs font-medium text-[var(--primary)] bg-[#F0FDF4] dark:bg-white/10 px-2 py-0.5 rounded-full">
+                        {unreadCount} new
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex flex-col">
-                    {NOTIFICATIONS.map((n) => (
-                      <button
-                        key={n.id}
-                        className={`flex items-start gap-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${n.unread ? "bg-[#F0FDF4]/60 dark:bg-white/[0.03]" : ""}`}
-                      >
-                        <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${n.unread ? "bg-[#678D63]" : "bg-gray-200 dark:bg-white/10"}`} />
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{n.title}</p>
-                          <p className="text-xs text-[var(--text-muted)] truncate">{n.desc}</p>
-                          <p className="text-[10px] text-[var(--text-muted)] mt-0.5">{n.time}</p>
-                        </div>
-                      </button>
-                    ))}
+                  <div className="flex flex-col max-h-[400px] overflow-y-auto scrollbar-hide">
+                    {notifications.length > 0 ? (
+                      notifications.map((n) => (
+                        <button
+                          key={n.id}
+                          onClick={() => {
+                            markAsRead(n.id);
+                            setActiveDropdown(null);
+                          }}
+                          className={`flex items-start gap-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${n.unread ? "bg-[#F0FDF4]/60 dark:bg-white/[0.03]" : ""}`}
+                        >
+                          <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${n.unread ? "bg-[#678D63]" : "bg-gray-200 dark:bg-white/10"}`} />
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{n.title}</p>
+                            <p className="text-xs text-[var(--text-muted)] truncate">{n.description}</p>
+                            <p className="text-[10px] text-[var(--text-muted)] mt-0.5">{n.time || "Just now"}</p>
+                          </div>
+                        </button>
+                      ))
+                    ) : (
+                      <div className="p-8 text-center text-sm text-[var(--text-muted)]">
+                        No notifications yet
+                      </div>
+                    )}
                   </div>
                   <div className="px-4 py-2.5 border-t-2 border-[var(--border)] dark:border-white/5">
                     <Link
@@ -348,109 +369,111 @@ export default function Navbar() {
           )}
 
           {/* ── Profile (icon only) ── */}
-          {mounted && isAuthenticated ? (
-            <div className="relative ml-1">
-              <button
-                onClick={() => toggleDropdown("user")}
-                className="group cursor-pointer"
-                aria-label="User menu"
-              >
-                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] border-2 border-white/50 dark:border-[#3E5F43] shadow-md flex items-center justify-center text-white text-sm font-bold overflow-hidden transition-all duration-200 group-hover:scale-110 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-[#678D63]/40">
-                  {user?.name?.split(" ").map(n => n[0]).join("") || "HK"}
-                </div>
-              </button>
-
-              {activeDropdown === "user" && (
-                <div className={`${dropdownCls} w-60`}>
-                  {/* User info */}
-                  <div className="px-4 py-3.5 border-b-2 border-[var(--border)] dark:border-white/5 flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                      {user?.name?.split(" ").map(n => n[0]).join("") || "HK"}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-bold text-[var(--text-primary)] truncate">{user?.name || "User"}</p>
-                      <p className="text-[11px] text-[var(--text-muted)] truncate">{user?.email || "user@example.com"}</p>
-                    </div>
+          {mounted && !isLoading && (
+            isAuthenticated ? (
+              <div className="relative ml-1">
+                <button
+                  onClick={() => toggleDropdown("user")}
+                  className="group cursor-pointer"
+                  aria-label="User menu"
+                >
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] border-2 border-white/50 dark:border-[#3E5F43] shadow-md flex items-center justify-center text-white text-sm font-bold overflow-hidden transition-all duration-200 group-hover:scale-110 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-[#678D63]/40">
+                    {user?.name?.split(" ").map(n => n[0]).join("") || "HK"}
                   </div>
+                </button>
 
-                  {/* Notifications mini */}
-                  <div className="px-4 py-2.5 border-b-2 border-[var(--border)] dark:border-white/5">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Notifications</p>
-                      {unreadCount > 0 && (
-                        <span className="text-[10px] font-bold text-[var(--primary)] bg-[#F0FDF4] dark:bg-white/10 px-1.5 py-0.5 rounded-full">
-                          {unreadCount} new
-                        </span>
-                      )}
-                    </div>
-                    {NOTIFICATIONS.slice(0, 2).map((n) => (
-                      <div key={n.id} className="flex items-center gap-2 py-1">
-                        <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${n.unread ? "bg-[#678D63]" : "bg-gray-300 dark:bg-white/20"}`} />
-                        <p className="text-xs text-[var(--text-secondary)] truncate">{n.title}</p>
+                {activeDropdown === "user" && (
+                  <div className={`${dropdownCls} w-60`}>
+                    {/* User info */}
+                    <div className="px-4 py-3.5 border-b-2 border-[var(--border)] dark:border-white/5 flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                        {user?.name?.split(" ").map(n => n[0]).join("") || "HK"}
                       </div>
-                    ))}
-                    <Link
-                      href="/notifications"
-                      className="text-[11px] font-semibold text-[var(--primary)] hover:underline mt-1 inline-block"
-                      onClick={() => setActiveDropdown(null)}
-                    >
-                      See all &rarr;
-                    </Link>
-                  </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-[var(--text-primary)] truncate">{user?.name || "User"}</p>
+                        <p className="text-[11px] text-[var(--text-muted)] truncate">{user?.email || "user@example.com"}</p>
+                      </div>
+                    </div>
 
-                  {/* Nav links */}
-                  <div className="py-1.5 px-2">
-                    {[
-                      { name: "Dashboard",     icon: <BarChart className="w-4 h-4" />, href: "/dashboard" },
-                      { name: "My Profile",    icon: <Users className="w-4 h-4" />,    href: "/profile" },
-                      { name: "Edit Profile",  icon: <Target className="w-4 h-4" />,   href: "/profile/edit" },
-                      { name: "Saved Jobs",    icon: <Bookmark className="w-4 h-4" />, href: "/saved-jobs" },
-                      { name: "Applied Jobs",  icon: <Zap className="w-4 h-4" />,      href: "/applied-jobs" },
-                      { name: "Settings",      icon: <Layout className="w-4 h-4" />,   href: "/settings" },
-                    ].map((item) => (
+                    {/* Notifications mini */}
+                    <div className="px-4 py-2.5 border-b-2 border-[var(--border)] dark:border-white/5">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Notifications</p>
+                        {unreadCount > 0 && (
+                          <span className="text-[10px] font-bold text-[var(--primary)] bg-[#F0FDF4] dark:bg-white/10 px-1.5 py-0.5 rounded-full">
+                            {unreadCount} new
+                          </span>
+                        )}
+                      </div>
+                      {notifications.slice(0, 2).map((n) => (
+                        <div key={n.id} className="flex items-center gap-2 py-1">
+                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${n.unread ? "bg-[#678D63]" : "bg-gray-300 dark:bg-white/20"}`} />
+                          <p className="text-xs text-[var(--text-secondary)] truncate">{n.title}</p>
+                        </div>
+                      ))}
                       <Link
-                        key={item.name}
-                        href={item.href}
-                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[#F0FDF4] hover:text-[#166534] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
+                        href="/notifications"
+                        className="text-[11px] font-semibold text-[var(--primary)] hover:underline mt-1 inline-block"
                         onClick={() => setActiveDropdown(null)}
                       >
-                        <span className="text-[#678D63]">{item.icon}</span>
-                        {item.name}
+                        See all &rarr;
                       </Link>
-                    ))}
-                  </div>
+                    </div>
 
-                  {/* Sign out */}
-                  <div className="border-t-2 border-[var(--border)] dark:border-white/5 px-2 pb-2 pt-1">
-                    <button
-                      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
-                      onClick={() => {
-                        setActiveDropdown(null);
-                        logout();
-                      }}
-                    >
-                      <Rocket className="w-4 h-4 rotate-180" />
-                      Sign Out
-                    </button>
+                    {/* Nav links */}
+                    <div className="py-1.5 px-2">
+                      {[
+                        { name: "Dashboard",     icon: <BarChart className="w-4 h-4" />, href: "/dashboard" },
+                        { name: "My Profile",    icon: <Users className="w-4 h-4" />,    href: "/profile" },
+                        { name: "Edit Profile",  icon: <Target className="w-4 h-4" />,   href: "/profile/edit" },
+                        { name: "Saved Jobs",    icon: <Bookmark className="w-4 h-4" />, href: "/saved-jobs" },
+                        { name: "Applied Jobs",  icon: <Zap className="w-4 h-4" />,      href: "/applied-jobs" },
+                        { name: "Settings",      icon: <Layout className="w-4 h-4" />,   href: "/settings" },
+                      ].map((item) => (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[#F0FDF4] hover:text-[#166534] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
+                          onClick={() => setActiveDropdown(null)}
+                        >
+                          <span className="text-[#678D63]">{item.icon}</span>
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+
+                    {/* Sign out */}
+                    <div className="border-t-2 border-[var(--border)] dark:border-white/5 px-2 pb-2 pt-1">
+                      <button
+                        className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                        onClick={() => {
+                          setActiveDropdown(null);
+                          logout();
+                        }}
+                      >
+                        <Rocket className="w-4 h-4 rotate-180" />
+                        Sign Out
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="flex items-center gap-3 ml-2">
-              <Link 
-                href="/login" 
-                className={`text-sm font-bold transition-all ${isDark ? "text-white/80 hover:text-white" : "text-[var(--text-secondary)] hover:text-[var(--primary)]"}`}
-              >
-                Log In
-              </Link>
-              <Link 
-                href="/signup" 
-                className="btn btn-primary h-10 px-5 text-sm"
-              >
-                Join Now
-              </Link>
-            </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-3 ml-2">
+                <Link 
+                  href="/login" 
+                  className={`text-sm font-bold transition-all ${isDark ? "text-white/80 hover:text-white" : "text-[var(--text-secondary)] hover:text-[var(--primary)]"}`}
+                >
+                  Log In
+                </Link>
+                <Link 
+                  href="/signup" 
+                  className="btn btn-primary h-10 px-5 text-sm"
+                >
+                  Join Now
+                </Link>
+              </div>
+            )
           )}
         </div>
       </div>

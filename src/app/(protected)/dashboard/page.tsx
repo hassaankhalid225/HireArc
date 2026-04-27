@@ -8,11 +8,11 @@ import Link from "next/link";
 import {
   Calendar, Send, Users, Bookmark, Eye, 
   ArrowUp, ArrowDown, Minus, MoreVertical, Sparkles,
-  Briefcase
+  Briefcase, Bell
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
-import { useAuth, useAppliedJobs, useSavedJobs } from "@/context";
+import { useAuth, useAppliedJobs, useSavedJobs, useNotifications } from "@/context";
 import { dashboardService, DashboardStats } from "@/services/dashboard.service";
 import { jobsService } from "@/services/jobs.service";
 import { Job } from "@/types";
@@ -21,6 +21,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const { count: appliedCount, appliedJobs } = useAppliedJobs();
   const { count: savedCount } = useSavedJobs();
+  const { notifications } = useNotifications();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recommendedJobs, setRecommendedJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -265,6 +266,34 @@ export default function DashboardPage() {
         {/* Right Column (Sidebar cards) */}
         <div className="space-y-8">
           
+          {/* Recent Activity / Notifications */}
+          <FadeIn delay={0.6} direction="left">
+            <Card className="shadow-sm bg-white dark:bg-white/5 border-2 border-[var(--border)] mb-8">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg font-bold font-headline flex items-center gap-2">
+                    <Bell className="w-5 h-5 text-[var(--primary)]" /> Recent Activity
+                  </h3>
+                  <Link href="/notifications" className="text-xs font-bold text-[var(--primary)] hover:underline">View All</Link>
+                </div>
+                <div className="space-y-4">
+                  {notifications.slice(0, 3).map((notif) => (
+                    <div key={notif.id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-[var(--bg-base)] transition-colors group">
+                      <div className="w-8 h-8 rounded-lg bg-[var(--primary)]/10 text-[var(--primary)] flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <Zap className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{notif.title}</p>
+                        <p className="text-xs text-[var(--text-muted)] line-clamp-2">{notif.description}</p>
+                        <p className="text-[10px] text-[var(--text-muted)] mt-1">{notif.time || "Just now"}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </FadeIn>
+
           {/* Recommended for You */}
           {recommendedJobs.length > 0 ? (
             <FadeIn delay={0.6} direction="left">

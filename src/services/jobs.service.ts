@@ -69,7 +69,7 @@ export const jobsService = {
     if (filter.pageSize) params.append("limit", String(filter.pageSize));
 
     const response = await apiClient.get<Record<string, unknown>>(
-      `/api/search?${params.toString()}`
+      `/search?${params.toString()}`
     );
 
     const rawJobs = Array.isArray(response.jobs) ? response.jobs : [];
@@ -89,7 +89,7 @@ export const jobsService = {
   /** Fetch a single job by ID, normalized */
   async getJob(id: string): Promise<Job> {
     const raw = await apiClient.get<Record<string, unknown>>(
-      `/api/jobs/${id}`
+      `/jobs/${id}`
     );
     return normalizeJob(raw);
   },

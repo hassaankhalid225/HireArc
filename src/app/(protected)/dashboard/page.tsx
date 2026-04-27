@@ -8,17 +8,19 @@ import Link from "next/link";
 import {
   Calendar, Send, Users, Bookmark, Eye, 
   ArrowUp, ArrowDown, Minus, MoreVertical, Sparkles,
-  Loader2, Briefcase
+  Briefcase
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth, useAppliedJobs, useSavedJobs } from "@/context";
 import { dashboardService, DashboardStats } from "@/services/dashboard.service";
 import { jobsService } from "@/services/jobs.service";
 import { Job } from "@/types";
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const { count: appliedCount, appliedJobs } = useAppliedJobs();
+  const { count: savedCount } = useSavedJobs();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recommendedJobs, setRecommendedJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -96,12 +98,13 @@ export default function DashboardPage() {
   const statCards = [
     { 
       title: "Total Applications", 
-      value: stats?.total_applications || 0, 
+      value: appliedCount,
       change: "+0%", 
       color: "text-[#678D63]", 
       bg: "bg-[#678D63]/10", 
       icon: <Send className="w-5 h-5" />,
-      neutral: true
+      neutral: true,
+      href: "/applied-jobs"
     },
     { 
       title: "Interviews", 
@@ -110,16 +113,18 @@ export default function DashboardPage() {
       color: "text-[#166534]", 
       bg: "bg-[#166534]/10", 
       icon: <Users className="w-5 h-5" />,
-      neutral: true
+      neutral: true,
+      href: "/applied-jobs"
     },
     { 
       title: "Saved Jobs", 
-      value: stats?.saved_jobs || 0, 
+      value: savedCount,
       change: "+0%", 
       color: "text-[#88A682]", 
       bg: "bg-[#88A682]/10", 
       icon: <Bookmark className="w-5 h-5" />, 
-      neutral: true 
+      neutral: true,
+      href: "/saved-jobs"
     },
     { 
       title: "Profile Views", 
@@ -128,7 +133,8 @@ export default function DashboardPage() {
       color: "text-[#4A6E46]", 
       bg: "bg-[#4A6E46]/10", 
       icon: <Eye className="w-5 h-5" />, 
-      neutral: true 
+      neutral: true,
+      href: "/profile"
     }
   ];
 
@@ -157,22 +163,24 @@ export default function DashboardPage() {
       <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat, i) => (
           <StaggerItem key={i}>
-            <Card className="border-2 border-[var(--border)] shadow-sm hover:shadow-premium-sm transition-all hover:-translate-y-1 duration-300 bg-white dark:bg-white/5">
-              <CardContent className="p-5 flex flex-col justify-between h-full">
-                <div className="flex justify-between items-start mb-4">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.bg} ${stat.color}`}>
-                    {stat.icon}
+            <Link href={stat.href}>
+              <Card className="border-2 border-[var(--border)] shadow-sm hover:shadow-premium-sm transition-all hover:-translate-y-1 duration-300 bg-white dark:bg-white/5 cursor-pointer">
+                <CardContent className="p-5 flex flex-col justify-between h-full">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.bg} ${stat.color}`}>
+                      {stat.icon}
+                    </div>
+                    <span className={`flex items-center gap-1 text-xs font-bold ${stat.neutral ? 'text-gray-400' : 'text-[#678D63]'}`}>
+                      {stat.change} <Minus className="w-3 h-3" />
+                    </span>
                   </div>
-                  <span className={`flex items-center gap-1 text-xs font-bold ${stat.neutral ? 'text-gray-400' : 'text-[#678D63]'}`}>
-                    {stat.change} <Minus className="w-3 h-3" />
-                  </span>
-                </div>
-                <div>
-                  <h3 className="text-sm font-medium text-[var(--text-secondary)] mb-1">{stat.title}</h3>
-                  <p className="text-3xl font-bold font-headline">{stat.value}</p>
-                </div>
-              </CardContent>
-            </Card>
+                  <div>
+                    <h3 className="text-sm font-medium text-[var(--text-secondary)] mb-1">{stat.title}</h3>
+                    <p className="text-3xl font-bold font-headline">{stat.value}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           </StaggerItem>
         ))}
       </StaggerContainer>
@@ -183,14 +191,14 @@ export default function DashboardPage() {
         {/* Left Column (Tables & Activity) */}
         <div className="lg:col-span-2 space-y-8">
           
-          {/* Application Status */}
-          {stats?.recent_applications && stats.recent_applications.length > 0 ? (
+          {/* Application Status — from localStorage context */}
+          {appliedJobs.length > 0 ? (
             <FadeIn delay={0.4} direction="up">
               <Card className="shadow-sm bg-white dark:bg-white/5 overflow-hidden border-2 border-[var(--border)]">
                 <CardContent className="p-0">
                   <div className="p-6 border-b-2 border-[var(--border)] flex justify-between items-center">
                     <h3 className="text-lg font-bold font-headline">Application Status</h3>
-                    <Link href="/dashboard/applied-jobs" className="text-sm font-bold text-[var(--primary)] hover:underline">View All</Link>
+                    <Link href="/applied-jobs" className="text-sm font-bold text-[var(--primary)] hover:underline">View All</Link>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
@@ -199,12 +207,12 @@ export default function DashboardPage() {
                           <th className="px-6 py-4 font-bold">Company</th>
                           <th className="px-6 py-4 font-bold">Position</th>
                           <th className="px-6 py-4 font-bold">Status</th>
-                          <th className="px-6 py-4 font-bold">Date</th>
+                          <th className="px-6 py-4 font-bold">Applied</th>
                           <th className="px-6 py-4 font-bold text-right"></th>
                         </tr>
                       </thead>
                       <tbody className="divide-y-2 divide-[var(--border)]">
-                        {stats.recent_applications.map((app: any, i: number) => (
+                        {appliedJobs.slice(0, 5).map((app, i) => (
                           <tr key={i} className="hover:bg-[var(--bg-base)] transition-colors group">
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-3">
@@ -214,15 +222,19 @@ export default function DashboardPage() {
                                 <span className="font-semibold group-hover:text-[var(--primary)] transition-colors">{app.company}</span>
                               </div>
                             </td>
-                            <td className="px-6 py-4 text-[var(--text-secondary)] font-medium">{app.title}</td>
+                            <td className="px-6 py-4 text-[var(--text-secondary)] font-medium line-clamp-1 max-w-[200px]">{app.title}</td>
                             <td className="px-6 py-4">
-                              <span className={`px-3 py-1 rounded-full text-xs font-bold bg-[#678D63]/10 text-[#166534]`}>
-                                {app.status}
+                              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#678D63]/10 text-[#166534] capitalize">
+                                {app.status.replace("_", " ")}
                               </span>
                             </td>
-                            <td className="px-6 py-4 text-[var(--text-secondary)]">{new Date(app.date).toLocaleDateString()}</td>
-                            <td className="px-6 py-4 text-right text-[var(--text-muted)] cursor-pointer hover:text-[var(--text-primary)] flex justify-end">
-                              <MoreVertical className="w-4 h-4" />
+                            <td className="px-6 py-4 text-[var(--text-secondary)]">
+                              {new Date(app.appliedAt).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <Link href={`/jobs/${app.job_id}`} className="text-xs font-bold text-[var(--primary)] hover:underline">
+                                View →
+                              </Link>
                             </td>
                           </tr>
                         ))}
@@ -270,18 +282,20 @@ export default function DashboardPage() {
                           </div>
                           <div>
                             <h4 className="font-bold text-sm text-[var(--text-primary)] group-hover:text-[var(--primary)] transition-colors line-clamp-1">{job.title}</h4>
-                            <p className="text-xs text-[var(--text-secondary)] font-medium">{job.company} • {job.location}</p>
+                            <p className="text-xs text-[var(--text-secondary)] font-medium">{job.company}{job.location ? ` • ${job.location}` : ""}</p>
                           </div>
                         </div>
                         <div className="flex flex-wrap gap-2 mb-4">
-                          {job.salary_max && (
+                          {job.salary_max && job.salary_min && (
                             <Badge variant="secondary" className="text-[10px] bg-[#678D63]/10 text-[#166534] dark:bg-green-900/30 dark:text-green-300 py-0.5 px-2 border-none font-bold">
-                              ${Math.round(job.salary_min!/1000)}k - ${Math.round(job.salary_max!/1000)}k
+                              ${Math.round(job.salary_min/1000)}k – ${Math.round(job.salary_max/1000)}k
                             </Badge>
                           )}
-                          <Badge variant="secondary" className="text-[10px] bg-[#678D63]/5 text-[#678D63] dark:bg-green-900/10 dark:text-green-400 py-0.5 px-2 border-none font-bold">
-                            {job.job_type}
-                          </Badge>
+                          {job.job_type && (
+                            <Badge variant="secondary" className="text-[10px] bg-[#678D63]/5 text-[#678D63] dark:bg-green-900/10 dark:text-green-400 py-0.5 px-2 border-none font-bold capitalize">
+                              {job.job_type}
+                            </Badge>
+                          )}
                         </div>
                         <Link href={`/jobs/${job.job_id}`}>
                           <Button className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white h-9 text-xs font-bold transition-all duration-300 rounded-lg active:scale-[0.98]">

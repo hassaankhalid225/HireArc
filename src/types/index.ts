@@ -1,23 +1,20 @@
 // ─── Job Types ────────────────────────────────────────────────────────────────
 export interface Job {
-  id?: number;
   job_id: string;
   title: string;
   company: string;
   location: string;
-  type?: string;
-  job_type?: string;
-  salary?: string;
-  salary_min?: number;
-  salary_max?: number;
-  isRemote?: boolean;
+  job_type?: string | null;
+  salary_min?: number | null;
+  salary_max?: number | null;
   is_remote?: boolean;
-  posted?: string;
-  posted_at?: string;
+  posted_at?: string | null;
   source: string;
-  description?: string;
-  tags?: string[];
-  logoUrl?: string;
+  description?: string | null;
+  tags?: string[] | null;
+  apply_link?: string | null;
+  experience_level?: string | null;
+  country?: string | null;
 }
 
 // ─── User Types ───────────────────────────────────────────────────────────────
@@ -69,9 +66,15 @@ export type ApplicationStatus =
   | "rejected"
   | "offer";
 
-export interface JobApplication {
-  jobId: number;
-  appliedAt: string;
+export interface AppliedJob {
+  job_id: string;
+  title: string;
+  company: string;
+  location?: string | null;
+  job_type?: string | null;
+  apply_link?: string | null;
+  source: string;
+  appliedAt: string; // ISO string
   status: ApplicationStatus;
 }
 

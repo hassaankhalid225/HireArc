@@ -11,10 +11,10 @@ import type { Job } from "@/types";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface SavedJobsContextValue {
-  savedIds: Set<number>;
+  savedIds: Set<string>;
   savedJobs: Job[];
   toggleSave: (job: Job) => void;
-  isSaved: (id: number) => boolean;
+  isSaved: (job_id: string) => boolean;
   clearAll: () => void;
   count: number;
 }
@@ -43,17 +43,17 @@ export function SavedJobsProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(savedJobs));
   }, [savedJobs]);
 
-  const savedIds = new Set(savedJobs.map((j) => j.id));
+  const savedIds = new Set(savedJobs.map((j) => j.job_id));
 
   const toggleSave = useCallback((job: Job) => {
     setSavedJobs((prev) => {
-      const exists = prev.some((j) => j.id === job.id);
-      return exists ? prev.filter((j) => j.id !== job.id) : [...prev, job];
+      const exists = prev.some((j) => j.job_id === job.job_id);
+      return exists ? prev.filter((j) => j.job_id !== job.job_id) : [...prev, job];
     });
   }, []);
 
   const isSaved = useCallback(
-    (id: number) => savedIds.has(id),
+    (job_id: string) => savedIds.has(job_id),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [savedJobs]
   );

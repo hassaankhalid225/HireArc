@@ -5,16 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
 import Link from "next/link";
-import { Search, MapPin, Bookmark, Users, Loader2 } from "lucide-react";
+import { Search, MapPin, Bookmark, Users } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { jobsService, JobsFilter } from "@/services/jobs.service";
 import { Job } from "@/types";
+import { useSavedJobs } from "@/context";
 
 export default function SearchPage() {
+  const { toggleSave, isSaved } = useSavedJobs();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [totalJobs, setTotalJobs] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -184,10 +185,15 @@ export default function SearchPage() {
                               <div className="flex justify-between items-start mb-1">
                                 <h3 className="text-xl font-bold group-hover:text-[var(--primary)] transition-colors line-clamp-1">{job.title}</h3>
                                 <button 
-                                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                                  className="text-gray-400 hover:text-[var(--primary)] relative z-20 p-1"
+                                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleSave(job); }}
+                                  className={`relative z-20 p-1 transition-colors ${
+                                    isSaved(job.job_id)
+                                      ? "text-[var(--primary)]"
+                                      : "text-gray-400 hover:text-[var(--primary)]"
+                                  }`}
+                                  title={isSaved(job.job_id) ? "Unsave job" : "Save job"}
                                 >
-                                  <Bookmark className="w-5 h-5" />
+                                  <Bookmark className={`w-5 h-5 ${isSaved(job.job_id) ? "fill-current" : ""}`} />
                                 </button>
                               </div>
                               <p className="text-sm text-[var(--text-secondary)] font-medium mb-3">{job.company} • {job.location}</p>
@@ -212,7 +218,7 @@ export default function SearchPage() {
                               </div>
                               
                               <div className="flex justify-between items-center text-xs text-[var(--text-muted)] pt-5 border-t-2 border-[var(--border)] font-bold uppercase tracking-wider">
-                                <span>{new Date(job.posted_at || job.posted || Date.now()).toLocaleDateString()}</span>
+                                <span>{job.posted_at ? new Date(job.posted_at).toLocaleDateString() : "Recent"}</span>
                                 <span className="flex items-center gap-1.5"><Users className="w-4 h-4" /> Actively Hiring</span>
                               </div>
                             </div>

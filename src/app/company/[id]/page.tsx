@@ -158,7 +158,7 @@ export default function CompanyProfile() {
                   <div className="flex justify-center p-8"><Loader2 className="w-8 h-8 animate-spin text-[var(--primary)]" /></div>
                 ) : companyJobs.length > 0 ? (
                   companyJobs.map((job) => (
-                    <StaggerItem key={job.job_id || job.id}>
+                    <StaggerItem key={job.job_id}>
                       <JobCard job={job} />
                     </StaggerItem>
                   ))

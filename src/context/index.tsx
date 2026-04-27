@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { LanguageProvider } from "./LanguageContext";
 import { SavedJobsProvider } from "./SavedJobsContext";
 import { AuthProvider } from "./AuthContext";
+import { AppliedJobsProvider } from "./AppliedJobsContext";
 
 /**
  * AppProviders — wraps all global context providers in one place.
@@ -13,7 +14,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
     <AuthProvider>
       <LanguageProvider>
         <SavedJobsProvider>
-          {children}
+          <AppliedJobsProvider>
+            {children}
+          </AppliedJobsProvider>
         </SavedJobsProvider>
       </LanguageProvider>
     </AuthProvider>
@@ -23,3 +26,4 @@ export function AppProviders({ children }: { children: ReactNode }) {
 export { useAuth } from "./AuthContext";
 export { useSavedJobs } from "./SavedJobsContext";
 export { useLanguage } from "./LanguageContext";
+export { useAppliedJobs } from "./AppliedJobsContext";

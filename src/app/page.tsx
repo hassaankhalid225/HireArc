@@ -82,7 +82,7 @@ export default async function Home() {
               {latestJobs.length > 0 ? (
                 <StaggerContainer className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                   {latestJobs.map((job) => (
-                    <StaggerItem key={job.job_id || job.id}>
+                    <StaggerItem key={job.job_id}>
                       <JobCard job={job} />
                     </StaggerItem>
                   ))}

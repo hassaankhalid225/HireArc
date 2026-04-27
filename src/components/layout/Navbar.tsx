@@ -50,7 +50,7 @@ export default function Navbar() {
   const navRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const { lang, setLang, currentLanguage } = useLanguage();
-  const { user, logout, isAuthenticated, login } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
 
   // Only the home page has a dark hero — every other page needs a solid navbar
   const isHome = pathname === "/";

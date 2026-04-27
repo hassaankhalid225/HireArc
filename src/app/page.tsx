@@ -3,7 +3,6 @@ import CompaniesSection from "@/components/home/CompaniesSection";
 import FieldsSection from "@/components/home/FieldsSection";
 import StatsSection from "@/components/home/StatsSection";
 import JobCard from "@/components/ui/JobCard";
-import { jobs } from "@/data/jobs";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
 import {
   Select,
@@ -12,8 +11,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { jobsService } from "@/services/jobs.service";
+import { apiClient } from "@/services/api";
+import Link from "next/link";
 
-export default function Home() {
+// Server Component
+export default async function Home() {
+  // Fetch real jobs and stats from backend
+  const [response, statsData] = await Promise.all([
+    jobsService.getJobs({ pageSize: 4 }).catch(() => null),
+    apiClient.get<any>("/stats").catch(() => null)
+  ]);
+  const latestJobs = response?.data || [];
+  const realStats = statsData || { total_jobs: 0, total_companies: 0, remote_jobs: 0 };
+
   return (
     <div>
       <Hero />
@@ -68,18 +79,26 @@ export default function Home() {
                 </div>
               </div>
 
-              <StaggerContainer className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                {jobs.slice(0, 4).map((job) => (
-                  <StaggerItem key={job.id}>
-                    <JobCard job={job} />
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
+              {latestJobs.length > 0 ? (
+                <StaggerContainer className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                  {latestJobs.map((job) => (
+                    <StaggerItem key={job.job_id || job.id}>
+                      <JobCard job={job} />
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+              ) : (
+                <div className="text-center py-10">
+                  <p className="text-[var(--text-muted)] font-bold">Checking for new jobs...</p>
+                </div>
+              )}
 
               <div className="text-center mt-12">
-                <button className="btn btn-primary h-14 px-10 text-base font-bold shadow-xl shadow-emerald-950/20 hover:scale-105 transition-transform">
-                  Explore 100,000+ Jobs
-                </button>
+                <Link href="/search">
+                  <button className="btn btn-primary h-14 px-10 text-base font-bold shadow-xl shadow-emerald-950/20 hover:scale-105 transition-transform">
+                    Explore 100,000+ Jobs
+                  </button>
+                </Link>
               </div>
             </div>
           </FadeIn>
@@ -88,7 +107,7 @@ export default function Home() {
 
       {/* Premium Stats + Features + Testimonials */}
       <div className="-mt-4">
-        <StatsSection />
+        <StatsSection stats={realStats} />
       </div>
     </div>
   );

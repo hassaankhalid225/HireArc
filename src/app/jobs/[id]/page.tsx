@@ -1,76 +1,166 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import Image from "next/image";
-import { Building, MapPin, Clock, Bookmark, Check, Leaf, ExternalLink, Banknote, Briefcase, Star, ArrowRight } from "lucide-react";
+import { Building, MapPin, Clock, Bookmark, Check, ExternalLink, Banknote, Briefcase, Loader2, ArrowRight } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { jobsService } from "@/services/jobs.service";
+import { Job } from "@/types";
+import { apiClient } from "@/services/api";
 
 export default function JobDetailPage({ params }: { params: { id: string } }) {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
+  const [job, setJob] = useState<Job | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleAuthAction = () => {
+  useEffect(() => {
+    async function loadJob() {
+      try {
+        const data = await jobsService.getJob(params.id);
+        setJob(data);
+      } catch (error) {
+        console.error("Failed to load job:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadJob();
+  }, [params.id]);
+
+  const handleApply = () => {
+    if (job?.apply_link) {
+      window.open(job.apply_link, "_blank");
+    }
+  };
+
+  const handleSaveJob = async () => {
     if (!isAuthenticated) {
       router.push("/login");
       return;
     }
-    // Proceed with action if authenticated
-    alert("Action triggered! API call can go here.");
+    try {
+      setIsSaving(true);
+      await apiClient.post(`/user/saved-jobs/${params.id}`, {});
+      alert("Job saved successfully!");
+    } catch (e) {
+      console.error(e);
+      alert("Error saving job");
+    } finally {
+      setIsSaving(false);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-base)] pt-24 pb-20">
+        <div className="container-custom mb-6">
+          <Skeleton className="h-4 w-1/4" />
+        </div>
+        <div className="container-custom max-w-5xl">
+          <Card className="mb-8 border-[var(--border)] overflow-hidden">
+            <CardContent className="p-8">
+              <div className="flex gap-6 items-center">
+                <Skeleton className="w-20 h-20 rounded-xl" />
+                <div className="flex-1 space-y-3">
+                  <Skeleton className="h-8 w-1/2" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <div className="flex gap-2">
+                    <Skeleton className="h-6 w-20" />
+                    <Skeleton className="h-6 w-24" />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="flex-1 space-y-8">
+              <div className="space-y-4">
+                <Skeleton className="h-6 w-1/3" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-full" />
+              </div>
+            </div>
+            <aside className="w-full lg:w-[320px] space-y-6">
+              <Skeleton className="h-48 w-full rounded-xl" />
+              <Skeleton className="h-64 w-full rounded-xl" />
+            </aside>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!job) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-base)] pt-24 pb-20 flex flex-col items-center justify-center gap-4">
+        <h1 className="text-2xl font-bold font-headline">Job Not Found</h1>
+        <p className="text-[var(--text-secondary)]">The job you are looking for does not exist or has been removed.</p>
+        <Button onClick={() => router.push("/search")} className="bg-[var(--primary)] text-white">Back to Jobs</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[var(--bg-base)] pt-24 pb-20">
-      
       {/* Breadcrumbs */}
       <div className="container-custom mb-6">
         <div className="text-sm text-[var(--text-secondary)] flex items-center gap-2">
-          <Link href="/jobs" className="hover:text-[var(--primary)] transition-colors">Jobs</Link>
+          <Link href="/search" className="hover:text-[var(--primary)] transition-colors">Jobs</Link>
           <span>›</span>
-          <Link href="/search" className="hover:text-[var(--primary)] transition-colors">Software Engineering</Link>
-          <span>›</span>
-          <span className="font-medium text-[var(--text-primary)]">Senior Software Engineer at Airbnb</span>
+          <span className="font-medium text-[var(--text-primary)]">{job.title} at {job.company}</span>
         </div>
       </div>
 
       <div className="container-custom max-w-5xl">
-        
         {/* Main Header Card */}
         <Card className="mb-8 border-[var(--border)] overflow-hidden">
           <CardContent className="p-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
               
               <div className="flex gap-6 items-center">
-                <div className="w-20 h-20 rounded-xl bg-white dark:bg-white/5 border-2 border-[var(--border)] flex items-center justify-center flex-shrink-0 shadow-premium-sm">
-                  {/* Placeholder for Airbnb Logo */}
-                  <span className="text-3xl font-bold text-red-500">A</span>
+                <div className="w-20 h-20 rounded-xl bg-[#678D63]/10 border-2 border-[var(--border)] flex items-center justify-center flex-shrink-0 shadow-premium-sm text-[#166534]">
+                  <span className="text-3xl font-bold uppercase">{job.company.substring(0, 2)}</span>
                 </div>
                 <div>
-                  <h1 className="text-2xl md:text-3xl font-bold font-headline mb-2">Senior Software Engineer</h1>
+                  <h1 className="text-2xl md:text-3xl font-bold font-headline mb-2">{job.title}</h1>
                   <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--text-secondary)] mb-4">
                     <span className="flex items-center gap-1 font-medium text-[var(--text-primary)]">
-                      <Building className="w-4 h-4" /> Airbnb
+                      <Building className="w-4 h-4" /> {job.company}
                     </span>
                     <span>•</span>
-                    <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> San Francisco, CA (Remote)</span>
+                    <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {job.location}</span>
                     <span>•</span>
-                    <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> Posted 2 days ago</span>
+                    <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> Posted {new Date(job.posted_at || Date.now()).toLocaleDateString()}</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 uppercase text-xs font-bold rounded-sm">Full-time</Badge>
-                    <Badge variant="secondary" className="bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300 uppercase text-xs font-bold rounded-sm">$185k - $240k</Badge>
-                    <Badge variant="secondary" className="bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300 uppercase text-xs font-bold rounded-sm">High Growth</Badge>
+                    <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 uppercase text-xs font-bold rounded-sm">
+                      {job.job_type || 'Full-time'}
+                    </Badge>
+                    {(job.salary_min || job.salary_max) && (
+                      <Badge variant="secondary" className="bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300 uppercase text-xs font-bold rounded-sm">
+                        ${job.salary_min ? Math.round(job.salary_min/1000) : ''}k - ${job.salary_max ? Math.round(job.salary_max/1000) : ''}k
+                      </Badge>
+                    )}
+                    {job.is_remote && (
+                      <Badge variant="secondary" className="bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300 uppercase text-xs font-bold rounded-sm">Remote</Badge>
+                    )}
                   </div>
                 </div>
               </div>
 
               <div className="flex gap-3 w-full md:w-auto">
-                <Button onClick={handleAuthAction} variant="outline" className="flex-1 md:flex-none border-[var(--primary)] text-[var(--primary)] hover:bg-blue-50 dark:hover:bg-blue-950 font-semibold h-11 px-6 gap-2">
-                  <Bookmark className="w-4 h-4" /> Save Job
+                <Button onClick={handleSaveJob} disabled={isSaving} variant="outline" className="flex-1 md:flex-none border-[var(--primary)] text-[var(--primary)] hover:bg-[#678D63]/10 font-semibold h-11 px-6 gap-2">
+                  <Bookmark className="w-4 h-4" /> {isSaving ? "Saving..." : "Save Job"}
                 </Button>
-                <Button onClick={handleAuthAction} className="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 font-semibold h-11 px-8 text-white">
+                <Button onClick={handleApply} className="flex-1 md:flex-none bg-[var(--primary)] hover:bg-[var(--primary-dark)] font-semibold h-11 px-8 text-white">
                   Apply Now
                 </Button>
               </div>
@@ -86,65 +176,29 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
             <section>
               <h2 className="text-xl font-bold font-headline mb-4">About the Role</h2>
               <div className="text-[var(--text-secondary)] space-y-4 text-[15px] leading-relaxed">
-                <p>
-                  Airbnb is looking for a Senior Software Engineer to join our Core Guest Experience team. In this role, you will be responsible for building and scaling the fundamental components that power millions of bookings every day. You'll work on high-availability distributed systems and collaborate with world-class product designers to create seamless, magical experiences for our global community of guests.
-                </p>
-                <p>
-                  You will have the opportunity to influence the architectural direction of our next-generation guest services, ensuring they are robust, performant, and secure.
-                </p>
+                {job.description ? (
+                  <p className="whitespace-pre-wrap">{job.description}</p>
+                ) : (
+                  <p>
+                    Full job description is hosted directly on the {job.company} careers portal.
+                    Please click "Apply Now" to view the complete details and submit your application.
+                  </p>
+                )}
               </div>
             </section>
 
-            <section>
-              <h2 className="text-lg font-bold font-headline mb-4">The Work You'll Do</h2>
-              <ul className="space-y-3 text-[15px] text-[var(--text-secondary)]">
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <span>Design and implement scalable backend services using Java, Kotlin, and GraphQL.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <span>Optimize performance for critical path guest flows to ensure sub-second response times.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <span>Collaborate with cross-functional partners in Product, Design, and Data Science.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <span>Mentor junior engineers and foster a culture of technical excellence and inclusion.</span>
-                </li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-lg font-bold font-headline mb-4">What We're Looking For</h2>
-              <ul className="space-y-3 text-[15px] text-[var(--text-secondary)]">
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <span>5+ years of professional software development experience.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <span>Deep expertise in building distributed systems and microservices.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <span>Strong command of modern JVM languages and relational databases.</span>
-                </li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-lg font-bold font-headline mb-4">Required Skills</h2>
-              <div className="flex flex-wrap gap-2">
-                {['Java', 'Kotlin', 'GraphQL', 'Distributed Systems', 'AWS', 'React', 'System Design'].map((skill) => (
-                  <Badge key={skill} variant="secondary" className="bg-[var(--bg-base)] text-[var(--text-primary)] border-2 border-[var(--border)] font-medium px-4 py-1.5 rounded-md hover:bg-[var(--border)] transition-colors">
-                    {skill}
-                  </Badge>
-                ))}
-              </div>
-            </section>
+            {job.tags && job.tags.length > 0 && (
+              <section>
+                <h2 className="text-lg font-bold font-headline mb-4">Required Skills & Tags</h2>
+                <div className="flex flex-wrap gap-2">
+                  {job.tags.map((skill) => (
+                    <Badge key={skill} variant="secondary" className="bg-[var(--bg-base)] text-[var(--text-primary)] border-2 border-[var(--border)] font-medium px-4 py-1.5 rounded-md hover:bg-[var(--border)] transition-colors">
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
 
           {/* Right Sidebar */}
@@ -154,19 +208,16 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
             <Card className="border-[var(--border)] shadow-sm bg-white dark:bg-[var(--bg-card)]">
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-6 h-6 bg-green-100 rounded flex items-center justify-center text-green-600"><Leaf className="w-3 h-3" /></div>
-                  <span className="text-sm font-semibold">Apply via Greenhouse</span>
+                  <div className="w-6 h-6 bg-[#678D63]/20 rounded flex items-center justify-center text-[#166534]"><Briefcase className="w-3 h-3" /></div>
+                  <span className="text-sm font-semibold capitalize">Apply via {job.source || 'ATS'}</span>
                 </div>
                 <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-6">
-                  By clicking "Apply Now" you will be redirected to Airbnb's official careers portal hosted on Greenhouse.
+                  By clicking "Apply Now" you will be redirected to the official careers portal to complete your application.
                 </p>
                 <div className="space-y-3">
-                  <Button onClick={handleAuthAction} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold h-11 flex justify-between px-4">
+                  <Button onClick={handleApply} className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white font-semibold h-11 flex justify-between px-4">
                     <span>Apply Now</span>
                     <ExternalLink className="w-4 h-4" />
-                  </Button>
-                  <Button onClick={handleAuthAction} variant="outline" className="w-full border-[var(--border)] text-[var(--text-primary)] hover:bg-[var(--bg-base)] font-semibold h-11 flex items-center justify-center gap-2">
-                    <Bookmark className="w-4 h-4" /> Save this job
                   </Button>
                 </div>
               </CardContent>
@@ -183,70 +234,37 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                     <div className="flex items-center gap-2 text-[var(--text-muted)]">
                       <MapPin className="w-4 h-4" /> Location
                     </div>
-                    <span className="font-medium text-right text-[var(--text-primary)]">San Francisco, CA</span>
+                    <span className="font-medium text-right text-[var(--text-primary)]">{job.location}</span>
                   </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <div className="flex items-center gap-2 text-[var(--text-muted)]">
-                      <Banknote className="w-4 h-4" /> Salary Range
+                  {(job.salary_max || job.salary_min) && (
+                    <div className="flex justify-between items-center text-sm">
+                      <div className="flex items-center gap-2 text-[var(--text-muted)]">
+                        <Banknote className="w-4 h-4" /> Salary Range
+                      </div>
+                      <span className="font-medium text-right text-[var(--text-primary)]">
+                        ${job.salary_min ? Math.round(job.salary_min/1000) : ''}k - ${job.salary_max ? Math.round(job.salary_max/1000) : ''}k
+                      </span>
                     </div>
-                    <span className="font-medium text-right text-[var(--text-primary)]">$185k - $240k</span>
-                  </div>
+                  )}
                   <div className="flex justify-between items-center text-sm">
                     <div className="flex items-center gap-2 text-[var(--text-muted)]">
                       <Briefcase className="w-4 h-4" /> Job Type
                     </div>
-                    <span className="font-medium text-right text-[var(--text-primary)]">Full-Time</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <div className="flex items-center gap-2 text-[var(--text-muted)]">
-                      <Star className="w-4 h-4" /> Experience
-                    </div>
-                    <span className="font-medium text-right text-[var(--text-primary)]">Senior (5+ yrs)</span>
+                    <span className="font-medium text-right text-[var(--text-primary)] capitalize">{job.job_type || 'Full-time'}</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
-
           </aside>
         </div>
 
-        {/* Similar Jobs Section */}
+        {/* Similar Jobs Section placeholder */}
         <section className="mt-16 pt-10 border-t-2 border-[var(--border)]">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold font-headline">Similar Jobs You Might Like</h2>
-            <Link href="/search" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
-              View all engineering jobs <ArrowRight className="w-4 h-4" />
+            <h2 className="text-xl font-bold font-headline">Explore More Jobs</h2>
+            <Link href="/search" className="text-sm font-semibold text-[var(--primary)] hover:underline flex items-center gap-1">
+              View all <ArrowRight className="w-4 h-4" />
             </Link>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Similar Job Cards */}
-            {[
-              { title: "Senior Product Engineer", company: "Dropbox • Remote", tag: "FULL-TIME", salary: "$170k - $220k", icon: "📦" },
-              { title: "Staff Backend Engineer", company: "Stripe • Seattle, WA", tag: "HYBRID", salary: "$200k - $260k", icon: "S" },
-              { title: "Senior Systems Engineer", company: "Slack • New York, NY", tag: "FULL-TIME", salary: "$160k - $210k", icon: "💬" }
-            ].map((job, i) => (
-              <Card key={i} className="hover:shadow-premium-sm transition-all duration-300 border-[var(--border)] bg-white dark:bg-[var(--bg-card)] group">
-                <CardContent className="p-6">
-                  <div className="flex gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-[var(--bg-base)] border-2 border-[var(--border)] flex items-center justify-center flex-shrink-0 text-xl font-bold group-hover:scale-110 transition-transform">
-                      {job.icon}
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-[var(--text-primary)]">{job.title}</h4>
-                      <p className="text-xs text-[var(--text-secondary)]">{job.company}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 mb-4">
-                    <Badge variant="secondary" className="text-[10px] bg-blue-500/10 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300 py-0.5 border-none font-bold">{job.tag}</Badge>
-                    <Badge variant="secondary" className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300 py-0.5 border-none font-bold">{job.salary}</Badge>
-                  </div>
-                  <Button variant="outline" className="w-full h-9 text-xs font-bold bg-[var(--bg-base)] hover:bg-[var(--border)] border-none transition-colors">
-                    View Details
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </section>
 

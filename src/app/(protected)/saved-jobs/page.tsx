@@ -1,13 +1,38 @@
 "use client";
+import { useEffect, useState } from "react";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
 import JobCard from "@/components/ui/JobCard";
-import { jobs } from "@/data/jobs";
-import { Bookmark, Search } from "lucide-react";
+import { Bookmark, Search, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { apiClient } from "@/services/api";
+import { Job } from "@/types";
 
 export default function SavedJobsPage() {
-  // Simulating saved jobs by picking a few from ALL_JOBS
-  const savedJobs = jobs.slice(0, 3);
+  const [savedJobs, setSavedJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadSavedJobs() {
+      try {
+        const jobs = await apiClient.get<Job[]>("/user/saved-jobs");
+        setSavedJobs(jobs || []);
+      } catch (error) {
+        console.error("Failed to load saved jobs:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadSavedJobs();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-base)] pt-24 pb-20 flex flex-col items-center justify-center gap-4">
+        <Loader2 className="w-10 h-10 animate-spin text-[var(--primary)]" />
+        <p className="text-[var(--text-secondary)] font-medium animate-pulse">Loading saved jobs...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[var(--bg-base)] pt-24 pb-20">
@@ -32,7 +57,7 @@ export default function SavedJobsPage() {
         {savedJobs.length > 0 ? (
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {savedJobs.map((job) => (
-              <StaggerItem key={job.id}>
+              <StaggerItem key={job.job_id || job.id}>
                 <JobCard job={job} />
               </StaggerItem>
             ))}

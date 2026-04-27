@@ -1,20 +1,22 @@
 "use client";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
 import Link from "next/link";
 import { 
   MapPin, Building2, ExternalLink, Users, Calendar, 
   CheckCircle2, ArrowRight, Share2, Link as LinkIcon, Globe,
-  Briefcase, ShieldCheck, Zap
+  Briefcase, ShieldCheck, Zap, Loader2
 } from "lucide-react";
 import JobCard from "@/components/ui/JobCard";
-import { jobs } from "@/data/jobs";
+import { jobsService } from "@/services/jobs.service";
+import { Job } from "@/types";
 
 const COMPANIES_DB: Record<string, any> = {
   google: {
     name: "Google",
     logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
-    roles: 420,
+    roles: 0,
     category: "Tech Giant",
     location: "Mountain View, CA",
     founded: "1998",
@@ -30,7 +32,7 @@ const COMPANIES_DB: Record<string, any> = {
   meta: {
     name: "Meta",
     logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg",
-    roles: 156,
+    roles: 0,
     category: "Social Media",
     location: "Menlo Park, CA",
     founded: "2004",
@@ -52,8 +54,22 @@ export default function CompanyProfile() {
   // Fallback to Google if company not found for demo purposes
   const company = COMPANIES_DB[id] || COMPANIES_DB.google;
 
-  // Filter jobs for this company
-  const companyJobs = jobs.filter(j => j.company.toLowerCase().includes(company.name.toLowerCase()));
+  const [companyJobs, setCompanyJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchCompanyJobs() {
+      try {
+        const res = await jobsService.getJobs({ query: company.name, pageSize: 10 });
+        setCompanyJobs(res.data || []);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchCompanyJobs();
+  }, [company.name]);
 
   return (
     <div className="min-h-screen bg-[var(--bg-base)]">
@@ -132,15 +148,17 @@ export default function CompanyProfile() {
             {/* Open Jobs Section */}
             <section id="jobs" className="pt-8">
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold">Open Positions ({company.roles})</h2>
+                <h2 className="text-2xl font-bold">Open Positions</h2>
                 <Link href="/search" className="text-[var(--primary)] font-bold text-sm flex items-center gap-1 hover:underline">
                   View all <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
               <StaggerContainer className="space-y-4">
-                {companyJobs.length > 0 ? (
+                {isLoading ? (
+                  <div className="flex justify-center p-8"><Loader2 className="w-8 h-8 animate-spin text-[var(--primary)]" /></div>
+                ) : companyJobs.length > 0 ? (
                   companyJobs.map((job) => (
-                    <StaggerItem key={job.id}>
+                    <StaggerItem key={job.job_id || job.id}>
                       <JobCard job={job} />
                     </StaggerItem>
                   ))

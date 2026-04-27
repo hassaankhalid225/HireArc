@@ -5,11 +5,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { 
+import {
   Calendar, Send, Users, Bookmark, Eye, 
   ArrowUp, ArrowDown, Minus, MoreVertical, Sparkles,
   Loader2, Briefcase
 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
 import { useAuth } from "@/context/AuthContext";
 import { dashboardService, DashboardStats } from "@/services/dashboard.service";
@@ -42,9 +43,52 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <Loader2 className="w-10 h-10 animate-spin text-[var(--primary)]" />
-        <p className="text-[var(--text-secondary)] font-medium animate-pulse">Loading your dashboard...</p>
+      <div className="space-y-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="space-y-2">
+            <Skeleton className="h-10 w-64" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map(i => (
+            <Card key={i} className="border-2 border-[var(--border)] shadow-sm bg-white dark:bg-white/5">
+              <CardContent className="p-5 flex flex-col justify-between h-full">
+                <div className="flex justify-between items-start mb-4">
+                  <Skeleton className="w-10 h-10 rounded-lg" />
+                  <Skeleton className="w-12 h-4" />
+                </div>
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-8 w-16" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            <Card className="shadow-sm bg-white dark:bg-white/5 border-2 border-[var(--border)]">
+              <CardContent className="p-0">
+                <div className="p-6 border-b-2 border-[var(--border)] flex justify-between items-center">
+                  <Skeleton className="h-6 w-40" />
+                  <Skeleton className="h-4 w-16" />
+                </div>
+                <div className="p-6 space-y-4">
+                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-12 w-full" />)}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="space-y-8">
+            <Card className="shadow-sm bg-white dark:bg-white/5 border-2 border-[var(--border)]">
+              <CardContent className="p-6 space-y-4">
+                <Skeleton className="h-6 w-48 mb-6" />
+                {[1, 2].map(i => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     );
   }

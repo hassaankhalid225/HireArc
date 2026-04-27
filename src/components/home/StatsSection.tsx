@@ -147,7 +147,42 @@ const TESTIMONIALS = [
   },
 ];
 
-export default function StatsSection() {
+export default function StatsSection({ stats }: { stats?: any }) {
+  const dynamicStats = [
+    {
+      value: stats?.total_jobs || 0,
+      suffix: "+",
+      label: "Active Job Listings",
+      sublabel: "Updated in real-time",
+      icon: <Briefcase className="w-5 h-5" />,
+      color: "from-emerald-400 to-teal-500",
+    },
+    {
+      value: stats?.total_companies || 0,
+      suffix: "+",
+      label: "Partner Companies",
+      sublabel: "Hiring globally",
+      icon: <Building2 className="w-5 h-5" />,
+      color: "from-amber-400 to-orange-500",
+    },
+    {
+      value: stats?.remote_jobs || 0,
+      suffix: "+",
+      label: "Remote Opportunities",
+      sublabel: "Work from anywhere",
+      icon: <Globe className="w-5 h-5" />,
+      color: "from-sky-400 to-blue-500",
+    },
+    {
+      value: 100,
+      suffix: "%",
+      label: "Free to Use",
+      sublabel: "No hidden fees",
+      icon: <CheckCircle2 className="w-5 h-5" />,
+      color: "from-rose-400 to-pink-500",
+    },
+  ];
+
   return (
     <section className="relative py-24 overflow-hidden bg-[var(--bg-dark)] text-white">
       {/* ── High-Fidelity Linear Grid ── */}
@@ -169,7 +204,7 @@ export default function StatsSection() {
 
       <div className="max-w-[1400px] mx-auto px-8 relative z-10">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 border-b border-white/5 pb-20">
-          {STATS.map((stat, idx) => (
+          {dynamicStats.map((stat, idx) => (
             <FadeIn key={stat.label} delay={idx * 0.1}>
               <div className="group text-center">
                 <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${stat.color} bg-opacity-10 mb-8 group-hover:scale-110 group-hover:shadow-[0_0_40px_rgba(255,255,255,0.1)] transition-all duration-500 ring-1 ring-white/10`}>

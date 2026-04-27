@@ -38,9 +38,30 @@ async function request<T>(
     body: body ? JSON.stringify(body) : undefined,
   });
 
+  const contentType = res.headers.get("content-type");
+  const isJson = contentType && contentType.includes("application/json");
+
   if (!res.ok) {
-    const errorPayload = await res.json().catch(() => ({}));
-    throw { status: res.status, ...errorPayload };
+    if (isJson) {
+      const errorPayload = await res.json();
+      throw { status: res.status, ...errorPayload };
+    } else {
+      const text = await res.text();
+      throw { 
+        status: res.status, 
+        message: `HTTP Error ${res.status}`,
+        details: text.substring(0, 100)
+      };
+    }
+  }
+
+  if (!isJson) {
+    const text = await res.text();
+    throw { 
+      status: res.status, 
+      message: "Expected JSON response but received something else.",
+      details: text.substring(0, 100)
+    };
   }
 
   return res.json() as Promise<T>;

@@ -14,7 +14,11 @@ import { jobsService, JobsFilter } from "@/services/jobs.service";
 import { Job } from "@/types";
 import { useSavedJobs } from "@/context";
 
+import { config } from "@/config";
+
 export default function SearchPage() {
+  const isProd = typeof window !== "undefined" && window.location.hostname.includes("vercel.app");
+
   const { toggleSave, isSaved } = useSavedJobs();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [totalJobs, setTotalJobs] = useState(0);
@@ -53,6 +57,13 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-base)] pt-24 pb-20">
+      {/* DEBUG BANNER — ONLY ON VERCEL */}
+      {isProd && (
+        <div className="bg-amber-100 border-b border-amber-200 py-2 text-center text-[10px] font-mono text-amber-800">
+          [DEBUG] API URL: {config.BACKEND_URL}
+        </div>
+      )}
+      
       {/* Search Header */}
       <FadeIn direction="down" delay={0.1}>
         <div className="bg-white dark:bg-[var(--bg-card)] border-b-2 border-[var(--border)] py-6">

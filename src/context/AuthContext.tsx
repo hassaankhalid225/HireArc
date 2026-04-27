@@ -8,6 +8,8 @@ import {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
+import { apiClient } from "@/services/api";
+import { config } from "@/config";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface User {
@@ -31,29 +33,19 @@ interface AuthContextValue {
 // ─── Context ──────────────────────────────────────────────────────────────────
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-import { config } from "@/config";
-
-const BACKEND_URL = config.BACKEND_URL;
-
 // ─── Provider ─────────────────────────────────────────────────────────────────
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const BACKEND_URL = config.BACKEND_URL;
 
   // Fetch user from backend on load
   useEffect(() => {
     async function checkAuth() {
       try {
-        const res = await fetch(`${BACKEND_URL}/auth/me`, {
-          credentials: "include",
-        });
-        if (res.ok) {
-          const userData = await res.json();
-          setUser(userData);
-        } else {
-          setUser(null);
-        }
+        const userData = await apiClient.get<User>("/auth/me");
+        setUser(userData);
       } catch (error) {
         console.error("Auth check failed:", error);
         setUser(null);
@@ -66,18 +58,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginGoogle = useCallback(() => {
     window.location.href = `${BACKEND_URL}/auth/google`;
-  }, []);
+  }, [BACKEND_URL]);
 
   const loginGithub = useCallback(() => {
     window.location.href = `${BACKEND_URL}/auth/github`;
-  }, []);
+  }, [BACKEND_URL]);
 
   const logout = useCallback(async () => {
     try {
-      await fetch(`${BACKEND_URL}/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
+      await apiClient.post("/auth/logout", {});
     } catch (err) {
       console.error("Logout failed:", err);
     } finally {

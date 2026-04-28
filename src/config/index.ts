@@ -17,4 +17,12 @@ export const config = {
   APP_NAME: "HireArc",
   BACKEND_URL: getBackendUrl(),
   IS_DEV: process.env.NODE_ENV === "development",
+  CLOUDINARY: {
+    CLOUD_NAME: "dtsquhjhs",
+    UPLOAD_PRESET: "hirearc_upload",
+    UPLOAD_URL: "https://api.cloudinary.com/v1_1/dtsquhjhs/image/upload"
+  },
+  ASSETS: {
+    GRAINY_BACKGROUND: "https://grainy-gradients.vercel.app/noise.svg"
+  }
 };

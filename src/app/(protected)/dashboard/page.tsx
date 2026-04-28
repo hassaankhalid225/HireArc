@@ -25,8 +25,10 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recommendedJobs, setRecommendedJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     async function loadData() {
       try {
         const [statsData, jobsData] = await Promise.all([
@@ -43,6 +45,8 @@ export default function DashboardPage() {
     }
     loadData();
   }, []);
+
+  if (!mounted) return null;
 
   if (isLoading) {
     return (

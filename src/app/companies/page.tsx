@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
 import Link from "next/link";
 import { Search, MapPin, Building2, ExternalLink, Filter, TrendingUp } from "lucide-react";

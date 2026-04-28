@@ -24,6 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { jobsService } from "@/services/jobs.service";
 import { Job } from "@/types";
 import { useAppliedJobs } from "@/context";
+import { formatDescription } from "@/lib/utils";
 
 // ─── Return-visit popup component ─────────────────────────────────────────────
 function DidYouApplyPopup({
@@ -160,9 +161,7 @@ export default function JobDetailPage({
     if (!job?.apply_link) return;
     // Open external site
     window.open(job.apply_link, "_blank", "noopener,noreferrer");
-    // Mark as applied immediately
-    applyJob(job);
-    setJustApplied(true);
+    // DON'T mark as applied immediately (user requested confirmation later)
   };
 
   const handlePopupYes = () => {
@@ -382,9 +381,12 @@ export default function JobDetailPage({
                 <h2 className="text-xl font-bold font-headline mb-4">
                   About the Role
                 </h2>
-                <div className="text-[var(--text-secondary)] space-y-4 text-[15px] leading-relaxed">
+                <div className="text-[var(--text-secondary)] space-y-4 text-[15px] leading-relaxed prose prose-slate dark:prose-invert max-w-none">
                   {job.description ? (
-                    <p className="whitespace-pre-wrap">{job.description}</p>
+                    <div 
+                      className="whitespace-pre-wrap break-words"
+                      dangerouslySetInnerHTML={{ __html: formatDescription(job.description) }}
+                    />
                   ) : (
                     <p>
                       Full job description is hosted directly on the{" "}

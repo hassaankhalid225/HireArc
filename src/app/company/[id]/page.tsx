@@ -48,8 +48,13 @@ const COMPANIES_DB: Record<string, any> = {
 };
 
 export default function CompanyProfile() {
+  const [mounted, setMounted] = useState(false);
   const params = useParams();
   const id = params.id as string;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   // Dynamic company data: use DB if exists, otherwise generate basic one from ID
   const company = COMPANIES_DB[id] || {
@@ -168,7 +173,7 @@ export default function CompanyProfile() {
                 </Link>
               </div>
               <StaggerContainer className="space-y-4">
-                {isLoading ? (
+                {!mounted || isLoading ? (
                   <div className="grid grid-cols-1 gap-6">
                     {[1, 2, 3].map(i => <JobCardSkeleton key={i} />)}
                   </div>
@@ -185,7 +190,12 @@ export default function CompanyProfile() {
                     </div>
                     <div>
                       <p className="text-lg font-bold">No active positions found</p>
-                      <p className="text-[var(--text-secondary)] max-w-xs mx-auto">We couldn't find any current openings for {company.name} in our database.</p>
+                      <p className="text-[var(--text-secondary)] max-w-xs mx-auto mb-4">
+                        We couldn't find any current openings for {company.name} in our database.
+                      </p>
+                      <p className="text-xs text-[var(--primary)] font-bold bg-[var(--primary)]/5 p-3 rounded-xl border border-[var(--primary)]/10">
+                        TIP: Try companies like "Airbnb", "Stripe", or "Netflix" which currently have data.
+                      </p>
                     </div>
                     <Link href="/search" className="inline-block px-6 py-2 rounded-xl bg-[var(--primary)] text-white font-bold text-sm hover:scale-105 transition-transform">
                       Browse All Jobs

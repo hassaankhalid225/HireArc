@@ -111,7 +111,7 @@ export default function CompanyProfile() {
                 <div className="flex flex-wrap justify-center md:justify-start gap-6 text-white/70 text-sm">
                   <div className="flex items-center gap-2"><Building2 className="w-4 h-4" /> {company.category}</div>
                   <div className="flex items-center gap-2"><MapPin className="w-4 h-4" /> {company.location}</div>
-                  <div className="flex items-center gap-2"><Globe className="w-4 h-4" /> <Link href={company.website} target="_blank" className="hover:text-white underline">{company.website.replace("https://", "")}</Link></div>
+                  <div className="flex items-center gap-2"><Globe className="w-4 h-4" /> <a href={company.website} target="_blank" rel="noopener noreferrer" className="hover:text-white underline">{company.website.replace("https://", "").replace("http://", "")}</a></div>
                 </div>
               </FadeIn>
             </div>
@@ -179,8 +179,17 @@ export default function CompanyProfile() {
                     </StaggerItem>
                   ))
                 ) : (
-                  <div className="p-8 rounded-2xl bg-gray-50 dark:bg-white/5 border border-dashed border-[var(--border)] text-center">
-                    <p className="text-[var(--text-secondary)]">No active positions currently listed on HireArc.</p>
+                  <div className="p-12 rounded-[32px] bg-white dark:bg-white/5 border-2 border-dashed border-[var(--border)] text-center space-y-4">
+                    <div className="w-16 h-16 bg-[var(--bg-base)] rounded-full flex items-center justify-center mx-auto">
+                      <Briefcase className="w-8 h-8 text-[var(--text-muted)]" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold">No active positions found</p>
+                      <p className="text-[var(--text-secondary)] max-w-xs mx-auto">We couldn't find any current openings for {company.name} in our database.</p>
+                    </div>
+                    <Link href="/jobs" className="inline-block px-6 py-2 rounded-xl bg-[var(--primary)] text-white font-bold text-sm hover:scale-105 transition-transform">
+                      Browse All Jobs
+                    </Link>
                   </div>
                 )}
               </StaggerContainer>

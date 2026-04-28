@@ -122,9 +122,6 @@ export default function JobDetailPage({
   const [showPopup, setShowPopup] = useState(false);
   const [justApplied, setJustApplied] = useState(false);
 
-  const VISITED_KEY = `HireArc_visited_job_${id}`;
-  const hasMarkedVisit = useRef(false);
-
   useEffect(() => {
     async function loadJob() {
       try {
@@ -139,29 +136,15 @@ export default function JobDetailPage({
     loadJob();
   }, [id]);
 
-  // After job loads, check for return visit
-  useEffect(() => {
-    if (!job || hasMarkedVisit.current) return;
-    hasMarkedVisit.current = true;
-
-    const alreadyVisited = localStorage.getItem(VISITED_KEY) === "true";
-    const alreadyApplied = isApplied(job.job_id);
-
-    if (alreadyVisited && !alreadyApplied) {
-      // Show "Did you apply?" popup on return visit (only if not already tracked)
-      setShowPopup(true);
-    }
-
-    // Mark as visited
-    localStorage.setItem(VISITED_KEY, "true");
-  }, [job, VISITED_KEY, isApplied]);
-
-  // ── Handlers ───────────────────────────────────────────────────────────────
+  // Triggered when user returns to tab after applying
   const handleApply = () => {
     if (!job?.apply_link) return;
-    // Open external site
+    // 1. Open external site in new tab
     window.open(job.apply_link, "_blank", "noopener,noreferrer");
-    // DON'T mark as applied immediately (user requested confirmation later)
+    
+    // 2. Immediately show the "Did you apply?" popup in the current tab
+    // giving them a chance to confirm once they're done with the external site
+    setShowPopup(true);
   };
 
   const handlePopupYes = () => {

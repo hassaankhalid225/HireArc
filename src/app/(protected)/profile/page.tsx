@@ -1,9 +1,9 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { 
-  Users, Mail, MapPin, Building, Calendar, Edit2, Shield, 
-  Link as LinkIcon, Globe, Award, Briefcase, GraduationCap, Share2,
-  Plus, X, Camera, Save, Check, Loader2
+  Mail, MapPin, Building, Calendar, Edit2, Shield, 
+  Link as LinkIcon, Globe, Award, Briefcase, 
+  Plus, X, Camera, Save, Check, Loader2, Github, Linkedin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +20,7 @@ export default function ProfilePage() {
   const [profileData, setProfileData] = useState({
     name: "Hassaan Khalid",
     location: "Lahore, Pakistan",
-    portfolio: "portfolio.com",
+    portfolio: "hassaankhalid.design",
     about: "Creative and detail-oriented Product Designer with over 5 years of experience in the tech industry. I specialize in building complex design systems and intuitive user interfaces for SaaS and Fintech platforms.",
     skills: ['Product Design', 'UI/UX', 'Design Systems', 'Figma', 'React'],
     jobTitle: "Senior Product Designer at CreativeLabs",
@@ -116,12 +116,12 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-base)] pt-32">
-        <div className="container-custom max-w-6xl space-y-8">
-          <Skeleton className="h-64 w-full rounded-[48px]" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Skeleton className="h-80 rounded-[48px]" />
-            <Skeleton className="h-80 rounded-[48px]" />
+      <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1110] pt-32">
+        <div className="container-custom max-w-5xl space-y-6">
+          <Skeleton className="h-48 w-full rounded-2xl" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Skeleton className="md:col-span-2 h-80 rounded-2xl" />
+            <Skeleton className="h-80 rounded-2xl" />
           </div>
         </div>
       </div>
@@ -130,94 +130,87 @@ export default function ProfilePage() {
 
   return (
     <>
-      <div className="min-h-screen bg-[var(--bg-base)] pt-32 pb-24">
-        <div className="container-custom max-w-6xl px-6">
+      <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1110] pt-24 pb-20">
+        <div className="container-custom max-w-5xl px-4 sm:px-6 lg:px-8">
           
-          {/* ── Minimalist Premium Header ── */}
+          {/* ── Refined Header ── */}
           <FadeIn direction="up">
-            <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-[48px] p-8 md:p-14 mb-10 shadow-sm flex flex-col md:flex-row items-center gap-12 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/5 rounded-full blur-[100px] -mr-48 -mt-48 pointer-events-none" />
-              
+            <div className="bg-white dark:bg-[#15201E] border border-slate-200 dark:border-white/5 rounded-2xl p-6 sm:p-8 mb-6 shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-6 relative overflow-hidden">
               <div className="relative group shrink-0">
-                <div className="w-48 h-48 rounded-[56px] bg-gradient-to-tr from-[var(--primary)] to-[#A8BA9A] flex items-center justify-center text-6xl font-black text-white shadow-2xl overflow-hidden relative border-4 border-white dark:border-gray-800">
+                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-3xl font-bold text-slate-400 overflow-hidden relative border border-slate-200 dark:border-white/10">
                   {avatarPreview ? (
-                    <img src={avatarPreview} alt="Avatar" className={`w-full h-full object-cover transition-all duration-700 ${isUploading ? 'opacity-50 scale-110 blur-sm' : 'opacity-100 scale-100'}`} />
+                    <img src={avatarPreview} alt="Avatar" className={`w-full h-full object-cover transition-opacity duration-500 ${isUploading ? 'opacity-50' : 'opacity-100'}`} />
                   ) : (
                     profileData.name.split(' ').map(n => n[0]).join('')
                   )}
                   {isUploading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm">
-                      <Loader2 className="w-12 h-12 text-white animate-spin" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/10 backdrop-blur-[2px]">
+                      <Loader2 className="w-8 h-8 text-white animate-spin" />
                     </div>
                   )}
                 </div>
                 <button 
                   onClick={() => setIsEditingProfile(true)}
-                  className="absolute -bottom-2 -right-2 w-14 h-14 rounded-2xl bg-white dark:bg-gray-800 border-2 border-[var(--border)] flex items-center justify-center text-[var(--primary)] shadow-2xl hover:scale-110 transition-all z-10"
+                  className="absolute -bottom-2 -right-2 w-9 h-9 rounded-xl bg-white dark:bg-[#1E2D2A] border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-md hover:bg-slate-50 transition-all z-10"
                 >
-                  <Camera className="w-7 h-7" />
+                  <Camera className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="flex-1 text-center md:text-left relative z-10">
-                <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                  <h1 className="text-5xl md:text-6xl font-black font-headline text-[var(--text-primary)] tracking-tight">{profileData.name}</h1>
-                  <Badge className="w-fit mx-auto md:mx-0 bg-[var(--primary)] text-white border-none rounded-full px-5 py-1.5 text-xs font-black uppercase tracking-widest shadow-lg shadow-[var(--primary)]/30">Verified Pro</Badge>
+              <div className="flex-1 text-center sm:text-left">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">{profileData.name}</h1>
+                  <Badge className="w-fit mx-auto sm:mx-0 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-none rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider">Premium Account</Badge>
                 </div>
-                <p className="text-2xl text-[var(--text-secondary)] font-bold mb-8 flex items-center justify-center md:justify-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[var(--primary)]/10 flex items-center justify-center">
-                    <Briefcase className="w-4 h-4 text-[var(--primary)]" />
-                  </div>
-                  {profileData.jobTitle}
+                <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-medium mb-4 flex items-center justify-center sm:justify-start gap-2">
+                  <Briefcase className="w-4 h-4 text-emerald-500" /> {profileData.jobTitle}
                 </p>
-                <div className="flex flex-wrap justify-center md:justify-start gap-8 text-sm text-[var(--text-muted)] font-black uppercase tracking-[0.1em]">
-                  <span className="flex items-center gap-2.5"><MapPin className="w-5 h-5 text-[var(--primary)]" /> {profileData.location}</span>
-                  <span className="flex items-center gap-2.5"><Calendar className="w-5 h-5 text-[var(--primary)]" /> Active April 2026</span>
+                <div className="flex flex-wrap justify-center sm:justify-start gap-5 text-sm text-slate-500 dark:text-slate-500 font-medium">
+                  <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> {profileData.location}</span>
+                  <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4" /> Joined April 2026</span>
                 </div>
               </div>
 
               <Button 
                 onClick={() => setIsEditingProfile(true)}
-                className="bg-black dark:bg-white dark:text-black hover:opacity-90 text-white h-16 px-12 rounded-[28px] font-black text-lg shadow-2xl transition-all hover:scale-[1.02] active:scale-95 whitespace-nowrap"
+                variant="outline"
+                className="h-10 px-6 rounded-xl font-semibold text-sm border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 transition-all w-full sm:w-auto"
               >
-                Edit Details
+                <Edit2 className="w-3.5 h-3.5 mr-2" /> Edit Profile
               </Button>
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            {/* ── Left Content: About & Skills ── */}
-            <div className="lg:col-span-7 space-y-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* ── Main Content Column ── */}
+            <div className="lg:col-span-2 space-y-6">
               
               {/* About Section */}
               <FadeIn delay={0.1}>
-                <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-[48px] p-12 shadow-sm relative group">
-                  <div className="flex justify-between items-center mb-10">
-                    <h2 className="text-3xl font-black flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
-                        <Shield className="w-6 h-6" />
-                      </div>
-                      Personal Bio
+                <div className="bg-white dark:bg-[#15201E] border border-slate-200 dark:border-white/5 rounded-2xl p-6 sm:p-8 shadow-sm">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-lg font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+                      <Shield className="w-5 h-5 text-emerald-500" /> About Me
                     </h2>
                     <button 
                       onClick={() => {
                         if (isEditingAbout) saveProfile();
                         setIsEditingAbout(!isEditingAbout);
                       }}
-                      className="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-[var(--primary)] hover:scale-110 transition-all border border-[var(--border)]"
+                      className="p-2 hover:bg-slate-50 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-emerald-500"
                     >
-                      {isEditingAbout ? <Check className="w-6 h-6" /> : <Edit2 className="w-6 h-6" />}
+                      {isEditingAbout ? <Check className="w-5 h-5" /> : <Edit2 className="w-4 h-4" />}
                     </button>
                   </div>
                   {isEditingAbout ? (
                     <textarea 
                       value={profileData.about}
                       onChange={(e) => setProfileData(prev => ({ ...prev, about: e.target.value }))}
-                      className="w-full p-8 rounded-[32px] border-2 border-[var(--border)] bg-[var(--bg-base)] text-[var(--text-secondary)] leading-relaxed text-xl focus:outline-none focus:border-[var(--primary)] transition-all min-h-[250px] font-bold"
+                      className="w-full p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-slate-300 leading-relaxed text-base focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all min-h-[120px] font-medium"
                     />
                   ) : (
-                    <p className="text-[var(--text-secondary)] leading-relaxed text-xl font-bold italic opacity-90">
-                      "{profileData.about}"
+                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-base">
+                      {profileData.about}
                     </p>
                   )}
                 </div>
@@ -225,111 +218,100 @@ export default function ProfilePage() {
 
               {/* Skills Section */}
               <FadeIn delay={0.2}>
-                <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-[48px] p-12 shadow-sm">
-                  <h2 className="text-3xl font-black mb-10 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500">
-                      <Award className="w-6 h-6" />
-                    </div>
-                    Core Expertise
+                <div className="bg-white dark:bg-[#15201E] border border-slate-200 dark:border-white/5 rounded-2xl p-6 sm:p-8 shadow-sm">
+                  <h2 className="text-lg font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
+                    <Award className="w-5 h-5 text-emerald-500" /> Professional Skills
                   </h2>
-                  <div className="flex flex-wrap gap-4 mb-12">
+                  <div className="flex flex-wrap gap-2 mb-8">
                     {profileData.skills.map(skill => (
-                      <Badge key={skill} className="bg-[var(--bg-base)] text-[var(--text-primary)] px-8 py-4 rounded-[20px] border-2 border-[var(--border)] flex items-center gap-4 text-sm font-black shadow-sm hover:border-[var(--primary)] hover:bg-white transition-all cursor-default">
+                      <Badge key={skill} className="bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 px-3 py-1.5 rounded-lg border-none flex items-center gap-2 text-xs font-semibold">
                         {skill}
-                        <button onClick={() => removeSkill(skill)} className="text-red-400 hover:text-red-600">
-                          <X className="w-5 h-5" />
+                        <button onClick={() => removeSkill(skill)} className="hover:text-red-500">
+                          <X className="w-3 h-3" />
                         </button>
                       </Badge>
                     ))}
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-5">
+                  <div className="flex gap-2">
                     <input 
                       type="text"
                       value={skillInput}
                       onChange={(e) => setSkillInput(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && addSkill()}
-                      placeholder="Enter a skill (e.g. Docker, SEO)..."
-                      className="flex-1 bg-[var(--bg-base)] border-2 border-[var(--border)] rounded-[24px] px-8 py-5 text-xl focus:outline-none focus:border-[var(--primary)] transition-all font-black placeholder:text-[var(--text-muted)]"
+                      placeholder="Add a skill..."
+                      className="flex-1 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
                     />
-                    <Button onClick={addSkill} className="bg-[var(--primary)] text-white h-16 px-10 rounded-[24px] font-black text-xl shadow-xl hover:scale-105 active:scale-95 transition-all">
-                      Add <Plus className="w-6 h-6 ml-2" />
+                    <Button onClick={addSkill} size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl">
+                      Add
                     </Button>
                   </div>
                 </div>
               </FadeIn>
             </div>
 
-            {/* ── Right Content: Contact ── */}
-            <div className="lg:col-span-5 space-y-10">
+            {/* ── Sidebar Column ── */}
+            <div className="space-y-6">
               <FadeIn delay={0.3}>
-                <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-[48px] p-12 shadow-sm">
-                  <div className="flex justify-between items-center mb-12">
-                    <h3 className="text-3xl font-black tracking-tight">Connect</h3>
+                <div className="bg-white dark:bg-[#15201E] border border-slate-200 dark:border-white/5 rounded-2xl p-6 sm:p-8 shadow-sm">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">Contact</h3>
                     <button 
                       onClick={() => {
                         if (isEditingContact) saveProfile();
                         setIsEditingContact(!isEditingContact);
                       }}
-                      className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-[var(--primary)] border border-[var(--border)] shadow-sm hover:scale-110 transition-all"
+                      className="p-2 hover:bg-slate-50 dark:hover:bg-white/5 rounded-lg transition-colors text-slate-400 hover:text-emerald-500"
                     >
-                      {isEditingContact ? <Check className="w-7 h-7" /> : <Edit2 className="w-7 h-7" />}
+                      {isEditingContact ? <Check className="w-5 h-5" /> : <Edit2 className="w-4 h-4" />}
                     </button>
                   </div>
                   
-                  <div className="space-y-12">
-                    <div className="relative">
-                      <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.3em] mb-4 ml-1">Direct Email</p>
+                  <div className="space-y-5">
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Email</p>
                       {isEditingContact ? (
                         <input 
                           type="email"
                           value={profileData.contact.email}
                           onChange={(e) => setProfileData(prev => ({ ...prev, contact: { ...prev.contact, email: e.target.value } }))}
-                          className="w-full bg-[var(--bg-base)] border-2 border-[var(--border)] rounded-[24px] px-6 py-5 focus:outline-none focus:border-[var(--primary)] transition-all font-black text-lg"
+                          className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500/50"
                         />
                       ) : (
-                        <div className="flex items-center gap-5 group">
-                          <div className="w-14 h-14 rounded-2xl bg-blue-500/5 flex items-center justify-center text-blue-500 border border-blue-500/10">
-                            <Mail className="w-7 h-7" />
-                          </div>
-                          <p className="text-xl font-black text-[var(--text-primary)] hover:text-[var(--primary)] transition-colors cursor-pointer truncate">{profileData.contact.email}</p>
+                        <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                          <Mail className="w-4 h-4 text-slate-400" />
+                          <span className="text-sm font-medium truncate">{profileData.contact.email}</span>
                         </div>
                       )}
                     </div>
-
-                    <div className="relative">
-                      <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.3em] mb-4 ml-1">LinkedIn Network</p>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">LinkedIn</p>
                       {isEditingContact ? (
                         <input 
                           type="text"
                           value={profileData.contact.linkedin}
                           onChange={(e) => setProfileData(prev => ({ ...prev, contact: { ...prev.contact, linkedin: e.target.value } }))}
-                          className="w-full bg-[var(--bg-base)] border-2 border-[var(--border)] rounded-[24px] px-6 py-5 focus:outline-none focus:border-[var(--primary)] transition-all font-black text-lg"
+                          className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500/50"
                         />
                       ) : (
-                        <div className="flex items-center gap-5 group">
-                          <div className="w-14 h-14 rounded-2xl bg-blue-600/5 flex items-center justify-center text-blue-600 border border-blue-600/10">
-                            <Share2 className="w-7 h-7" />
-                          </div>
-                          <p className="text-xl font-black text-[var(--text-primary)] hover:text-blue-600 transition-colors cursor-pointer truncate">{profileData.contact.linkedin}</p>
+                        <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                          <Linkedin className="w-4 h-4 text-slate-400" />
+                          <span className="text-sm font-medium truncate">{profileData.contact.linkedin}</span>
                         </div>
                       )}
                     </div>
-
-                    <div className="relative">
-                      <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.3em] mb-4 ml-1">GitHub Repositories</p>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">GitHub</p>
                       {isEditingContact ? (
                         <input 
                           type="text"
                           value={profileData.contact.github}
                           onChange={(e) => setProfileData(prev => ({ ...prev, contact: { ...prev.contact, github: e.target.value } }))}
-                          className="w-full bg-[var(--bg-base)] border-2 border-[var(--border)] rounded-[24px] px-6 py-5 focus:outline-none focus:border-[var(--primary)] transition-all font-black text-lg"
+                          className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500/50"
                         />
                       ) : (
-                        <div className="flex items-center gap-5 group">
-                          <div className="w-14 h-14 rounded-2xl bg-gray-900/5 dark:bg-white/5 flex items-center justify-center text-gray-900 dark:text-white border border-gray-900/10">
-                            <LinkIcon className="w-7 h-7" />
-                          </div>
-                          <p className="text-xl font-black text-[var(--text-primary)] hover:text-gray-600 transition-colors cursor-pointer truncate">{profileData.contact.github}</p>
+                        <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                          <Github className="w-4 h-4 text-slate-400" />
+                          <span className="text-sm font-medium truncate">{profileData.contact.github}</span>
                         </div>
                       )}
                     </div>
@@ -337,103 +319,103 @@ export default function ProfilePage() {
                 </div>
               </FadeIn>
 
-              {/* Stats Card */}
               <FadeIn delay={0.4}>
-                <div className="bg-black text-white rounded-[48px] p-12 shadow-3xl">
-                  <div className="flex items-center justify-between mb-10">
-                    <h4 className="text-2xl font-black">Performance</h4>
-                    <div className="px-4 py-1.5 rounded-full bg-green-500/20 text-green-400 text-[10px] font-black uppercase tracking-widest">Active</div>
+                <div className="bg-slate-900 dark:bg-white/[0.02] rounded-2xl p-6 text-white border border-white/5">
+                  <div className="flex items-center justify-between mb-6">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Strength</p>
+                    <span className="text-emerald-400 text-xs font-bold">92%</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-8">
-                    <div>
-                      <p className="text-5xl font-black mb-2">92%</p>
-                      <p className="text-sm text-gray-400 font-bold uppercase tracking-widest">Visibility</p>
-                    </div>
-                    <div>
-                      <p className="text-5xl font-black mb-2">24</p>
-                      <p className="text-sm text-gray-400 font-bold uppercase tracking-widest">Offers</p>
-                    </div>
+                  <div className="w-full bg-white/10 h-1.5 rounded-full mb-6">
+                    <div className="bg-emerald-500 h-full w-[92%] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                   </div>
+                  <p className="text-xs text-slate-400 leading-relaxed">Your profile is highly visible to top recruiters.</p>
                 </div>
               </FadeIn>
             </div>
           </div>
         </div>
 
-        {/* ── Redesigned Edit Modal ── */}
+        {/* ── Refined Edit Modal ── */}
         {isEditingProfile && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={() => setIsEditingProfile(false)} />
-            <FadeIn direction="up" className="w-full max-w-2xl bg-white dark:bg-gray-900 border-2 border-white/10 rounded-[64px] overflow-hidden shadow-2xl relative z-10">
-              <div className="p-12 md:p-16">
-                <div className="flex justify-between items-center mb-12">
-                  <h3 className="text-4xl font-black tracking-tight">Edit Profile</h3>
-                  <button onClick={() => setIsEditingProfile(false)} className="w-14 h-14 rounded-2xl bg-gray-100 dark:bg-white/5 flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-all">
-                    <X className="w-7 h-7" />
+            <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsEditingProfile(false)} />
+            <FadeIn direction="up" className="w-full max-w-lg bg-white dark:bg-[#15201E] border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-2xl relative z-10">
+              <div className="p-6 sm:p-8">
+                <div className="flex justify-between items-center mb-8">
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">Edit Profile</h3>
+                  <button onClick={() => setIsEditingProfile(false)} className="text-slate-400 hover:text-red-500 transition-colors">
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
 
-                <div className="space-y-10">
-                  {/* Photo Upload Box */}
-                  <div className="flex flex-col items-center justify-center p-10 bg-[var(--bg-base)] border-2 border-dashed border-[var(--border)] rounded-[40px] text-center">
-                    <div className="w-24 h-24 rounded-3xl bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] mb-6 shadow-inner">
-                      {isUploading ? <Loader2 className="w-10 h-10 animate-spin" /> : <Camera className="w-10 h-10" />}
+                <div className="space-y-6">
+                  {/* Photo Section */}
+                  <div className="flex items-center gap-6 p-4 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-200 dark:border-white/10">
+                    <div className="w-20 h-20 rounded-xl bg-slate-200 dark:bg-white/10 flex items-center justify-center overflow-hidden">
+                      {isUploading ? <Loader2 className="w-6 h-6 animate-spin" /> : (avatarPreview ? <img src={avatarPreview} className="w-full h-full object-cover" /> : <Camera className="w-6 h-6" />)}
                     </div>
-                    <p className="font-black text-xl mb-6">Profile Picture</p>
-                    <Button 
-                      onClick={() => fileRef.current?.click()}
-                      disabled={isUploading}
-                      className="bg-white text-black border-2 border-black hover:bg-black hover:text-white h-14 px-10 rounded-2xl font-black transition-all"
-                    >
-                      {isUploading ? 'Uploading Image...' : 'Upload New Photo'}
-                    </Button>
-                    <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+                    <div className="flex-1">
+                      <p className="text-sm font-bold mb-2">Profile Photo</p>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => fileRef.current?.click()}
+                        disabled={isUploading}
+                        className="h-9 px-4 rounded-lg font-semibold text-xs border-slate-200"
+                      >
+                        {isUploading ? 'Uploading...' : 'Change Photo'}
+                      </Button>
+                      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-black text-[var(--text-muted)] uppercase tracking-widest mb-4 ml-1">Full Name</label>
+                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Full Name</label>
                       <input 
                         type="text" 
                         value={profileData.name} 
                         onChange={(e) => setProfileData(prev => ({ ...prev, name: e.target.value }))}
-                        className="w-full bg-[var(--bg-base)] border-2 border-[var(--border)] rounded-2xl px-6 py-5 focus:outline-none focus:border-[var(--primary)] transition-all font-black text-lg"
+                        className="w-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all font-medium"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-black text-[var(--text-muted)] uppercase tracking-widest mb-4 ml-1">Current Role</label>
+                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Job Title</label>
                       <input 
                         type="text" 
                         value={profileData.jobTitle} 
                         onChange={(e) => setProfileData(prev => ({ ...prev, jobTitle: e.target.value }))}
-                        className="w-full bg-[var(--bg-base)] border-2 border-[var(--border)] rounded-2xl px-6 py-5 focus:outline-none focus:border-[var(--primary)] transition-all font-black text-lg"
+                        className="w-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all font-medium"
                       />
                     </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-black text-[var(--text-muted)] uppercase tracking-widest mb-4 ml-1">Portfolio</label>
+                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Portfolio</label>
                       <input 
                         type="text" 
                         value={profileData.portfolio} 
                         onChange={(e) => setProfileData(prev => ({ ...prev, portfolio: e.target.value }))}
-                        className="w-full bg-[var(--bg-base)] border-2 border-[var(--border)] rounded-2xl px-6 py-5 focus:outline-none focus:border-[var(--primary)] transition-all font-black text-lg"
+                        className="w-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all font-medium"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-black text-[var(--text-muted)] uppercase tracking-widest mb-4 ml-1">Current City</label>
+                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Location</label>
                       <input 
                         type="text" 
                         value={profileData.location} 
                         onChange={(e) => setProfileData(prev => ({ ...prev, location: e.target.value }))}
-                        className="w-full bg-[var(--bg-base)] border-2 border-[var(--border)] rounded-2xl px-6 py-5 focus:outline-none focus:border-[var(--primary)] transition-all font-black text-lg"
+                        className="w-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all font-medium"
                       />
                     </div>
                   </div>
                   
                   <Button 
                     onClick={() => { saveProfile(); setIsEditingProfile(false); }}
-                    className="w-full bg-[var(--primary)] hover:opacity-90 text-white h-20 rounded-[32px] font-black text-2xl shadow-3xl shadow-[var(--primary)]/30 transition-all active:scale-[0.98] mt-4"
+                    className="w-full bg-emerald-500 hover:bg-emerald-600 text-white h-12 rounded-xl font-bold text-base shadow-lg shadow-emerald-500/20 transition-all active:scale-[0.98] mt-2"
                   >
-                    Confirm & Save Profile
+                    Save Changes
                   </Button>
                 </div>
               </div>

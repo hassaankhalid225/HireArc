@@ -8,7 +8,7 @@ import Link from "next/link";
 import {
   Calendar, Send, Users, Bookmark, Eye, 
   ArrowUp, ArrowDown, Minus, MoreVertical, Sparkles,
-  Briefcase, Bell
+  Briefcase, Bell, Zap
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";

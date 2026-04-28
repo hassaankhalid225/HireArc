@@ -24,6 +24,8 @@ const CATEGORIES = ["All", "Tech Giant", "Software", "Fintech", "E-commerce", "E
 export default function CompaniesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const filteredCompanies = ALL_COMPANIES.filter(company => {
     const matchesSearch = company.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -31,6 +33,22 @@ export default function CompaniesPage() {
     const matchesCategory = selectedCategory === "All" || company.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
+  const paginatedCompanies = filteredCompanies.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Reset to page 1 when search or category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory]);
 
   return (
     <div className="min-h-screen">
@@ -113,7 +131,7 @@ export default function CompaniesPage() {
             </div>
 
             <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filteredCompanies.map((company) => (
+              {paginatedCompanies.map((company) => (
                 <StaggerItem key={company.id}>
                   <div className="group relative flex flex-col p-6 bg-white dark:bg-[#233027] border-2 border-[var(--primary)] rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
                     <div className="flex justify-between items-start mb-6">
@@ -168,6 +186,29 @@ export default function CompaniesPage() {
                 </StaggerItem>
               ))}
             </StaggerContainer>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 mt-12">
+                <button
+                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                  className="px-6 py-2 rounded-xl border-2 border-[var(--border)] font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:border-[var(--primary)] transition-all"
+                >
+                  Previous
+                </button>
+                <span className="font-bold text-[var(--text-secondary)]">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-6 py-2 rounded-xl bg-[var(--primary)] text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all shadow-lg shadow-[var(--primary)]/20"
+                >
+                  Next
+                </button>
+              </div>
+            )}
 
             {filteredCompanies.length === 0 && (
               <div className="text-center py-20 bg-white dark:bg-[#233027] rounded-3xl border border-dashed border-[var(--border)]">

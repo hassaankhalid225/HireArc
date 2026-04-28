@@ -44,6 +44,76 @@ const COMPANIES_DB: Record<string, any> = {
       { title: "High Impact", desc: "Build tools used by billions of people daily.", icon: <Zap className="w-5 h-5" /> },
       { title: "Innovation", desc: "Join the team building the future of social connection.", icon: <Briefcase className="w-5 h-5" /> }
     ]
+  },
+  stripe: {
+    name: "Stripe",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg",
+    category: "Fintech",
+    location: "San Francisco, CA",
+    founded: "2010",
+    employees: "8,000+",
+    website: "https://stripe.com",
+    description: "Stripe is a financial infrastructure platform for businesses. Millions of companies—from the world’s largest enterprises to the most ambitious startups—use Stripe to accept payments, grow their revenue, and accelerate new business opportunities.",
+    benefits: [
+      { title: "Financial Growth", desc: "Competitive equity and financial planning tools.", icon: <ShieldCheck className="w-5 h-5" /> },
+      { title: "Global Scale", desc: "Solve complex problems at a global scale.", icon: <Globe className="w-5 h-5" /> }
+    ]
+  },
+  coursera: {
+    name: "Coursera",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/9/97/Coursera-Logo_600x600.svg",
+    category: "EdTech",
+    location: "Mountain View, CA",
+    founded: "2012",
+    employees: "2,000+",
+    website: "https://coursera.org",
+    description: "Coursera is the global online learning platform that offers anyone, anywhere, access to online courses and degrees from world-class universities and companies.",
+    benefits: [
+      { title: "Free Learning", desc: "Unlimited access to all Coursera courses and degrees.", icon: <Zap className="w-5 h-5" /> },
+      { title: "Social Impact", desc: "Help provide education to millions worldwide.", icon: <Users className="w-5 h-5" /> }
+    ]
+  },
+  figma: {
+    name: "Figma",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/3/33/Figma-logo.svg",
+    category: "Design Software",
+    location: "San Francisco, CA",
+    founded: "2012",
+    employees: "1,300+",
+    website: "https://figma.com",
+    description: "Figma is the leading collaborative design tool for teams. We believe that distance shouldn't be a barrier to collaborative work.",
+    benefits: [
+      { title: "Creative Culture", desc: "A workplace built by designers, for designers.", icon: <Sparkles className="w-5 h-5" /> },
+      { title: "Collaboration", desc: "Work on the tool that defines the future of design.", icon: <Users className="w-5 h-5" /> }
+    ]
+  },
+  airbnb: {
+    name: "Airbnb",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_Bélo.svg",
+    category: "Travel",
+    location: "San Francisco, CA",
+    founded: "2008",
+    employees: "6,000+",
+    website: "https://airbnb.com",
+    description: "Airbnb is a community based on connection and belonging—a community that was born in 2008 when two hosts welcomed three guests to their San Francisco home.",
+    benefits: [
+      { title: "Travel Credits", desc: "Annual credits to explore the world with Airbnb.", icon: <Globe className="w-5 h-5" /> },
+      { title: "Belonging", desc: "A mission-driven culture focused on global connection.", icon: <Users className="w-5 h-5" /> }
+    ]
+  },
+  netflix: {
+    name: "Netflix",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg",
+    category: "Entertainment",
+    location: "Los Gatos, CA",
+    founded: "1997",
+    employees: "12,000+",
+    website: "https://netflix.com",
+    description: "Netflix is the world's leading streaming entertainment service with 230 million paid memberships in over 190 countries enjoying TV series, documentaries, feature films and mobile games across a wide variety of genres and languages.",
+    benefits: [
+      { title: "Freedom & Responsibility", desc: "A unique culture focused on high performance and trust.", icon: <Zap className="w-5 h-5" /> },
+      { title: "Innovation", desc: "Shape the future of global entertainment.", icon: <Sparkles className="w-5 h-5" /> }
+    ]
   }
 };
 
@@ -75,20 +145,30 @@ export default function CompanyProfile() {
 
   const [companyJobs, setCompanyJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 10;
+
+  async function fetchCompanyJobs(page: number) {
+    setIsLoading(true);
+    try {
+      const res = await jobsService.getJobs({ 
+        company: company.name, 
+        page: page,
+        pageSize: itemsPerPage 
+      });
+      setCompanyJobs(res.data || []);
+      setTotalPages(res.pagination?.totalPages || 1);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function fetchCompanyJobs() {
-      try {
-        const res = await jobsService.getJobs({ company: company.name, pageSize: 10 });
-        setCompanyJobs(res.data || []);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchCompanyJobs();
-  }, [company.name]);
+    fetchCompanyJobs(currentPage);
+  }, [company.name, currentPage]);
 
   return (
     <div className="min-h-screen bg-[var(--bg-base)]">
@@ -179,10 +259,37 @@ export default function CompanyProfile() {
                     {[1, 2, 3].map(i => <JobCardSkeleton key={i} />)}
                   </div>
                 ) : companyJobs && companyJobs.length > 0 ? (
-                  <div className="grid grid-cols-1 gap-6">
-                    {companyJobs.map((job) => (
-                      <JobCard key={job.job_id} job={job} />
-                    ))}
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 gap-6">
+                      {companyJobs.map((job) => (
+                        <JobCard key={job.job_id} job={job} />
+                      ))}
+                    </div>
+                    
+                    {/* Pagination for Jobs */}
+                    {totalPages > 1 && (
+                      <div className="flex items-center justify-center gap-4 pt-8">
+                        <Button
+                          variant="outline"
+                          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                          disabled={currentPage === 1 || isLoading}
+                          className="font-bold border-2"
+                        >
+                          Previous
+                        </Button>
+                        <span className="text-sm font-bold text-[var(--text-secondary)]">
+                          Page {currentPage} of {totalPages}
+                        </span>
+                        <Button
+                          variant="outline"
+                          onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                          disabled={currentPage === totalPages || isLoading}
+                          className="font-bold border-2"
+                        >
+                          Next
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="p-12 rounded-[32px] bg-white dark:bg-white/5 border-2 border-dashed border-[var(--border)] text-center space-y-4">

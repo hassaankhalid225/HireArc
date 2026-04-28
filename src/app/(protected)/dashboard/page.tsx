@@ -112,16 +112,6 @@ export default function DashboardPage() {
       href: "/applied-jobs"
     },
     { 
-      title: "Interviews", 
-      value: stats?.interviews || 0, 
-      change: "+0%", 
-      color: "text-[#166534]", 
-      bg: "bg-[#166534]/10", 
-      icon: <Users className="w-5 h-5" />,
-      neutral: true,
-      href: "/applied-jobs"
-    },
-    { 
       title: "Saved Jobs", 
       value: savedCount,
       change: "+0%", 
@@ -130,16 +120,6 @@ export default function DashboardPage() {
       icon: <Bookmark className="w-5 h-5" />, 
       neutral: true,
       href: "/saved-jobs"
-    },
-    { 
-      title: "Profile Views", 
-      value: stats?.profile_views || 0, 
-      change: "+0%", 
-      color: "text-[#4A6E46]", 
-      bg: "bg-[#4A6E46]/10", 
-      icon: <Eye className="w-5 h-5" />, 
-      neutral: true,
-      href: "/profile"
     }
   ];
 
@@ -156,16 +136,12 @@ export default function DashboardPage() {
               Here's what's happening with your job search today.
             </p>
           </div>
-          {stats?.interviews && stats.interviews > 0 ? (
-            <div className="inline-flex items-center gap-2 bg-[#678D63]/10 text-[#166534] dark:text-green-400 px-4 py-2 rounded-xl text-sm font-bold border-2 border-[#678D63]/20">
-              <Calendar className="w-4 h-4" /> You have {stats.interviews} interview requests this week.
-            </div>
-          ) : null}
+
         </div>
       </FadeIn>
 
       {/* Stat Cards */}
-      <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {statCards.map((stat, i) => (
           <StaggerItem key={i}>
             <Link href={stat.href}>
@@ -202,7 +178,7 @@ export default function DashboardPage() {
               <Card className="shadow-sm bg-white dark:bg-white/5 overflow-hidden border-2 border-[var(--border)]">
                 <CardContent className="p-0">
                   <div className="p-6 border-b-2 border-[var(--border)] flex justify-between items-center">
-                    <h3 className="text-lg font-bold font-headline">Application Status</h3>
+                    <h3 className="text-lg font-bold font-headline">Applied Jobs</h3>
                     <Link href="/applied-jobs" className="text-sm font-bold text-[var(--primary)] hover:underline">View All</Link>
                   </div>
                   <div className="overflow-x-auto">
@@ -298,53 +274,7 @@ export default function DashboardPage() {
             </Card>
           </FadeIn>
 
-          {/* Recommended for You */}
-          {recommendedJobs.length > 0 ? (
-            <FadeIn delay={0.6} direction="left">
-              <Card className="shadow-sm bg-white dark:bg-white/5 border-2 border-[var(--border)]">
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-bold font-headline mb-6 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-yellow-500" /> Recommended for You
-                  </h3>
-                  <div className="space-y-4">
-                    {recommendedJobs.map((job) => (
-                      <div key={job.job_id} className="p-4 border-2 border-[var(--border)] rounded-xl hover:border-[var(--primary)] transition-all duration-300 hover:shadow-premium-sm group bg-white dark:bg-transparent">
-                        <div className="flex gap-3 mb-3">
-                          <div className="w-10 h-10 bg-[var(--bg-base)] rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-[var(--primary)]">
-                            {job.company.charAt(0)}
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-sm text-[var(--text-primary)] group-hover:text-[var(--primary)] transition-colors line-clamp-1">{job.title}</h4>
-                            <p className="text-xs text-[var(--text-secondary)] font-medium">{job.company}{job.location ? ` • ${job.location}` : ""}</p>
-                          </div>
-                        </div>
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {job.salary_max && job.salary_min && (
-                            <Badge variant="secondary" className="text-[10px] bg-[#678D63]/10 text-[#166534] dark:bg-green-900/30 dark:text-green-300 py-0.5 px-2 border-none font-bold">
-                              ${Math.round(job.salary_min/1000)}k – ${Math.round(job.salary_max/1000)}k
-                            </Badge>
-                          )}
-                          {job.job_type && (
-                            <Badge variant="secondary" className="text-[10px] bg-[#678D63]/5 text-[#678D63] dark:bg-green-900/10 dark:text-green-400 py-0.5 px-2 border-none font-bold capitalize">
-                              {job.job_type}
-                            </Badge>
-                          )}
-                        </div>
-                        <Link href={`/jobs/${job.job_id}`}>
-                          <Button className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white h-9 text-xs font-bold transition-all duration-300 rounded-lg active:scale-[0.98]">
-                            View Details
-                          </Button>
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                  <Link href="/search" className="mt-6 block text-center text-sm font-bold text-[var(--primary)] hover:underline">
-                    Explore more jobs
-                  </Link>
-                </CardContent>
-              </Card>
-            </FadeIn>
-          ) : null}
+
 
           {/* Profile Strength */}
           <FadeIn delay={0.7} direction="up">

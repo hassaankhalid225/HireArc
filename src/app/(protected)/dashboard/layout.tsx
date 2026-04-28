@@ -14,10 +14,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "My Applications", href: "/dashboard/applications", icon: FileText },
+    { name: "Applied Job", href: "/dashboard/applications", icon: FileText },
     { name: "Saved Jobs", href: "/dashboard/saved", icon: Bookmark },
-    { name: "Messages", href: "/dashboard/messages", icon: MessageSquare },
-    { name: "Recommended", href: "/dashboard/recommended", icon: Sparkles },
   ];
 
   return (

@@ -103,3 +103,30 @@ export default function JobCard({ job }: { job: Job }) {
     </Link>
   );
 }
+import { Skeleton } from "./skeleton";
+
+export function JobCardSkeleton() {
+  return (
+    <div className="bg-white dark:bg-[#15221B] border-2 border-[var(--border)] dark:border-white/5 rounded-[32px] p-8 h-[340px]">
+      <div className="flex justify-between items-start mb-8">
+        <div className="flex gap-5">
+          <Skeleton className="w-14 h-14 rounded-2xl" />
+          <div className="space-y-3">
+            <Skeleton className="h-6 w-48" />
+            <Skeleton className="h-4 w-32" />
+          </div>
+        </div>
+        <Skeleton className="w-10 h-10 rounded-full" />
+      </div>
+      <Skeleton className="h-4 w-40 mb-6" />
+      <div className="flex gap-3 mb-8">
+        <Skeleton className="h-8 w-24 rounded-full" />
+        <Skeleton className="h-8 w-24 rounded-full" />
+      </div>
+      <div className="pt-6 border-t-2 border-[var(--border)] dark:border-white/5 flex justify-between items-center">
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-4 w-24" />
+      </div>
+    </div>
+  );
+}

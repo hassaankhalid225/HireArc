@@ -8,7 +8,7 @@ import {
   CheckCircle2, ArrowRight, Share2, Link as LinkIcon, Globe,
   Briefcase, ShieldCheck, Zap, Loader2
 } from "lucide-react";
-import JobCard from "@/components/ui/JobCard";
+import JobCard, { JobCardSkeleton } from "@/components/ui/JobCard";
 import { jobsService } from "@/services/jobs.service";
 import { Job } from "@/types";
 
@@ -51,8 +51,22 @@ export default function CompanyProfile() {
   const params = useParams();
   const id = params.id as string;
   
-  // Fallback to Google if company not found for demo purposes
-  const company = COMPANIES_DB[id] || COMPANIES_DB.google;
+  // Dynamic company data: use DB if exists, otherwise generate basic one from ID
+  const company = COMPANIES_DB[id] || {
+    name: id.charAt(0).toUpperCase() + id.slice(1),
+    logo: `https://ui-avatars.com/api/?name=${id}&background=2D4A3E&color=fff&size=128`,
+    roles: 0,
+    category: "Organization",
+    location: "Global",
+    founded: "N/A",
+    employees: "1000+",
+    website: `https://${id}.com`,
+    description: `${id.charAt(0).toUpperCase() + id.slice(1)} is a leading organization in its field, focused on delivering excellence and innovation to its global customer base.`,
+    benefits: [
+      { title: "Global Impact", desc: "Work on projects that matter to millions.", icon: <Zap className="w-5 h-5" /> },
+      { title: "Flexibility", desc: "Modern work culture with remote options.", icon: <Globe className="w-5 h-5" /> }
+    ]
+  };
 
   const [companyJobs, setCompanyJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -155,7 +169,9 @@ export default function CompanyProfile() {
               </div>
               <StaggerContainer className="space-y-4">
                 {isLoading ? (
-                  <div className="flex justify-center p-8"><Loader2 className="w-8 h-8 animate-spin text-[var(--primary)]" /></div>
+                  <div className="grid grid-cols-1 gap-6">
+                    {[1, 2, 3].map(i => <JobCardSkeleton key={i} />)}
+                  </div>
                 ) : companyJobs.length > 0 ? (
                   companyJobs.map((job) => (
                     <StaggerItem key={job.job_id}>

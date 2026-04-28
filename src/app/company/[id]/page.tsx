@@ -172,17 +172,18 @@ export default function CompanyProfile() {
                   View all <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-              <StaggerContainer className="space-y-4">
+
+              <div className="space-y-4">
                 {!mounted || isLoading ? (
                   <div className="grid grid-cols-1 gap-6">
                     {[1, 2, 3].map(i => <JobCardSkeleton key={i} />)}
                   </div>
-                ) : companyJobs.length > 0 ? (
-                  companyJobs.map((job) => (
-                    <StaggerItem key={job.job_id}>
-                      <JobCard job={job} />
-                    </StaggerItem>
-                  ))
+                ) : companyJobs && companyJobs.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-6">
+                    {companyJobs.map((job) => (
+                      <JobCard key={job.job_id} job={job} />
+                    ))}
+                  </div>
                 ) : (
                   <div className="p-12 rounded-[32px] bg-white dark:bg-white/5 border-2 border-dashed border-[var(--border)] text-center space-y-4">
                     <div className="w-16 h-16 bg-[var(--bg-base)] rounded-full flex items-center justify-center mx-auto">
@@ -202,7 +203,7 @@ export default function CompanyProfile() {
                     </Link>
                   </div>
                 )}
-              </StaggerContainer>
+              </div>
             </section>
           </div>
 

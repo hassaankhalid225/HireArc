@@ -29,7 +29,7 @@ export default function Footer() {
                 { name: "Find Jobs", href: "/search" },
                 { name: "Remote Jobs", href: "/search?type=remote" },
                 { name: "Browse Companies", href: "/companies" },
-                { name: "Browse Categories", href: "/categories" }
+                { name: "Browse Categories", href: "/search" }
               ].map(link => (
                 <Link key={link.name} href={link.href} className="text-[15px] font-bold text-white/50 hover:text-white transition-colors">
                   {link.name}

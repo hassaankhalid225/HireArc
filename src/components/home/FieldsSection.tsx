@@ -41,7 +41,7 @@ export default function FieldsSection() {
               <h2 className="text-4xl md:text-5xl font-extrabold font-headline tracking-tight mb-4">Popular Industries</h2>
               <p className="text-[var(--text-secondary)] text-lg font-medium">Browse high-signal opportunities across the most innovative sectors.</p>
             </div>
-            <Link href="/categories" className="btn btn-outline h-14 px-8 group border-2">
+            <Link href="/search" className="btn btn-outline h-14 px-8 group border-2">
               All Categories <Search className="w-5 h-5 ml-2 group-hover:scale-110 transition-transform" />
             </Link>
           </div>

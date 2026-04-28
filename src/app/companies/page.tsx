@@ -124,9 +124,14 @@ export default function CompaniesPage() {
                           className="max-h-full max-w-full object-contain"
                         />
                       </div>
-                      <Link href={company.website} target="_blank" className="p-2 rounded-full bg-gray-50 dark:bg-white/5 text-[var(--text-muted)] hover:text-[var(--primary)] transition-all">
+                      <a 
+                        href={company.website.startsWith('http') ? company.website : `https://${company.website}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-full bg-gray-50 dark:bg-white/5 text-[var(--text-muted)] hover:text-[var(--primary)] transition-all"
+                      >
                         <ExternalLink className="w-4 h-4" />
-                      </Link>
+                      </a>
                     </div>
 
                     <div className="flex-1">

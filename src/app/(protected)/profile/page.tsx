@@ -134,7 +134,8 @@ export default function ProfilePage() {
     );
   }
   return (
-    <div className="min-h-screen bg-[var(--bg-base)] pt-24 pb-20">
+    <>
+      <div className="min-h-screen bg-[var(--bg-base)] pt-24 pb-20">
       <div className="container-custom max-w-5xl">
         
         {/* Header Section */}
@@ -273,13 +274,11 @@ export default function ProfilePage() {
                 </div>
               </div>
             </FadeIn>
-
-            </FadeIn>
           </div>
 
           {/* Right Column: Sidebar */}
           <div className="space-y-8">
-                  {/* Contact Info */}
+            {/* Contact Info */}
             <FadeIn delay={0.3} direction="left">
               <div className="bg-white dark:bg-[var(--bg-card)] border-2 border-[var(--border)] rounded-[32px] p-8 shadow-sm">
                 <div className="flex justify-between items-center mb-6">
@@ -419,5 +418,6 @@ export default function ProfilePage() {
         </div>
       )}
     </div>
+    </>
   );
 }

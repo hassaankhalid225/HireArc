@@ -34,11 +34,6 @@ const CATEGORIES = [
   { name: "Sales", icon: <Briefcase className="w-4 h-4" />, href: "/search?cat=sales" },
 ];
 
-const NOTIFICATIONS = [
-  { id: 1, title: "New job match!", desc: "Senior React Developer at Google", time: "2m ago", unread: true },
-  { id: 2, title: "Application update", desc: "Your application at Meta is under review", time: "1h ago", unread: true },
-  { id: 3, title: "Profile viewed", desc: "A recruiter viewed your profile", time: "3h ago", unread: false },
-];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -95,8 +90,6 @@ export default function Navbar() {
 
   const toggleDropdown = (name: string) =>
     setActiveDropdown(activeDropdown === name ? null : name);
-
-  const unreadCount = NOTIFICATIONS.filter((n) => n.unread).length;
 
   // Shared icon button style
   const iconBtn = `p-2 rounded-xl transition-all duration-300 ${

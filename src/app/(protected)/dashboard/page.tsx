@@ -257,7 +257,7 @@ export default function DashboardPage() {
                 </div>
                 <h3 className="text-xl font-bold mb-2">No applications yet</h3>
                 <p className="text-[var(--text-secondary)] mb-6 max-w-md">Start applying to jobs to track your progress here. Your application status will appear once you've applied.</p>
-                <Link href="/jobs">
+                <Link href="/search">
                   <Button className="bg-[var(--primary)] text-white px-8">Find Jobs</Button>
                 </Link>
               </Card>
@@ -338,7 +338,7 @@ export default function DashboardPage() {
                       </div>
                     ))}
                   </div>
-                  <Link href="/jobs" className="mt-6 block text-center text-sm font-bold text-[var(--primary)] hover:underline">
+                  <Link href="/search" className="mt-6 block text-center text-sm font-bold text-[var(--primary)] hover:underline">
                     Explore more jobs
                   </Link>
                 </CardContent>

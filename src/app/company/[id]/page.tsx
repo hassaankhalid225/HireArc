@@ -187,7 +187,7 @@ export default function CompanyProfile() {
                       <p className="text-lg font-bold">No active positions found</p>
                       <p className="text-[var(--text-secondary)] max-w-xs mx-auto">We couldn't find any current openings for {company.name} in our database.</p>
                     </div>
-                    <Link href="/jobs" className="inline-block px-6 py-2 rounded-xl bg-[var(--primary)] text-white font-bold text-sm hover:scale-105 transition-transform">
+                    <Link href="/search" className="inline-block px-6 py-2 rounded-xl bg-[var(--primary)] text-white font-bold text-sm hover:scale-105 transition-transform">
                       Browse All Jobs
                     </Link>
                   </div>

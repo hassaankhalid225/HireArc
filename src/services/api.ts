@@ -30,6 +30,7 @@ async function request<T>(
   const res = await fetch(`${BASE_URL}${path}`, {
     method,
     signal,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       // Authorization: `Bearer ${getToken()}`,   ← uncomment when auth is ready

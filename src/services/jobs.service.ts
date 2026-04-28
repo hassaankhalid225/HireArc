@@ -15,6 +15,7 @@ export interface JobsFilter {
   location?: string;
   type?: string;
   experience?: string;
+  company?: string;
   isRemote?: boolean;
   page?: number;
   pageSize?: number;
@@ -63,6 +64,7 @@ export const jobsService = {
     if (filter.location) params.append("location", filter.location);
     if (filter.type)     params.append("job_type", filter.type);
     if (filter.experience) params.append("experience", filter.experience);
+    if (filter.company)  params.append("company", filter.company);
     if (filter.isRemote !== undefined)
       params.append("remote", String(filter.isRemote));
     if (filter.page)     params.append("page", String(filter.page));

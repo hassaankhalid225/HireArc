@@ -60,7 +60,7 @@ export default function CompanyProfile() {
   useEffect(() => {
     async function fetchCompanyJobs() {
       try {
-        const res = await jobsService.getJobs({ query: company.name, pageSize: 10 });
+        const res = await jobsService.getJobs({ company: company.name, pageSize: 10 });
         setCompanyJobs(res.data || []);
       } catch (error) {
         console.error(error);

@@ -421,6 +421,7 @@ export default function Navbar() {
                         { name: "Edit Profile",  icon: <Target className="w-4 h-4" />,   href: "/profile/edit" },
                         { name: "Saved Jobs",    icon: <Bookmark className="w-4 h-4" />, href: "/saved-jobs" },
                         { name: "Applied Jobs",  icon: <Zap className="w-4 h-4" />,      href: "/applied-jobs" },
+                        ...(user?.role === "admin" ? [{ name: "Admin Panel", icon: <Shield className="w-4 h-4" />, href: "/admin/dashboard" }] : []),
                         { name: "Settings",      icon: <Layout className="w-4 h-4" />,   href: "/settings" },
                       ].map((item) => (
                         <Link

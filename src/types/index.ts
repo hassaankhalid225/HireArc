@@ -28,6 +28,7 @@ export interface User {
   location?: string;
   bio?: string;
   isPremium: boolean;
+  role: "user" | "admin" | "company";
 }
 
 // ─── Notification Types ───────────────────────────────────────────────────────

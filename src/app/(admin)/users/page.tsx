@@ -15,6 +15,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { apiClient } from "@/services/api";
 import { User } from "@/types";
+import { cn } from "@/lib/utils";
 
 export default function UserManagement() {
   const [users, setUsers] = useState<User[]>([]);
@@ -193,8 +194,4 @@ export default function UserManagement() {
       </div>
     </div>
   );
-}
-
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(" ");
 }

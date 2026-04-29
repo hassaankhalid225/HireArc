@@ -17,6 +17,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { apiClient } from "@/services/api";
 import { Job } from "@/types";
+import { cn } from "@/lib/utils";
 
 export default function JobManagement() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -53,7 +54,7 @@ export default function JobManagement() {
   const toggleStatus = async (jobId: string, currentStatus: boolean) => {
     try {
       await apiClient.patch(`/admin/jobs/${jobId}/status?is_active=${!currentStatus}`, {});
-      setJobs(jobs.map(j => j.job_id === job_id ? { ...j, is_active: !currentStatus } : j));
+      setJobs(jobs.map(j => j.job_id === jobId ? { ...j, is_active: !currentStatus } : j));
     } catch (error) {
       alert("Failed to update status");
     }
@@ -205,8 +206,4 @@ export default function JobManagement() {
       </div>
     </div>
   );
-}
-
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(" ");
 }

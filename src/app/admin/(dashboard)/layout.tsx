@@ -13,15 +13,15 @@ export default function AdminDashboardLayout({
     <AdminGuard>
       <div className="flex min-h-screen bg-background">
         {/* Sidebar */}
-        <AdminSidebar />
+        {/* <AdminSidebar /> */}
         
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col lg:pl-72 transition-all duration-300">
+        <div className="flex-1 flex flex-col transition-all duration-300">
           {/* Top Header */}
-          <AdminHeader />
+          {/* <AdminHeader /> */}
           
           {/* Page Content */}
-          <main className="flex-1 p-6 md:p-8 animate-in fade-in duration-500">
+          <main className="flex-1 p-6 md:p-8">
             <div className="max-w-[1400px] mx-auto space-y-8">
               {children}
             </div>

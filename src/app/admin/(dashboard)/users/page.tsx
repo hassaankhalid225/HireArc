@@ -13,6 +13,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { 
+  Users, 
+  Search, 
+  Shield, 
+  Trash2, 
+  CheckCircle, 
+  Loader2 
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { apiClient } from "@/services/api";
+import { User } from "@/types";
+import { cn } from "@/lib/utils";
 
 export default function UserManagement() {
   const [users, setUsers] = useState<User[]>([]);

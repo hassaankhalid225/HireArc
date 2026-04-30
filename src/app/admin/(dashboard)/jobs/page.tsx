@@ -10,8 +10,27 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { 
+  Briefcase, 
+  Search, 
+  Building2, 
+  Calendar, 
+  MapPin, 
+  Power, 
+  PowerOff, 
+  ChevronLeft, 
+  ChevronRight, 
+  Trash2, 
+  ExternalLink,
+  Loader2
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { apiClient } from "@/services/api";
+import { Job } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 export default function JobManagement() {
   const [jobs, setJobs] = useState<Job[]>([]);

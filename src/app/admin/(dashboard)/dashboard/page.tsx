@@ -14,25 +14,29 @@ import {
 import { motion } from "framer-motion";
 import { apiClient } from "@/services/api";
 
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+
 const StatCard = ({ title, value, icon: Icon, change, trend, color }: any) => (
-  <motion.div 
-    whileHover={{ y: -5 }}
-    className="bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all"
-  >
-    <div className="flex justify-between items-start mb-4">
-      <div className={`p-3 rounded-xl ${color} bg-opacity-10`}>
-        <Icon className={`w-6 h-6 ${color.replace('bg-', 'text-')}`} />
+  <Card className="overflow-hidden border-none shadow-md bg-card/50 backdrop-blur-sm">
+    <CardContent className="p-6">
+      <div className="flex justify-between items-start mb-4">
+        <div className={cn("p-2.5 rounded-xl bg-primary/10", color.replace('bg-', 'text-'))}>
+          <Icon size={24} />
+        </div>
+        <div className={cn("flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full", trend === 'up' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500')}>
+          {trend === 'up' ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+          {change}
+        </div>
       </div>
-      <div className={`flex items-center gap-1 text-sm font-medium ${trend === 'up' ? 'text-emerald-500' : 'text-rose-500'}`}>
-        {trend === 'up' ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
-        {change}
+      <div>
+        <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
+        <h3 className="text-3xl font-bold tracking-tight">{value}</h3>
       </div>
-    </div>
-    <div>
-      <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">{title}</p>
-      <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{value}</h3>
-    </div>
-  </motion.div>
+    </CardContent>
+  </Card>
 );
 
 export default function AdminDashboard() {
@@ -62,9 +66,15 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
       {/* Header Section */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Admin Overview</h1>
-        <p className="text-slate-500 dark:text-slate-400">Welcome back! Here's what's happening with JobSphere today.</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight">Admin Overview</h1>
+          <p className="text-muted-foreground mt-1 text-lg">Welcome back! Monitoring HireArc system health and growth metrics.</p>
+        </div>
+        <div className="flex gap-3">
+          <Button variant="outline" className="rounded-xl">Download Report</Button>
+          <Button className="rounded-xl">Manage System</Button>
+        </div>
       </div>
 
       {/* Stats Grid */}
@@ -105,68 +115,81 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Activity */}
-        <div className="lg:col-span-2 bg-white dark:bg-[#1E293B] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
-            <h3 className="font-bold text-slate-900 dark:text-white">Recent Activity</h3>
-            <button className="text-sm font-medium text-primary hover:underline">View All</button>
-          </div>
-          <div className="p-0">
-            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+        <Card className="lg:col-span-2 border-none shadow-lg overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b bg-accent/5">
+            <div>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>Latest system events and audit logs.</CardDescription>
+            </div>
+            <Button variant="ghost" size="sm" className="font-bold text-primary">View All</Button>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="divide-y">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="px-6 py-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                <div key={i} className="px-6 py-5 flex items-center justify-between hover:bg-accent/30 transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                      <Clock className="w-5 h-5 text-slate-500" />
+                    <div className="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center">
+                      <Clock className="w-6 h-6 text-muted-foreground" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-slate-900 dark:text-white">New Job Posted</p>
-                      <p className="text-xs text-slate-500">Frontend Engineer at TechCorp</p>
+                      <p className="text-sm font-bold">New Job Posted</p>
+                      <p className="text-xs text-muted-foreground">Frontend Engineer at TechCorp</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs font-medium text-slate-400">2 mins ago</p>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-600 uppercase tracking-wider">
+                  <div className="text-right flex flex-col items-end gap-2">
+                    <p className="text-xs font-medium text-muted-foreground">2 mins ago</p>
+                    <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20 text-[10px] font-bold uppercase tracking-wider">
                       Auto-Approved
-                    </span>
+                    </Badge>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* Quick Actions */}
-        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
-          <h3 className="font-bold text-slate-900 dark:text-white mb-6">Quick Actions</h3>
-          <div className="space-y-4">
-            <button className="w-full flex items-center gap-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-primary hover:text-white transition-all group">
-              <div className="p-2 rounded-lg bg-white dark:bg-slate-700 group-hover:bg-white/20">
-                <Briefcase className="w-5 h-5 text-primary group-hover:text-white" />
-              </div>
-              <span className="font-semibold text-sm">Post New Job</span>
-            </button>
-            <button className="w-full flex items-center gap-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-primary hover:text-white transition-all group">
-              <div className="p-2 rounded-lg bg-white dark:bg-slate-700 group-hover:bg-white/20">
-                <Users className="w-5 h-5 text-primary group-hover:text-white" />
-              </div>
-              <span className="font-semibold text-sm">Review New Users</span>
-            </button>
-            <button className="w-full flex items-center gap-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-primary hover:text-white transition-all group">
-              <div className="p-2 rounded-lg bg-white dark:bg-slate-700 group-hover:bg-white/20">
-                <AlertCircle className="w-5 h-5 text-primary group-hover:text-white" />
-              </div>
-              <span className="font-semibold text-sm">System Logs</span>
-            </button>
-          </div>
+        {/* Quick Actions & Platform Health */}
+        <div className="space-y-8">
+          <Card className="border-none shadow-lg">
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+              <CardDescription>Frequently used administrative tools.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button className="w-full justify-start h-12 rounded-xl group" variant="outline">
+                <Briefcase className="mr-3 h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
+                Post New Job
+              </Button>
+              <Button className="w-full justify-start h-12 rounded-xl group" variant="outline">
+                <Users className="mr-3 h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
+                Review New Users
+              </Button>
+              <Button className="w-full justify-start h-12 rounded-xl group" variant="outline">
+                <AlertCircle className="mr-3 h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
+                System Logs
+              </Button>
+            </CardContent>
+          </Card>
 
-          <div className="mt-8 p-4 bg-primary/5 rounded-2xl border border-primary/10">
-            <div className="flex items-center gap-2 text-primary mb-2">
-              <TrendingUp size={18} />
-              <span className="text-xs font-bold uppercase tracking-wider">Platform Health</span>
-            </div>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white mb-1">98.2%</p>
-            <p className="text-xs text-slate-500">System is performing optimally across all nodes.</p>
-          </div>
+          <Card className="border-none shadow-lg bg-primary text-primary-foreground">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-4 opacity-80">
+                <TrendingUp size={18} />
+                <span className="text-xs font-bold uppercase tracking-widest">Platform Health</span>
+              </div>
+              <div className="space-y-1 mb-6">
+                <h3 className="text-4xl font-extrabold tracking-tighter">98.2%</h3>
+                <p className="text-sm opacity-80 font-medium">Optimal performance active.</p>
+              </div>
+              <div className="h-1.5 w-full bg-primary-foreground/20 rounded-full overflow-hidden">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: "98.2%" }}
+                  className="h-full bg-primary-foreground"
+                />
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

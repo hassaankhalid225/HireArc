@@ -1,24 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { 
-  Briefcase, 
-  Search, 
-  MapPin, 
-  ExternalLink, 
-  Trash2, 
-  Power,
-  PowerOff,
-  Building2,
-  Calendar,
-  Loader2,
-  ChevronLeft,
-  ChevronRight
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { apiClient } from "@/services/api";
-import { Job } from "@/types";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 export default function JobManagement() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -70,161 +63,153 @@ export default function JobManagement() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Job Management</h1>
-          <p className="text-slate-500 dark:text-slate-400">Control all job listings published on the platform.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight">Job Management</h1>
+          <p className="text-muted-foreground mt-1">Audit and control all job listings across the platform.</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search jobs..."
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              placeholder="Search by title or company..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 bg-white dark:bg-[#1E293B] border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:ring-2 focus:ring-primary/50 transition-all w-full md:w-64"
+              className="pl-10 h-10 rounded-xl"
             />
           </div>
-          <div className="flex items-center gap-2 border border-slate-200 dark:border-slate-800 rounded-xl p-1 bg-white dark:bg-[#1E293B]">
-            <button 
+          <div className="flex items-center gap-2 bg-accent/50 p-1 rounded-xl border">
+            <Button 
+              variant="ghost" 
+              size="icon"
               onClick={() => setPage(Math.max(0, page - 1))}
-              className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg disabled:opacity-50"
               disabled={page === 0}
+              className="h-8 w-8"
             >
-              <ChevronLeft size={18} />
-            </button>
-            <span className="text-xs font-bold px-2">Page {page + 1}</span>
-            <button 
+              <ChevronLeft size={16} />
+            </Button>
+            <span className="text-[10px] font-bold px-2 uppercase tracking-widest">Page {page + 1}</span>
+            <Button 
+              variant="ghost" 
+              size="icon"
               onClick={() => setPage(page + 1)}
-              className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
+              className="h-8 w-8"
             >
-              <ChevronRight size={18} />
-            </button>
+              <ChevronRight size={16} />
+            </Button>
           </div>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                <th className="px-6 py-4">Job Title</th>
-                <th className="px-6 py-4">Company</th>
-                <th className="px-6 py-4">Location</th>
-                <th className="px-6 py-4">Source</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+      <Card className="border-none shadow-xl overflow-hidden">
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader className="bg-accent/30">
+              <TableRow>
+                <TableHead className="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Job Details</TableHead>
+                <TableHead className="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Company</TableHead>
+                <TableHead className="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Location</TableHead>
+                <TableHead className="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Source</TableHead>
+                <TableHead className="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Status</TableHead>
+                <TableHead className="px-6 py-4 font-bold uppercase tracking-wider text-[10px] text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               <AnimatePresence>
                 {isLoading ? (
                   Array.from({ length: 8 }).map((_, i) => (
-                    <tr key={i} className="animate-in fade-in duration-500">
-                      <td className="px-6 py-4">
-                        <Skeleton className="h-4 w-[150px] mb-2" />
-                        <Skeleton className="h-3 w-[80px]" />
-                      </td>
-                      <td className="px-6 py-4">
-                        <Skeleton className="h-4 w-[100px]" />
-                      </td>
-                      <td className="px-6 py-4">
-                        <Skeleton className="h-4 w-[100px]" />
-                      </td>
-                      <td className="px-6 py-4">
-                        <Skeleton className="h-4 w-[60px]" />
-                      </td>
-                      <td className="px-6 py-4">
-                        <Skeleton className="h-6 w-[80px] rounded-full" />
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex justify-end gap-2">
-                          <Skeleton className="h-8 w-8 rounded-lg" />
-                          <Skeleton className="h-8 w-8 rounded-lg" />
-                        </div>
-                      </td>
-                    </tr>
+                    <TableRow key={i}>
+                      <TableCell className="px-6 py-4"><Skeleton className="h-4 w-40" /></TableCell>
+                      <TableCell className="px-6 py-4"><Skeleton className="h-4 w-24" /></TableCell>
+                      <TableCell className="px-6 py-4"><Skeleton className="h-4 w-24" /></TableCell>
+                      <TableCell className="px-6 py-4"><Skeleton className="h-4 w-16" /></TableCell>
+                      <TableCell className="px-6 py-4"><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                      <TableCell className="px-6 py-4 text-right"><Skeleton className="h-8 w-16 ml-auto" /></TableCell>
+                    </TableRow>
                   ))
                 ) : filteredJobs.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-20 text-center">
-                      <Briefcase className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                      <p className="text-slate-500 font-medium">No jobs found</p>
-                    </td>
-                  </tr>
+                  <TableRow>
+                    <TableCell colSpan={6} className="h-64 text-center">
+                      <div className="flex flex-col items-center justify-center opacity-50">
+                        <Briefcase className="w-12 h-12 mb-4" />
+                        <p className="font-medium">No job listings found in node database.</p>
+                      </div>
+                    </TableCell>
+                  </TableRow>
                 ) : (
                   filteredJobs.map((job) => (
                     <motion.tr 
                       key={job.job_id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors"
+                      className="group border-b hover:bg-accent/30 transition-colors"
                     >
-                      <td className="px-6 py-4">
-                        <div>
-                          <p className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-[200px]">{job.title}</p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Calendar size={12} className="text-slate-400" />
-                            <span className="text-[10px] text-slate-500">{job.posted_at || "Recent"}</span>
+                      <TableCell className="px-6 py-4">
+                        <div className="flex flex-col">
+                          <span className="font-bold text-sm truncate max-w-[250px]">{job.title}</span>
+                          <span className="text-[10px] text-muted-foreground flex items-center gap-1 mt-1 font-medium">
+                            <Calendar size={10} /> {job.posted_at || "Recently Synced"}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center">
+                            <Building2 size={14} className="text-primary" />
                           </div>
+                          <span className="text-sm font-semibold">{job.company}</span>
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <Building2 size={14} className="text-slate-400" />
-                          <span className="text-sm text-slate-700 dark:text-slate-300 font-medium">{job.company}</span>
+                      </TableCell>
+                      <TableCell className="px-6 py-4 text-sm font-medium text-muted-foreground">
+                        <div className="flex items-center gap-1.5">
+                          <MapPin size={14} className="opacity-50" />
+                          {job.location}
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <MapPin size={14} className="text-slate-400" />
-                          <span className="text-sm text-slate-500 truncate max-w-[120px]">{job.location}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 uppercase tracking-tight">
+                      </TableCell>
+                      <TableCell className="px-6 py-4">
+                        <Badge variant="secondary" className="text-[9px] font-bold uppercase tracking-tight px-1.5 py-0">
                           {job.source}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <button 
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="px-6 py-4">
+                        <Button 
+                          variant="ghost"
+                          size="sm"
                           onClick={() => toggleStatus(job.job_id, job.is_active ?? true)}
                           className={cn(
-                            "flex items-center gap-1.5 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full",
-                            (job.is_active ?? true) ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-600"
+                            "h-7 px-2.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all",
+                            (job.is_active ?? true) 
+                              ? "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20" 
+                              : "bg-rose-500/10 text-rose-500 hover:bg-rose-500/20"
                           )}
                         >
-                          {(job.is_active ?? true) ? <Power size={12} /> : <PowerOff size={12} />}
+                          {(job.is_active ?? true) ? <Power size={10} /> : <PowerOff size={10} />}
                           {(job.is_active ?? true) ? "Active" : "Paused"}
-                        </button>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <a 
-                            href={job.apply_link || "#"} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="p-2 hover:bg-blue-50 text-blue-500 rounded-lg transition-colors"
-                          >
-                            <ExternalLink size={18} />
-                          </a>
-                          <button 
+                        </Button>
+                      </TableCell>
+                      <TableCell className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button variant="ghost" size="icon" asChild>
+                            <a href={job.apply_link || "#"} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink size={16} className="text-primary" />
+                            </a>
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
                             onClick={() => deleteJob(job.job_id)}
-                            className="p-2 hover:bg-rose-50 text-rose-500 rounded-lg transition-colors"
+                            className="text-rose-500 hover:text-rose-600 hover:bg-rose-500/10"
                           >
-                            <Trash2 size={18} />
-                          </button>
+                            <Trash2 size={16} />
+                          </Button>
                         </div>
-                      </td>
+                      </TableCell>
                     </motion.tr>
                   ))
                 )}
               </AnimatePresence>
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }

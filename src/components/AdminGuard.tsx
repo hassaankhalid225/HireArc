@@ -1,7 +1,6 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
 import { Loader2 } from "lucide-react";
 
 interface AdminGuardProps {
@@ -9,26 +8,29 @@ interface AdminGuardProps {
 }
 
 export default function AdminGuard({ children }: AdminGuardProps) {
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading) {
-      if (!isAuthenticated || user?.role !== "admin") {
-        router.push("/dashboard");
-      }
+    // Check local storage for the admin token
+    const token = localStorage.getItem("JobSphere_Admin_Token");
+    if (token === "super-secret-admin-token-123") {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+      router.push("/admin/login");
     }
-  }, [isLoading, isAuthenticated, user, router]);
+  }, [router]);
 
-  if (isLoading) {
+  if (isAuthenticated === null) {
     return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex h-screen w-full items-center justify-center bg-[#0F172A]">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
       </div>
     );
   }
 
-  if (!isAuthenticated || user?.role !== "admin") {
+  if (!isAuthenticated) {
     return null;
   }
 

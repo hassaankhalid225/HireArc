@@ -23,7 +23,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { jobsService } from "@/services/jobs.service";
 import { Job } from "@/types";
-import { useAppliedJobs } from "@/context";
+import { useAppliedJobs, useAuth } from "@/context";
 import { formatDescription } from "@/lib/utils";
 
 // ─── Return-visit popup component ─────────────────────────────────────────────
@@ -116,6 +116,7 @@ export default function JobDetailPage({
   const router = useRouter();
 
   const { applyJob, isApplied } = useAppliedJobs();
+  const { isAuthenticated } = useAuth();
 
   const [job, setJob] = useState<Job | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -138,6 +139,10 @@ export default function JobDetailPage({
 
   // Triggered when user returns to tab after applying
   const handleApply = () => {
+    if (!isAuthenticated) {
+      router.push(`/login?redirect=${encodeURIComponent(`/jobs/${id}`)}`);
+      return;
+    }
     if (!job?.apply_link) return;
     // 1. Open external site in new tab
     window.open(job.apply_link, "_blank", "noopener,noreferrer");

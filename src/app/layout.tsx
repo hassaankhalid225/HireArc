@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Sora, DM_Sans, DM_Mono, Geist } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AppProviders } from "@/context";
 import { cn } from "@/lib/utils";
@@ -39,9 +38,7 @@ export default function RootLayout({
       >
         <AppProviders>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <Footer />
+            <LayoutWrapper>{children}</LayoutWrapper>
           </ThemeProvider>
         </AppProviders>
       </body>

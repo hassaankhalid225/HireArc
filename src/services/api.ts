@@ -27,13 +27,16 @@ async function request<T>(
   path: string,
   { method = "GET", body, headers = {}, signal }: RequestOptions = {}
 ): Promise<T> {
+  // Get admin token from local storage
+  const adminToken = typeof window !== 'undefined' ? localStorage.getItem("JobSphere_Admin_Token") : null;
+  
   const res = await fetch(`${BASE_URL}${path}`, {
     method,
     signal,
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      // Authorization: `Bearer ${getToken()}`,   ← uncomment when auth is ready
+      ...(adminToken ? { "X-Admin-Token": adminToken } : {}),
       ...headers,
     },
     body: body ? JSON.stringify(body) : undefined,

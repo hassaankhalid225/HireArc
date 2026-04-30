@@ -17,6 +17,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { apiClient } from "@/services/api";
 import { Job } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 export default function JobManagement() {
@@ -118,12 +119,32 @@ export default function JobManagement() {
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               <AnimatePresence>
                 {isLoading ? (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-20 text-center">
-                      <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-                      <p className="text-slate-500">Loading jobs...</p>
-                    </td>
-                  </tr>
+                  Array.from({ length: 8 }).map((_, i) => (
+                    <tr key={i} className="animate-in fade-in duration-500">
+                      <td className="px-6 py-4">
+                        <Skeleton className="h-4 w-[150px] mb-2" />
+                        <Skeleton className="h-3 w-[80px]" />
+                      </td>
+                      <td className="px-6 py-4">
+                        <Skeleton className="h-4 w-[100px]" />
+                      </td>
+                      <td className="px-6 py-4">
+                        <Skeleton className="h-4 w-[100px]" />
+                      </td>
+                      <td className="px-6 py-4">
+                        <Skeleton className="h-4 w-[60px]" />
+                      </td>
+                      <td className="px-6 py-4">
+                        <Skeleton className="h-6 w-[80px] rounded-full" />
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex justify-end gap-2">
+                          <Skeleton className="h-8 w-8 rounded-lg" />
+                          <Skeleton className="h-8 w-8 rounded-lg" />
+                        </div>
+                      </td>
+                    </tr>
+                  ))
                 ) : filteredJobs.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-20 text-center">

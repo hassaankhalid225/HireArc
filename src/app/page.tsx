@@ -4,6 +4,7 @@ import FieldsSection from "@/components/home/FieldsSection";
 import StatsSection from "@/components/home/StatsSection";
 import JobCard from "@/components/ui/JobCard";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
+import BentoShowcase from "@/components/home/BentoShowcase";
 import {
   Select,
   SelectContent,
@@ -107,6 +108,7 @@ export default async function Home() {
 
       {/* Premium Stats + Features + Testimonials */}
       <div className="-mt-4">
+        <BentoShowcase />
         <StatsSection stats={realStats} />
       </div>
     </div>

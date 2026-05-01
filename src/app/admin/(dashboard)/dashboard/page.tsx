@@ -13,7 +13,8 @@ import {
   Plus,
   Zap,
   Globe,
-  Database
+  Database,
+  ChevronRight
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { apiClient } from "@/services/api";
@@ -205,19 +206,19 @@ export default function AdminDashboard() {
                   <Briefcase className="mr-4 h-5 w-5 text-primary group-hover:text-white transition-colors" />
                   <span className="font-bold">Sync Data Clusters</span>
                 </div>
-                <ChevronRightIcon size={16} className="opacity-40 group-hover:opacity-100" />
+                <ChevronRight size={16} className="opacity-40 group-hover:opacity-100" />
               </Button>
               <Button className="w-full justify-between h-14 rounded-2xl group px-5 bg-accent/20 hover:bg-primary hover:text-white border-none transition-all" variant="ghost">
                 <div className="flex items-center">
                   <Users className="mr-4 h-5 w-5 text-primary group-hover:text-white transition-colors" />
                   <span className="font-bold">Audit User Access</span>
                 </div>
-                <ChevronRightIcon size={16} className="opacity-40 group-hover:opacity-100" />
+                <ChevronRight size={16} className="opacity-40 group-hover:opacity-100" />
               </Button>
               <Button className="w-full justify-between h-14 rounded-2xl group px-5 bg-accent/20 hover:bg-primary hover:text-white border-none transition-all" variant="ghost">
                 <AlertCircle className="mr-4 h-5 w-5 text-primary group-hover:text-white transition-colors" />
                 <span className="font-bold">System Manifest</span>
-                <ChevronRightIcon size={16} className="opacity-40 group-hover:opacity-100" />
+                <ChevronRight size={16} className="opacity-40 group-hover:opacity-100" />
               </Button>
             </CardContent>
           </Card>

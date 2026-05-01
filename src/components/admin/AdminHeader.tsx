@@ -9,7 +9,8 @@ import {
   User as UserIcon,
   Settings,
   LogOut,
-  HelpCircle
+  HelpCircle,
+  Command
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -23,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MobileSidebar } from "./AdminSidebar";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 export function AdminHeader() {
   const { theme, setTheme } = useTheme();
@@ -33,75 +35,88 @@ export function AdminHeader() {
   }, []);
 
   return (
-    <header className="h-16 border-b bg-card/80 backdrop-blur-md sticky top-0 z-40 px-6 flex items-center justify-between">
+    <header className="h-16 border-b bg-card/50 backdrop-blur-xl sticky top-0 z-40 px-4 md:px-6 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <MobileSidebar />
-        <div className="relative hidden md:block w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+        <div className="relative hidden md:flex items-center w-80 group">
+          <Search className="absolute left-3.5 text-muted-foreground h-4 w-4 transition-colors group-focus-within:text-primary" />
           <Input 
-            placeholder="Search system..." 
-            className="pl-10 h-9 bg-accent/50 border-none rounded-full focus-visible:ring-1 focus-visible:ring-primary/30"
+            placeholder="Search administrative tools..." 
+            className="pl-10 h-10 bg-accent/40 border-none rounded-2xl focus-visible:ring-2 focus-visible:ring-primary/20 transition-all text-sm"
           />
+          <div className="absolute right-3 flex items-center gap-1 px-1.5 py-0.5 rounded border bg-background/50 text-[10px] font-bold text-muted-foreground">
+            <Command size={10} />
+            <span>K</span>
+          </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 md:gap-3">
         {/* Theme Toggle */}
         {mounted && (
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="rounded-full text-muted-foreground"
+            className="rounded-full text-foreground hover:bg-accent/50 transition-colors"
           >
-            {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+            {theme === "dark" ? <Sun size={20} className="text-amber-500" /> : <Moon size={20} className="text-blue-600" />}
           </Button>
         )}
 
         {/* Notifications */}
-        <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground relative">
+        <Button variant="ghost" size="icon" className="rounded-full text-foreground hover:bg-accent/50 relative">
           <Bell size={20} />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-card" />
+          <span className="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-card" />
         </Button>
+
+        <div className="w-[1px] h-6 bg-border mx-1 md:mx-2 hidden sm:block" />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-9 w-9 rounded-full ml-2">
-              <Avatar className="h-9 w-9 border-2 border-primary/20">
-                <AvatarFallback className="bg-primary/10 text-primary font-bold">HK</AvatarFallback>
+            <Button variant="ghost" className="relative flex items-center gap-2 px-1.5 h-10 rounded-full hover:bg-accent/50 transition-all group">
+              <Avatar className="h-8 w-8 border-2 border-primary/20 group-hover:border-primary/50 transition-colors">
+                <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs uppercase">HK</AvatarFallback>
               </Avatar>
+              <div className="hidden lg:flex flex-col items-start pr-2">
+                <span className="text-xs font-bold text-foreground">Hasan Khalid</span>
+                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">Super Admin</span>
+              </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="end" forceMount>
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">Hasan Khalid</p>
-                <p className="text-xs leading-none text-muted-foreground">hasankhalid@gmail.com</p>
+          <DropdownMenuContent className="w-64 rounded-2xl p-2 mt-2" align="end">
+            <DropdownMenuLabel className="font-normal p-4">
+              <div className="flex flex-col space-y-2">
+                <p className="text-sm font-bold leading-none text-foreground">Hasan Khalid</p>
+                <p className="text-xs leading-none text-muted-foreground italic">hasankhalid@gmail.com</p>
+                <div className="flex items-center gap-1.5 mt-2">
+                  <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[9px] font-extrabold uppercase">Production Node</span>
+                </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
-              <UserIcon className="mr-2 h-4 w-4" />
-              <span>Profile</span>
+            <DropdownMenuSeparator className="mx-2" />
+            <DropdownMenuItem className="cursor-pointer rounded-xl py-2.5">
+              <UserIcon className="mr-3 h-4 w-4 text-primary" />
+              <span className="font-medium">Account Settings</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
+            <DropdownMenuItem className="cursor-pointer rounded-xl py-2.5">
+              <Settings className="mr-3 h-4 w-4 text-primary" />
+              <span className="font-medium">System Config</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              <HelpCircle className="mr-2 h-4 w-4" />
-              <span>Support</span>
+            <DropdownMenuItem className="cursor-pointer rounded-xl py-2.5">
+              <HelpCircle className="mr-3 h-4 w-4 text-primary" />
+              <span className="font-medium">Support Center</span>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="mx-2" />
             <DropdownMenuItem 
-              className="text-red-500 cursor-pointer focus:text-red-500 focus:bg-red-50 dark:focus:bg-red-950/20"
+              className="text-rose-500 cursor-pointer focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30 rounded-xl py-2.5 mt-1"
               onClick={() => {
                 localStorage.removeItem("JobSphere_Admin_Token");
                 window.location.href = "/admin/login";
               }}
             >
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
+              <LogOut className="mr-3 h-4 w-4" />
+              <span className="font-bold uppercase text-xs tracking-wider">Terminate Session</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

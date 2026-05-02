@@ -40,9 +40,11 @@ import { cn } from "@/lib/utils";
 
 export default function JobManagement() {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [totalJobs, setTotalJobs] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(0);
+  const limit = 20;
 
   useEffect(() => {
     fetchJobs();
@@ -51,8 +53,18 @@ export default function JobManagement() {
   const fetchJobs = async () => {
     try {
       setIsLoading(true);
-      const data = await apiClient.get<Job[]>(`/jobs/all?page=${page}&limit=20`);
-      setJobs(data);
+      const skip = page * limit;
+      const response = await apiClient.get<any>(`/admin/jobs?skip=${skip}&limit=${limit}`);
+      // Admin API currently returns an array directly or an object?
+      // Let's check admin.py again. It returns `jobs` array.
+      // I'll update admin.py to return { jobs, total }
+      if (Array.isArray(response)) {
+        setJobs(response);
+        // If it's just an array, we don't have total yet, but I'll fix the backend
+      } else {
+        setJobs(response.jobs);
+        setTotalJobs(response.total);
+      }
     } catch (error) {
       console.error("Failed to fetch jobs:", error);
     } finally {
@@ -260,16 +272,26 @@ export default function JobManagement() {
       {/* Pagination Cluster */}
       <div className="flex items-center justify-between p-8 bg-card/40 backdrop-blur-xl rounded-[2.5rem] border border-border/30">
         <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-          Showing <span className="text-foreground">20</span> of <span className="text-foreground">1,240</span> Vectors
+          Showing <span className="text-foreground">{jobs.length}</span> of <span className="text-foreground">{totalJobs.toLocaleString()}</span> Vectors
         </p>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="h-12 w-12 rounded-xl border-2 hover:bg-primary hover:text-white transition-all">
+          <Button 
+            variant="outline" 
+            onClick={() => setPage(p => Math.max(0, p - 1))}
+            disabled={page === 0}
+            className="h-12 w-12 rounded-xl border-2 hover:bg-primary hover:text-white transition-all disabled:opacity-30"
+          >
             <ChevronLeft size={20} />
           </Button>
           <div className="flex items-center gap-2 px-4 h-12 bg-accent/20 rounded-xl border border-accent/30 font-black text-sm">
             Node <span className="text-primary">{page + 1}</span>
           </div>
-          <Button variant="outline" className="h-12 w-12 rounded-xl border-2 hover:bg-primary hover:text-white transition-all">
+          <Button 
+            variant="outline" 
+            onClick={() => setPage(p => p + 1)}
+            disabled={(page + 1) * limit >= totalJobs}
+            className="h-12 w-12 rounded-xl border-2 hover:bg-primary hover:text-white transition-all disabled:opacity-30"
+          >
             <ChevronRight size={20} />
           </Button>
         </div>

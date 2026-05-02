@@ -18,19 +18,22 @@ import Link from "next/link";
 
 // Server Component
 export default async function Home() {
-  // Fetch real jobs and stats from backend
-  const [response, statsData] = await Promise.all([
+  // Fetch real jobs, stats, and companies from backend
+  const [jobsRes, statsData, companiesRes] = await Promise.all([
     jobsService.getJobs({ pageSize: 4 }).catch(() => null),
-    apiClient.get<any>("/stats").catch(() => null)
+    apiClient.get<any>("/stats").catch(() => null),
+    apiClient.get<any>("/companies").catch(() => ({ companies: [] }))
   ]);
-  const latestJobs = response?.data || [];
+  
+  const latestJobs = jobsRes?.data || [];
   const realStats = statsData || { total_jobs: 0, total_companies: 0, remote_jobs: 0 };
+  const realCompanies = companiesRes.companies?.slice(0, 8) || [];
 
   return (
     <div>
       <Hero />
       <div className="space-y-0 -mt-10">
-        <CompaniesSection />
+        <CompaniesSection companies={realCompanies} />
         <div className="-mt-8">
           <FieldsSection />
         </div>
@@ -97,7 +100,7 @@ export default async function Home() {
               <div className="text-center mt-12">
                 <Link href="/search">
                   <button className="btn btn-primary h-14 px-10 text-base font-bold shadow-xl shadow-emerald-950/20 hover:scale-105 transition-transform">
-                    Explore 100,000+ Jobs
+                    Explore {realStats.total_jobs?.toLocaleString() || "1,000"}+ Jobs
                   </button>
                 </Link>
               </div>

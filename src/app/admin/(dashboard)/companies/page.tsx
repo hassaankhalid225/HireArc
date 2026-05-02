@@ -30,30 +30,34 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
-const ALL_COMPANIES = [
-  { id: 1, name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", roles: 420, category: "Tech Giant", location: "Mountain View, CA", website: "google.com", color: "#4285F4" },
-  { id: 2, name: "Meta", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg", roles: 156, category: "Social Media", location: "Menlo Park, CA", website: "meta.com", color: "#0668E1" },
-  { id: 3, name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", roles: 890, category: "E-commerce", location: "Seattle, WA", website: "amazon.com", color: "#FF9900" },
-  { id: 4, name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg", roles: 345, category: "Software", location: "Redmond, WA", website: "microsoft.com", color: "#737373" },
-  { id: 5, name: "Netflix", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", roles: 82, category: "Entertainment", location: "Los Gatos, CA", website: "netflix.com", color: "#E50914" },
-  { id: 6, name: "Apple", logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", roles: 210, category: "Consumer Tech", location: "Cupertino, CA", website: "apple.com", color: "#000000" },
-  { id: 7, name: "Stripe", logo: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg", roles: 64, category: "Fintech", location: "San Francisco, CA", website: "stripe.com", color: "#635BFF" },
-  { id: 8, name: "Airbnb", logo: "https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_Bélo.svg", roles: 112, category: "Travel", location: "San Francisco, CA", website: "airbnb.com", color: "#FF5A5F" },
-  { id: 10, name: "Spotify", logo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_with_text.svg", roles: 88, category: "Music", location: "Stockholm, SE", website: "spotify.com", color: "#1DB954" },
-];
-
 export default function CompanyManagement() {
+  const [companies, setCompanies] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
 
-  const filteredCompanies = ALL_COMPANIES.filter(company => {
+  useEffect(() => {
+    async function fetchCompanies() {
+      try {
+        const response = await apiClient.get<any>("/companies");
+        setCompanies(response.companies);
+      } catch (error) {
+        console.error("Failed to fetch companies:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchCompanies();
+  }, []);
+
+  const filteredCompanies = companies.filter(company => {
     const matchesSearch = company.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           company.location.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = filterCategory === "All" || company.category === filterCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const categories = ["All", ...Array.from(new Set(ALL_COMPANIES.map(c => c.category)))];
+  const categories = ["All", ...Array.from(new Set(companies.map(c => c.category)))];
 
   return (
     <div className="space-y-10 pb-10">
@@ -78,9 +82,9 @@ export default function CompanyManagement() {
       {/* Stats Quick View */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {[
-          { label: "Active Partners", value: ALL_COMPANIES.length, icon: Building2, color: "text-blue-500", bg: "bg-blue-500/10" },
+          { label: "Active Partners", value: companies.length, icon: Building2, color: "text-blue-500", bg: "bg-blue-500/10" },
           { label: "Verified Nodes", value: "100%", icon: ShieldCheck, color: "text-emerald-500", bg: "bg-emerald-500/10" },
-          { label: "Aggregate Roles", value: "2.4K", icon: ArrowUpRight, color: "text-violet-500", bg: "bg-violet-500/10" }
+          { label: "Aggregate Roles", value: companies.reduce((acc, c) => acc + (c.roles || 0), 0), icon: ArrowUpRight, color: "text-violet-500", bg: "bg-violet-500/10" }
         ].map((stat, idx) => (
           <Card key={idx} className="bg-card/40 backdrop-blur-xl border-none shadow-2xl rounded-[2rem] hover:ring-2 hover:ring-primary/10 transition-all">
             <CardContent className="p-8 flex items-center gap-6">
@@ -89,7 +93,9 @@ export default function CompanyManagement() {
               </div>
               <div>
                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">{stat.label}</p>
-                <h3 className="text-4xl font-black text-foreground tracking-tighter">{stat.value}</h3>
+                <h3 className="text-4xl font-black text-foreground tracking-tighter">
+                  {isLoading ? "..." : stat.value}
+                </h3>
               </div>
             </CardContent>
           </Card>
@@ -142,61 +148,73 @@ export default function CompanyManagement() {
             </TableHeader>
             <TableBody>
               <AnimatePresence mode="popLayout">
-                {filteredCompanies.map((company) => (
-                  <motion.tr 
-                    key={company.id}
-                    layout
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="group border-b border-border/30 hover:bg-primary/5 transition-all duration-500 ease-out"
-                  >
-                    <TableCell className="px-10 py-8">
-                      <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 rounded-[1.25rem] bg-white p-3 shadow-md border-2 border-accent/20 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:border-primary/30">
-                          <img src={company.logo} alt={company.name} className="max-h-full max-w-full object-contain" />
+                {isLoading ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <TableRow key={i} className="border-b border-border/30">
+                      <TableCell colSpan={5} className="h-24"><Skeleton className="h-16 w-full rounded-2xl" /></TableCell>
+                    </TableRow>
+                  ))
+                ) : filteredCompanies.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-64 text-center text-muted-foreground font-bold uppercase tracking-widest">No Entities Found</TableCell>
+                  </TableRow>
+                ) : (
+                  filteredCompanies.map((company) => (
+                    <motion.tr 
+                      key={company.id}
+                      layout
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="group border-b border-border/30 hover:bg-primary/5 transition-all duration-500 ease-out"
+                    >
+                      <TableCell className="px-10 py-8">
+                        <div className="flex items-center gap-6">
+                          <div className="w-16 h-16 rounded-[1.25rem] bg-white p-3 shadow-md border-2 border-accent/20 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:border-primary/30">
+                            <img src={company.logo} alt={company.name} className="max-h-full max-w-full object-contain" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-xl font-black text-foreground tracking-tight group-hover:text-primary transition-colors">{company.name}</span>
+                            <span className="text-xs text-muted-foreground font-bold flex items-center gap-2 mt-1 opacity-70">
+                              <Globe size={14} className="text-primary" />
+                              {company.website}
+                            </span>
+                          </div>
                         </div>
+                      </TableCell>
+                      <TableCell className="px-10 py-8">
+                        <Badge variant="outline" className="bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full border-primary/20">
+                          {company.category}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="px-10 py-8">
+                        <div className="flex items-center gap-2.5 text-sm font-bold text-foreground opacity-80">
+                          <MapPin size={16} className="text-rose-500 fill-rose-500/10" />
+                          {company.location}
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-10 py-8">
                         <div className="flex flex-col">
-                          <span className="text-xl font-black text-foreground tracking-tight group-hover:text-primary transition-colors">{company.name}</span>
-                          <span className="text-xs text-muted-foreground font-bold flex items-center gap-2 mt-1 opacity-70">
-                            <Globe size={14} className="text-primary" />
-                            {company.website}
-                          </span>
+                          <span className="text-2xl font-black text-foreground tracking-tighter group-hover:scale-110 origin-left transition-transform duration-300">{company.roles}</span>
+                          <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest opacity-60">Open Roles</span>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-10 py-8">
-                      <Badge variant="outline" className="bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full border-primary/20">
-                        {company.category}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="px-10 py-8">
-                      <div className="flex items-center gap-2.5 text-sm font-bold text-foreground opacity-80">
-                        <MapPin size={16} className="text-rose-500 fill-rose-500/10" />
-                        {company.location}
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-10 py-8">
-                      <div className="flex flex-col">
-                        <span className="text-2xl font-black text-foreground tracking-tighter group-hover:scale-110 origin-left transition-transform duration-300">{company.roles}</span>
-                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest opacity-60">Open Roles</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-10 py-8 text-right">
-                      <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-4 group-hover:translate-x-0">
-                        <Button variant="outline" size="sm" className="h-11 rounded-xl font-bold px-4 border-2 hover:bg-primary hover:text-white transition-all" asChild>
-                          <a href={`https://${company.website}`} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink size={16} className="mr-2" />
-                            Portal
-                          </a>
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-11 w-11 rounded-xl hover:bg-accent/40 text-muted-foreground hover:text-foreground border border-transparent hover:border-border/50 transition-all">
-                          <MoreVertical size={20} />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </motion.tr>
-                ))}
+                      </TableCell>
+                      <TableCell className="px-10 py-8 text-right">
+                        <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-4 group-hover:translate-x-0">
+                          <Button variant="outline" size="sm" className="h-11 rounded-xl font-bold px-4 border-2 hover:bg-primary hover:text-white transition-all" asChild>
+                            <a href={`https://${company.website}`} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink size={16} className="mr-2" />
+                              Portal
+                            </a>
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-11 w-11 rounded-xl hover:bg-accent/40 text-muted-foreground hover:text-foreground border border-transparent hover:border-border/50 transition-all">
+                            <MoreVertical size={20} />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </motion.tr>
+                  ))
+                )}
               </AnimatePresence>
             </TableBody>
           </Table>

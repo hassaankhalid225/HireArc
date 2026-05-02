@@ -2,18 +2,8 @@ import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-const COMPANIES = [
-  { name: "Google", logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" },
-  { name: "Meta", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" },
-  { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" },
-  { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" },
-  { name: "Netflix", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" },
-  { name: "Apple", logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" },
-  { name: "Stripe", logo: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" },
-  { name: "Airbnb", logo: "https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_Bélo.svg" },
-];
-
-export default function CompaniesSection() {
+export default function CompaniesSection({ companies }: { companies: any[] }) {
+  const displayCompanies = companies.length > 0 ? companies : [];
   return (
     <section className="relative py-12 overflow-hidden bg-[var(--bg-base)]">
       {/* ── Premium Architectural Grid Background ── */}
@@ -53,7 +43,7 @@ export default function CompaniesSection() {
         </div>
 
         <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {COMPANIES.map((company) => (
+          {displayCompanies.map((company) => (
             <StaggerItem key={company.name}>
               <Link
                 href={`/company/${company.name.toLowerCase()}`}

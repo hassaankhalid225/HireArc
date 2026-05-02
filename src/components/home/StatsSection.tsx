@@ -174,11 +174,11 @@ export default function StatsSection({ stats }: { stats?: any }) {
       color: "from-sky-400 to-blue-500",
     },
     {
-      value: 100,
-      suffix: "%",
-      label: "Free to Use",
-      sublabel: "No hidden fees",
-      icon: <CheckCircle2 className="w-5 h-5" />,
+      value: stats?.total_countries || 0,
+      suffix: "+",
+      label: "Global Nodes",
+      sublabel: "Geographic vectors",
+      icon: <Globe className="w-5 h-5" />,
       color: "from-rose-400 to-pink-500",
     },
   ];

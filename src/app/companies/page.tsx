@@ -4,30 +4,31 @@ import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
 import Link from "next/link";
 import { Search, MapPin, Building2, ExternalLink, Filter, TrendingUp } from "lucide-react";
 
-const ALL_COMPANIES = [
-  { id: 1, name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", roles: 420, category: "Tech Giant", location: "Mountain View, CA", website: "google.com", color: "#4285F4" },
-  { id: 2, name: "Meta", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg", roles: 156, category: "Social Media", location: "Menlo Park, CA", website: "meta.com", color: "#0668E1" },
-  { id: 3, name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", roles: 890, category: "E-commerce", location: "Seattle, WA", website: "amazon.com", color: "#FF9900" },
-  { id: 4, name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg", roles: 345, category: "Software", location: "Redmond, WA", website: "microsoft.com", color: "#737373" },
-  { id: 5, name: "Netflix", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", roles: 82, category: "Entertainment", location: "Los Gatos, CA", website: "netflix.com", color: "#E50914" },
-  { id: 6, name: "Apple", logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", roles: 210, category: "Consumer Tech", location: "Cupertino, CA", website: "apple.com", color: "#000000" },
-  { id: 7, name: "Stripe", logo: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg", roles: 64, category: "Fintech", location: "San Francisco, CA", website: "stripe.com", color: "#635BFF" },
-  { id: 8, name: "Airbnb", logo: "https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_Bélo.svg", roles: 112, category: "Travel", location: "San Francisco, CA", website: "airbnb.com", color: "#FF5A5F" },
-  { id: 9, name: "Tesla", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bb/Tesla_T_Symbol.svg", roles: 145, category: "Automotive", location: "Austin, TX", website: "tesla.com", color: "#CC0000" },
-  { id: 10, name: "Spotify", logo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_with_text.svg", roles: 88, category: "Music", location: "Stockholm, SE", website: "spotify.com", color: "#1DB954" },
-  { id: 11, name: "Slack", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg", roles: 42, category: "Communication", location: "San Francisco, CA", website: "slack.com", color: "#4A154B" },
-  { id: 12, name: "Adobe", logo: "https://upload.wikimedia.org/wikipedia/commons/8/8d/Adobe_Corporate_Logo.png", roles: 176, category: "Software", location: "San Jose, CA", website: "adobe.com", color: "#FF0000" },
-];
-
-const CATEGORIES = ["All", "Tech Giant", "Software", "Fintech", "E-commerce", "Entertainment", "Social Media", "Travel", "Automotive", "Music", "Communication"];
-
 export default function CompaniesPage() {
+  const [companies, setCompanies] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const filteredCompanies = ALL_COMPANIES.filter(company => {
+  useEffect(() => {
+    async function fetchCompanies() {
+      try {
+        const response = await apiClient.get<any>("/companies");
+        setCompanies(response.companies || []);
+      } catch (error) {
+        console.error("Failed to fetch companies:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchCompanies();
+  }, []);
+
+  const categories = ["All", ...Array.from(new Set(companies.map(c => c.category)))];
+
+  const filteredCompanies = companies.filter(company => {
     const matchesSearch = company.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           company.category.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "All" || company.category === selectedCategory;
@@ -99,7 +100,7 @@ export default function CompaniesPage() {
                   Industries
                 </h3>
                 <div className="flex flex-wrap lg:flex-col gap-2">
-                  {CATEGORIES.map(cat => (
+                  {categories.map(cat => (
                     <button
                       key={cat}
                       onClick={() => setSelectedCategory(cat)}

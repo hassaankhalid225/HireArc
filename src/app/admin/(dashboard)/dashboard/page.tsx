@@ -144,25 +144,33 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent className="p-0">
             <div className="divide-y divide-border/50">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="px-8 py-6 flex items-center justify-between hover:bg-primary/5 transition-all duration-300 group cursor-pointer">
-                  <div className="flex items-center gap-5">
-                    <div className="w-14 h-14 rounded-2xl bg-accent/40 flex items-center justify-center transition-transform group-hover:scale-110 group-hover:rotate-2">
-                      <Clock className="w-6 h-6 text-primary" />
+              {isLoading ? (
+                Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="px-8 py-6 animate-pulse bg-primary/5 h-24" />
+                ))
+              ) : stats.recentActivity?.length === 0 ? (
+                <div className="p-20 text-center text-muted-foreground font-bold uppercase tracking-widest">No Activity Recorded</div>
+              ) : (
+                stats.recentActivity?.map((activity: any) => (
+                  <div key={activity.id} className="px-8 py-6 flex items-center justify-between hover:bg-primary/5 transition-all duration-300 group cursor-pointer">
+                    <div className="flex items-center gap-5">
+                      <div className="w-14 h-14 rounded-2xl bg-accent/40 flex items-center justify-center transition-transform group-hover:scale-110 group-hover:rotate-2">
+                        <Clock className="w-6 h-6 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-base font-bold text-foreground line-clamp-1">{activity.title}</p>
+                        <p className="text-xs text-muted-foreground font-medium">{activity.subtitle}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-base font-bold text-foreground">Cloud Architecture Sync</p>
-                      <p className="text-xs text-muted-foreground font-medium">Automatic ingest from Partner API • 5.2s execution</p>
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{activity.time}</p>
+                      <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[9px] font-black uppercase px-2">
+                        {activity.type}
+                      </Badge>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end gap-2">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">2m ago</p>
-                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[9px] font-black uppercase px-2">
-                      Verified
-                    </Badge>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
             <div className="p-6 bg-accent/5 text-center">
               <Button variant="link" className="font-bold text-muted-foreground hover:text-primary transition-colors">Load Archive Clusters</Button>
@@ -182,7 +190,9 @@ export default function AdminDashboard() {
                 <span className="text-[10px] font-black uppercase tracking-[0.2em]">Growth Pulse</span>
               </div>
               <div className="space-y-2 mb-10">
-                <h3 className="text-6xl font-black tracking-tighter">94.8%</h3>
+                <h3 className="text-6xl font-black tracking-tighter">
+                  {isLoading ? "..." : `${stats.engagementDensity}%`}
+                </h3>
                 <p className="text-base font-bold opacity-80">Engagement density remains optimal.</p>
               </div>
               <div className="space-y-3">
@@ -190,7 +200,7 @@ export default function AdminDashboard() {
                   <span>Resource Saturation</span>
                   <span>Target: 100%</span>
                 </div>
-                <Progress value={94.8} className="h-3 bg-white/20" />
+                <Progress value={stats.engagementDensity || 0} className="h-3 bg-white/20" />
               </div>
             </CardContent>
           </Card>

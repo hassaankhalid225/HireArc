@@ -58,18 +58,18 @@ export default function CompanyManagement() {
   return (
     <div className="space-y-10 pb-10">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-accent/20 p-10 rounded-[3rem] border border-accent/30 shadow-inner">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-accent/20 p-6 md:p-10 rounded-3xl md:rounded-[3rem] border border-accent/30 shadow-inner">
         <div>
           <div className="flex items-center gap-2 text-primary font-bold mb-3">
             <Building className="w-5 h-5 fill-primary/20" />
             <span className="text-[11px] uppercase tracking-[0.3em] font-black">Enterprise Cluster</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-foreground">Global Nodes</h1>
-          <p className="text-muted-foreground font-medium mt-2 text-lg max-w-xl">Centralized authorization center for managing corporate entities and their workforce vectors.</p>
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-foreground">Global Nodes</h1>
+          <p className="text-muted-foreground font-medium mt-2 text-base md:text-lg max-w-xl">Centralized authorization center for managing corporate entities and their workforce vectors.</p>
         </div>
         <div className="flex items-center gap-4">
-          <Button className="h-16 px-10 rounded-[2rem] font-black shadow-xl shadow-primary/20 hover:scale-105 transition-all active:scale-95 bg-primary text-primary-foreground">
-            <Plus className="mr-3 h-6 w-6" />
+          <Button className="h-14 md:h-16 px-6 md:px-10 rounded-2xl md:rounded-[2rem] font-black shadow-xl shadow-primary/20 hover:scale-105 transition-all active:scale-95 bg-primary text-white">
+            <Plus className="mr-3 h-5 w-5 md:h-6 w-6" />
             Onboard Entity
           </Button>
         </div>
@@ -116,7 +116,7 @@ export default function CompanyManagement() {
                 className={cn(
                   "px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
                   filterCategory === cat 
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105" 
+                    ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" 
                     : "text-muted-foreground hover:bg-accent/40 hover:text-foreground"
                 )}
               >
@@ -129,8 +129,8 @@ export default function CompanyManagement() {
 
       {/* Main Grid */}
       <Card className="border-none shadow-2xl rounded-[3rem] bg-card/30 backdrop-blur-2xl overflow-hidden border border-white/5">
-        <CardContent className="p-0">
-          <Table>
+        <CardContent className="p-0 overflow-x-auto no-scrollbar">
+          <Table className="min-w-[1000px]">
             <TableHeader className="bg-accent/20 border-b border-border/50">
               <TableRow className="border-none hover:bg-transparent">
                 <TableHead className="px-10 py-7 text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground">Entity Identifier</TableHead>

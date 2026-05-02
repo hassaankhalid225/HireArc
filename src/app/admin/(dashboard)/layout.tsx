@@ -15,7 +15,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       
       {/* Main Content Area */}
       <div className={cn(
-        "flex-1 flex flex-col transition-all duration-500 ease-in-out",
+        "flex-1 flex flex-col transition-all duration-500 ease-in-out min-w-0 overflow-x-hidden",
         isCollapsed ? "lg:pl-20" : "lg:pl-72"
       )}>
         {/* Top Header */}

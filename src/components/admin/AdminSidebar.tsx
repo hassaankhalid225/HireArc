@@ -142,7 +142,7 @@ export function AdminSidebar() {
   
   return (
     <aside className={cn(
-      "hidden lg:flex flex-col fixed inset-y-0 z-50 transition-all duration-300 ease-in-out",
+      "hidden lg:flex flex-col fixed inset-y-0 z-[100] transition-all duration-300 ease-in-out",
       isCollapsed ? "w-20" : "w-72"
     )}>
       <SidebarContent collapsed={isCollapsed} />

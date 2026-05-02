@@ -43,6 +43,7 @@ export default function JobManagement() {
   const [totalJobs, setTotalJobs] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(0);
   const limit = 20;
 
@@ -55,12 +56,8 @@ export default function JobManagement() {
       setIsLoading(true);
       const skip = page * limit;
       const response = await apiClient.get<any>(`/admin/jobs?skip=${skip}&limit=${limit}`);
-      // Admin API currently returns an array directly or an object?
-      // Let's check admin.py again. It returns `jobs` array.
-      // I'll update admin.py to return { jobs, total }
       if (Array.isArray(response)) {
         setJobs(response);
-        // If it's just an array, we don't have total yet, but I'll fix the backend
       } else {
         setJobs(response.jobs);
         setTotalJobs(response.total);
@@ -74,8 +71,8 @@ export default function JobManagement() {
 
   const toggleJobStatus = async (jobId: string, currentStatus: boolean) => {
     try {
-      await apiClient.patch(`/jobs/${jobId}/status`, { active: !currentStatus });
-      setJobs(jobs.map(j => j.id === jobId ? { ...j, active: !currentStatus } : j));
+      await apiClient.patch(`/jobs/${jobId}/status`, { is_active: !currentStatus });
+      setJobs(jobs.map(j => j.job_id === jobId ? { ...j, is_active: !currentStatus } : j));
     } catch (error) {
       alert("Failed to update status");
     }
@@ -85,16 +82,20 @@ export default function JobManagement() {
     if (!confirm("Are you sure? This is permanent.")) return;
     try {
       await apiClient.delete(`/jobs/${jobId}`);
-      setJobs(jobs.filter(j => j.id !== jobId));
+      setJobs(jobs.filter(j => j.job_id !== jobId));
     } catch (error) {
       alert("Failed to delete job");
     }
   };
 
-  const filteredJobs = jobs.filter(job => 
-    job.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    job.company_name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredJobs = jobs.filter(job => {
+    const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          (job.company || "").toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "all" || 
+                          (statusFilter === "active" && job.is_active) || 
+                          (statusFilter === "archived" && !job.is_active);
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="space-y-10 pb-10">
@@ -132,10 +133,11 @@ export default function JobManagement() {
             {["All", "Active", "Archived", "Flagged"].map(filter => (
               <button
                 key={filter}
+                onClick={() => setStatusFilter(filter.toLowerCase())}
                 className={cn(
                   "px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
-                  filter === "All" 
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105" 
+                  statusFilter === filter.toLowerCase() 
+                    ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" 
                     : "text-muted-foreground hover:bg-accent/40 hover:text-foreground"
                 )}
               >
@@ -183,7 +185,7 @@ export default function JobManagement() {
                 ) : (
                   filteredJobs.map((job) => (
                     <motion.tr 
-                      key={job.id}
+                      key={job.job_id}
                       layout
                       initial={{ opacity: 0, scale: 0.98 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -204,7 +206,7 @@ export default function JobManagement() {
                               </span>
                               <span className="text-xs text-muted-foreground font-bold flex items-center gap-1">
                                 <Zap size={12} className="text-amber-500" />
-                                {job.type}
+                                {job.job_type || "Full-time"}
                               </span>
                             </div>
                           </div>
@@ -213,25 +215,25 @@ export default function JobManagement() {
                       <TableCell className="px-10 py-8">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-card border flex items-center justify-center text-[10px] font-black">
-                            {job.company_name[0]}
+                            {(job.company || "?")[0]}
                           </div>
-                          <span className="text-sm font-bold text-foreground opacity-80">{job.company_name}</span>
+                          <span className="text-sm font-bold text-foreground opacity-80">{job.company}</span>
                         </div>
                       </TableCell>
                       <TableCell className="px-10 py-8">
                         <Badge variant="outline" className={cn(
                           "text-[9px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full border-2 transition-all",
-                          job.active 
+                          job.is_active 
                             ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/30" 
                             : "bg-rose-500/10 text-rose-500 border-rose-500/30"
                         )}>
-                          {job.active ? "Propagating" : "Offline"}
+                          {job.is_active ? "Propagating" : "Offline"}
                         </Badge>
                       </TableCell>
                       <TableCell className="px-10 py-8 text-[11px] font-black text-muted-foreground uppercase tracking-wider opacity-60">
                         <div className="flex items-center gap-2">
                           <Clock size={14} />
-                          October 12
+                          {job.posted_at ? new Date(job.posted_at).toLocaleDateString() : "Recent"}
                         </div>
                       </TableCell>
                       <TableCell className="px-10 py-8 text-right">
@@ -239,18 +241,18 @@ export default function JobManagement() {
                           <Button 
                             variant="outline" 
                             size="icon"
-                            onClick={() => toggleJobStatus(job.id, job.active || false)}
+                            onClick={() => toggleJobStatus(job.job_id, job.is_active || false)}
                             className={cn(
                               "h-11 w-11 rounded-xl border-2 transition-all",
-                              job.active ? "text-rose-500 hover:bg-rose-500 hover:text-white hover:border-rose-500" : "text-emerald-500 hover:bg-emerald-500 hover:text-white hover:border-emerald-500"
+                              job.is_active ? "text-rose-500 hover:bg-rose-500 hover:text-white hover:border-rose-500" : "text-emerald-500 hover:bg-emerald-500 hover:text-white hover:border-emerald-500"
                             )}
                           >
-                            {job.active ? <PowerOff size={18} /> : <Power size={18} />}
+                            {job.is_active ? <PowerOff size={18} /> : <Power size={18} />}
                           </Button>
                           <Button 
                             variant="outline" 
                             size="icon" 
-                            onClick={() => deleteJob(job.id)}
+                            onClick={() => deleteJob(job.job_id)}
                             className="h-11 w-11 rounded-xl border-2 hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-all text-rose-600"
                           >
                             <Trash2 size={18} />

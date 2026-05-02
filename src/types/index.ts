@@ -15,6 +15,7 @@ export interface Job {
   apply_link?: string | null;
   experience_level?: string | null;
   country?: string | null;
+  is_active?: boolean;
 }
 
 // ─── User Types ───────────────────────────────────────────────────────────────

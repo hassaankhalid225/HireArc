@@ -25,6 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MobileSidebar } from "./AdminSidebar";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export function AdminHeader() {
   const { theme, setTheme } = useTheme();
@@ -64,10 +65,8 @@ export function AdminHeader() {
           </Button>
         )}
 
-        {/* Notifications */}
         <Button variant="ghost" size="icon" className="rounded-full text-foreground hover:bg-accent/50 relative">
           <Bell size={20} />
-          <span className="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-card" />
         </Button>
 
         <div className="w-[1px] h-6 bg-border mx-1 md:mx-2 hidden sm:block" />
@@ -95,13 +94,17 @@ export function AdminHeader() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="mx-2" />
-            <DropdownMenuItem className="cursor-pointer rounded-xl py-2.5">
-              <UserIcon className="mr-3 h-4 w-4 text-primary" />
-              <span className="font-medium">Account Settings</span>
+            <DropdownMenuItem asChild className="cursor-pointer rounded-xl py-2.5">
+              <Link href="/admin/settings" className="flex items-center w-full">
+                <UserIcon className="mr-3 h-4 w-4 text-primary" />
+                <span className="font-medium">Account Settings</span>
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer rounded-xl py-2.5">
-              <Settings className="mr-3 h-4 w-4 text-primary" />
-              <span className="font-medium">System Config</span>
+            <DropdownMenuItem asChild className="cursor-pointer rounded-xl py-2.5">
+              <Link href="/admin/settings" className="flex items-center w-full">
+                <Settings className="mr-3 h-4 w-4 text-primary" />
+                <span className="font-medium">System Config</span>
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer rounded-xl py-2.5">
               <HelpCircle className="mr-3 h-4 w-4 text-primary" />

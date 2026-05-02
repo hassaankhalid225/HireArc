@@ -14,7 +14,8 @@ import {
   ChevronLeft,
   ChevronRight as ChevronRightIcon,
   PanelLeftClose,
-  PanelLeft
+  PanelLeft,
+  Activity
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ const menuItems = [
   { name: "User Management", href: "/admin/users", icon: Users },
   { name: "Job Listings", href: "/admin/jobs", icon: Briefcase },
   { name: "Company Profiles", href: "/admin/companies", icon: Building2 },
+  { name: "Scraping Logs", href: "/admin/scraping", icon: Activity },
   { name: "Platform Settings", href: "/admin/settings", icon: Settings },
 ];
 

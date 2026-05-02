@@ -25,8 +25,20 @@ import {
   ShieldCheck,
   ShieldAlert,
   MoreVertical,
-  ChevronRight
+  ChevronRight,
+  Eye,
+  UserCheck,
+  UserMinus,
+  Mail
 } from "lucide-react";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 import { motion, AnimatePresence } from "framer-motion";
 import { apiClient } from "@/services/api";
 import { User } from "@/types";
@@ -83,18 +95,18 @@ export default function UserManagement() {
   return (
     <div className="space-y-10 pb-10">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-accent/20 p-10 rounded-[3rem] border border-accent/30 shadow-inner">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-accent/20 p-6 md:p-10 rounded-3xl md:rounded-[3rem] border border-accent/30 shadow-inner">
         <div>
           <div className="flex items-center gap-2 text-primary font-bold mb-3">
             <ShieldCheck className="w-5 h-5 fill-primary/20" />
             <span className="text-[11px] uppercase tracking-[0.3em] font-black">Identity Service</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-foreground">Personnel Matrix</h1>
-          <p className="text-muted-foreground font-medium mt-2 text-lg max-w-xl">Global access control system for managing user permissions, audit logs, and security clearance.</p>
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-foreground">Personnel Matrix</h1>
+          <p className="text-muted-foreground font-medium mt-2 text-base md:text-lg max-w-xl">Global access control system for managing user permissions, audit logs, and security clearance.</p>
         </div>
         <div className="flex items-center gap-4">
-          <Button className="h-16 px-10 rounded-[2rem] font-black shadow-xl shadow-primary/20 hover:scale-105 transition-all active:scale-95 bg-primary text-primary-foreground">
-            <UserPlus className="mr-3 h-6 w-6" />
+          <Button className="h-14 md:h-16 px-6 md:px-10 rounded-2xl md:rounded-[2rem] font-black shadow-xl shadow-primary/20 hover:scale-105 transition-all active:scale-95 bg-primary text-white">
+            <UserPlus className="mr-3 h-5 w-5 md:h-6 w-6" />
             Provision User
           </Button>
         </div>
@@ -120,7 +132,7 @@ export default function UserManagement() {
                 className={cn(
                   "px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
                   filterRole === role 
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105" 
+                    ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" 
                     : "text-muted-foreground hover:bg-accent/40 hover:text-foreground"
                 )}
               >
@@ -133,8 +145,8 @@ export default function UserManagement() {
 
       {/* Main Table Card */}
       <Card className="border-none shadow-2xl rounded-[3rem] bg-card/30 backdrop-blur-2xl overflow-hidden border border-white/5">
-        <CardContent className="p-0">
-          <Table>
+        <CardContent className="p-0 overflow-x-auto no-scrollbar">
+          <Table className="min-w-[1000px]">
             <TableHeader className="bg-accent/20 border-b border-border/50">
               <TableRow className="border-none hover:bg-transparent">
                 <TableHead className="px-10 py-7 text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground">Identity Cluster</TableHead>
@@ -218,6 +230,7 @@ export default function UserManagement() {
                           <Button 
                             variant="outline" 
                             size="icon"
+                            title={user.role === "admin" ? "Demote to Seeker" : "Promote to Admin"}
                             onClick={() => updateRole(user.id, user.role === "admin" ? "user" : "admin")}
                             className="h-11 w-11 rounded-xl border-2 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all text-amber-500"
                           >
@@ -226,14 +239,47 @@ export default function UserManagement() {
                           <Button 
                             variant="outline" 
                             size="icon" 
+                            title="Delete User"
                             onClick={() => deleteUser(user.id)}
                             className="h-11 w-11 rounded-xl border-2 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all text-rose-500"
                           >
                             <Trash2 className="h-5 w-5" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-11 w-11 rounded-xl hover:bg-accent/40 text-muted-foreground hover:text-foreground">
-                            <MoreVertical size={20} />
-                          </Button>
+                          
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-11 w-11 rounded-xl hover:bg-accent/40 text-muted-foreground hover:text-foreground">
+                                <MoreVertical size={20} />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2 border-accent/20 bg-card/90 backdrop-blur-xl">
+                              <DropdownMenuLabel className="text-[10px] uppercase tracking-widest font-black text-muted-foreground px-3 py-2">Identity Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="rounded-xl px-3 py-2.5 cursor-pointer focus:bg-primary focus:text-white">
+                                <Eye className="mr-2 h-4 w-4" />
+                                <span className="font-bold">View Profile</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="rounded-xl px-3 py-2.5 cursor-pointer focus:bg-primary focus:text-white">
+                                <Mail className="mr-2 h-4 w-4" />
+                                <span className="font-bold">Contact User</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem 
+                                onClick={() => updateRole(user.id, "company")}
+                                className="rounded-xl px-3 py-2.5 cursor-pointer focus:bg-primary focus:text-white"
+                              >
+                                <UserCheck className="mr-2 h-4 w-4 text-blue-500" />
+                                <span className="font-bold">Convert to Employer</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                className="rounded-xl px-3 py-2.5 cursor-pointer text-rose-500 focus:bg-rose-500 focus:text-white"
+                                onClick={() => deleteUser(user.id)}
+                              >
+                                <UserMinus className="mr-2 h-4 w-4" />
+                                <span className="font-bold">Terminate Session</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </TableCell>
                     </motion.tr>

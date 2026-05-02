@@ -72,15 +72,15 @@ export function SidebarContent({ collapsed = false }: { collapsed?: boolean }) {
 
       {/* Navigation menu */}
       <ScrollArea className="flex-1 py-6 px-3">
-        <div className="space-y-1.5">
+        <div className="space-y-4">
           {menuItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link key={item.href} href={item.href}>
                 <span className={cn(
-                  "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative",
+                  "group flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 relative",
                   isActive 
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
+                    ? "bg-primary text-white shadow-lg shadow-primary/20" 
                     : "text-muted-foreground hover:bg-accent hover:text-foreground"
                 )}>
                   <item.icon className={cn(
@@ -151,10 +151,10 @@ export function AdminSidebar() {
       <Button
         variant="outline"
         size="icon"
-        className="absolute -right-4 top-20 h-8 w-8 rounded-full border shadow-md bg-background z-50 hover:bg-primary hover:text-primary-foreground"
+        className="absolute -right-4 top-4 h-8 w-8 rounded-full border shadow-md bg-background z-50 hover:bg-primary hover:text-primary-foreground transition-all duration-300 group-hover:scale-110"
         onClick={toggle}
       >
-        {isCollapsed ? <ChevronRightIcon size={14} /> : <ChevronLeft size={14} />}
+        {isCollapsed ? <ChevronRightIcon size={14} /> : <PanelLeftClose size={14} />}
       </Button>
     </aside>
   );

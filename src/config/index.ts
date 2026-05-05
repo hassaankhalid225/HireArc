@@ -8,6 +8,11 @@ const getBackendUrl = () => {
     url = `https://${url}`;
   }
 
+  // Ensure the URL ends with /api for consistency with FastAPI routers
+  if (url && !url.endsWith("/api") && !url.endsWith("/api/")) {
+    url = url.endsWith("/") ? `${url}api` : `${url}/api`;
+  }
+
   // If we're on a Vercel domain and using localhost, it's likely a config error
   if (typeof window !== "undefined" && 
       window.location.hostname.includes("vercel.app") && 

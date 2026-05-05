@@ -1,8 +1,13 @@
 const getBackendUrl = () => {
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL || 
-              process.env.NEXT_PUBLIC_API_URL || 
-              "http://127.0.0.1:8000/api";
+  let url = process.env.NEXT_PUBLIC_BACKEND_URL || 
+            process.env.NEXT_PUBLIC_API_URL || 
+            "http://127.0.0.1:8000/api";
   
+  // Ensure the URL has a protocol, otherwise browser treats it as a relative path
+  if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
+    url = `https://${url}`;
+  }
+
   // If we're on a Vercel domain and using localhost, it's likely a config error
   if (typeof window !== "undefined" && 
       window.location.hostname.includes("vercel.app") && 

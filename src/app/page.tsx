@@ -16,6 +16,9 @@ import { apiClient } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 // Server Component
 export default async function Home() {
   // Fetch real jobs, stats, and companies from backend

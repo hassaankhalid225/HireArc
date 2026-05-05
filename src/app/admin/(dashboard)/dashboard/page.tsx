@@ -25,24 +25,26 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
-const StatCard = ({ title, value, icon: Icon, change, trend, color }: any) => (
-  <Card className="overflow-hidden border-none shadow-xl bg-card/40 backdrop-blur-md group hover:ring-2 hover:ring-primary/20 transition-all duration-300">
+const StatCard = ({ title, value, icon: Icon, change, trend }: any) => (
+  <Card className="overflow-hidden border border-hairline shadow-premium-sm bg-surface-card hover:border-hairline-strong transition-all duration-300 rounded-xl">
     <CardContent className="p-6">
       <div className="flex justify-between items-start mb-6">
-        <div className={cn("p-3 rounded-2xl bg-primary/10 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3", color.replace('bg-', 'text-'))}>
-          <Icon size={24} />
+        <div className="p-3 rounded-xl bg-canvas-soft text-ink transition-transform duration-300 group-hover:scale-110">
+          <Icon size={20} />
         </div>
-        <div className={cn("flex items-center gap-1 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tighter", trend === 'up' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500')}>
+        <div className={cn(
+          "flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-pill uppercase tracking-wider", 
+          trend === 'up' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+        )}>
           {trend === 'up' ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
           {change}
         </div>
       </div>
       <div>
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">{title}</p>
-        <h3 className="text-4xl font-black tracking-tighter text-foreground">{value}</h3>
+        <p className="text-[11px] font-bold text-muted uppercase tracking-[0.1em] mb-1">{title}</p>
+        <h3 className="text-3xl font-headline text-ink">{value}</h3>
       </div>
     </CardContent>
-    <div className={cn("h-1 w-full opacity-30", color)} />
   </Card>
 );
 
@@ -71,26 +73,26 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="space-y-10 pb-10">
+    <div className="space-y-12 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-accent/20 p-8 rounded-[2rem] border border-accent/30 shadow-inner">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-primary font-bold mb-2">
-            <Zap size={18} className="fill-primary" />
-            <span className="text-xs uppercase tracking-[0.2em]">System Terminal v2.1</span>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 py-10 border-b border-hairline">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-ink/40 font-bold mb-1">
+            <Zap size={12} className="fill-current" />
+            <span className="text-[9px] uppercase tracking-[0.25em]">System Terminal v2.1</span>
           </div>
-          <h1 className="text-4xl font-black tracking-tight text-foreground lg:text-5xl">Executive Overview</h1>
-          <p className="text-muted-foreground font-medium text-lg max-w-2xl">
+          <h1 className="text-4xl md:text-5xl font-headline tracking-tighter text-ink leading-[0.9]">Executive Overview</h1>
+          <p className="text-body text-base max-w-xl font-medium leading-relaxed opacity-70">
             Real-time analytics engine processing hiring trends and platform growth metrics across all global nodes.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Button variant="outline" className="rounded-2xl h-14 px-6 border-2 font-bold hover:bg-background shadow-lg">
-            <Database className="mr-2 h-4 w-4" />
+          <Button variant="outline" className="rounded-pill h-11 px-6 border-hairline font-bold text-[10px] uppercase tracking-widest hover:bg-canvas-soft transition-all shadow-sm">
+            <Database className="mr-2 h-3.5 w-3.5 opacity-50" />
             Export Logs
           </Button>
-          <Button className="rounded-2xl h-14 px-8 font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
-            <Plus className="mr-2 h-5 w-5" />
+          <Button className="rounded-pill h-11 px-7 font-bold text-[10px] uppercase tracking-widest bg-ink text-canvas hover:opacity-90 transition-all shadow-lg shadow-ink/10">
+            <Plus className="mr-2 h-3.5 w-3.5" />
             New Control Unit
           </Button>
         </div>
@@ -104,7 +106,6 @@ export default function AdminDashboard() {
           icon={Users} 
           change="+12.4%" 
           trend="up" 
-          color="bg-blue-500" 
         />
         <StatCard 
           title="Active Listings" 
@@ -112,7 +113,6 @@ export default function AdminDashboard() {
           icon={Briefcase} 
           change="+5.2%" 
           trend="up" 
-          color="bg-violet-500" 
         />
         <StatCard 
           title="Partner Nodes" 
@@ -120,7 +120,6 @@ export default function AdminDashboard() {
           icon={Building2} 
           change="+2.1%" 
           trend="up" 
-          color="bg-amber-500" 
         />
         <StatCard 
           title="System Uptime" 
@@ -128,43 +127,42 @@ export default function AdminDashboard() {
           icon={CheckCircle2} 
           change="STABLE" 
           trend="up" 
-          color="bg-emerald-500" 
         />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         {/* Recent Activity Table */}
-        <Card className="xl:col-span-2 border-none shadow-2xl overflow-hidden rounded-[2.5rem] bg-card/40 backdrop-blur-lg">
-          <CardHeader className="flex flex-row items-center justify-between p-8 border-b bg-accent/5">
+        <Card className="xl:col-span-2 border border-hairline shadow-premium-sm overflow-hidden rounded-xl bg-surface-card transition-all duration-300 hover:border-hairline-strong">
+          <CardHeader className="flex flex-row items-center justify-between p-8 border-b border-hairline bg-canvas-soft/30">
             <div className="space-y-1">
-              <CardTitle className="text-2xl font-black tracking-tight">Stream Protocol</CardTitle>
-              <CardDescription className="font-medium">Live audit trail of platform interactions.</CardDescription>
+              <CardTitle className="text-2xl font-headline text-ink">Stream Protocol</CardTitle>
+              <CardDescription className="text-body font-medium">Live audit trail of platform interactions.</CardDescription>
             </div>
-            <Button variant="ghost" size="sm" className="font-black text-primary uppercase tracking-widest text-[10px]">Live View</Button>
+            <Button variant="ghost" size="sm" className="font-bold text-ink uppercase tracking-[0.2em] text-[10px] hover:bg-canvas-soft rounded-pill px-4">Live View</Button>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="divide-y divide-border/50">
+            <div className="divide-y divide-hairline">
               {isLoading ? (
                 Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="px-8 py-6 animate-pulse bg-primary/5 h-24" />
+                  <div key={i} className="px-8 py-6 animate-pulse bg-canvas-soft/50 h-24" />
                 ))
               ) : stats.recentActivity?.length === 0 ? (
-                <div className="p-20 text-center text-muted-foreground font-bold uppercase tracking-widest">No Activity Recorded</div>
+                <div className="p-20 text-center text-muted font-bold uppercase tracking-widest text-xs">No Activity Recorded</div>
               ) : (
                 stats.recentActivity?.map((activity: any) => (
-                  <div key={activity.id} className="px-8 py-6 flex items-center justify-between hover:bg-primary/5 transition-all duration-300 group cursor-pointer">
+                  <div key={activity.id} className="px-8 py-6 flex items-center justify-between hover:bg-canvas-soft/50 transition-all duration-300 group cursor-pointer">
                     <div className="flex items-center gap-5">
-                      <div className="w-14 h-14 rounded-2xl bg-accent/40 flex items-center justify-center transition-transform group-hover:scale-110 group-hover:rotate-2">
-                        <Clock className="w-6 h-6 text-primary" />
+                      <div className="w-12 h-12 rounded-xl bg-canvas-soft flex items-center justify-center transition-transform group-hover:scale-110">
+                        <Clock className="w-5 h-5 text-ink" />
                       </div>
                       <div>
-                        <p className="text-base font-bold text-foreground line-clamp-1">{activity.title}</p>
-                        <p className="text-xs text-muted-foreground font-medium">{activity.subtitle}</p>
+                        <p className="text-base font-bold text-ink line-clamp-1">{activity.title}</p>
+                        <p className="text-xs text-body font-medium">{activity.subtitle}</p>
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-2 shrink-0">
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{activity.time}</p>
-                      <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[9px] font-black uppercase px-2">
+                      <p className="text-[10px] font-bold text-muted uppercase tracking-widest">{activity.time}</p>
+                      <Badge variant="outline" className="bg-ink/5 text-ink border-hairline text-[9px] font-bold uppercase px-2 rounded-pill">
                         {activity.type}
                       </Badge>
                     </div>
@@ -172,8 +170,8 @@ export default function AdminDashboard() {
                 ))
               )}
             </div>
-            <div className="p-6 bg-accent/5 text-center">
-              <Button variant="link" className="font-bold text-muted-foreground hover:text-primary transition-colors">Load Archive Clusters</Button>
+            <div className="p-6 bg-canvas-soft/20 text-center">
+              <Button variant="link" className="font-bold text-muted hover:text-ink transition-colors text-xs uppercase tracking-widest">Load Archive Clusters</Button>
             </div>
           </CardContent>
         </Card>
@@ -205,29 +203,31 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-2xl rounded-[2.5rem] bg-card/40 backdrop-blur-lg p-8">
+          <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card p-8 transition-all hover:border-hairline-strong">
             <CardHeader className="p-0 mb-8">
-              <CardTitle className="text-xl font-black">Control Panel</CardTitle>
-              <CardDescription className="font-medium">Immediate administrative overrides.</CardDescription>
+              <CardTitle className="text-xl font-headline text-ink">Control Panel</CardTitle>
+              <CardDescription className="text-body font-medium">Immediate administrative overrides.</CardDescription>
             </CardHeader>
             <CardContent className="p-0 space-y-3">
-              <Button className="w-full justify-between h-14 rounded-2xl group px-5 bg-accent/20 hover:bg-primary hover:text-white border-none transition-all" variant="ghost">
+              <Button className="w-full justify-between h-14 rounded-xl group px-5 bg-canvas-soft hover:bg-ink hover:text-canvas border-none transition-all" variant="ghost">
                 <div className="flex items-center">
-                  <Briefcase className="mr-4 h-5 w-5 text-primary group-hover:text-white transition-colors" />
+                  <Briefcase className="mr-4 h-5 w-5 text-ink group-hover:text-canvas transition-colors" />
                   <span className="font-bold">Sync Data Clusters</span>
                 </div>
                 <ChevronRight size={16} className="opacity-40 group-hover:opacity-100" />
               </Button>
-              <Button className="w-full justify-between h-14 rounded-2xl group px-5 bg-accent/20 hover:bg-primary hover:text-white border-none transition-all" variant="ghost">
+              <Button className="w-full justify-between h-14 rounded-xl group px-5 bg-canvas-soft hover:bg-ink hover:text-canvas border-none transition-all" variant="ghost">
                 <div className="flex items-center">
-                  <Users className="mr-4 h-5 w-5 text-primary group-hover:text-white transition-colors" />
+                  <Users className="mr-4 h-5 w-5 text-ink group-hover:text-canvas transition-colors" />
                   <span className="font-bold">Audit User Access</span>
                 </div>
                 <ChevronRight size={16} className="opacity-40 group-hover:opacity-100" />
               </Button>
-              <Button className="w-full justify-between h-14 rounded-2xl group px-5 bg-accent/20 hover:bg-primary hover:text-white border-none transition-all" variant="ghost">
-                <AlertCircle className="mr-4 h-5 w-5 text-primary group-hover:text-white transition-colors" />
-                <span className="font-bold">System Manifest</span>
+              <Button className="w-full justify-between h-14 rounded-xl group px-5 bg-canvas-soft hover:bg-ink hover:text-canvas border-none transition-all" variant="ghost">
+                <div className="flex items-center">
+                  <AlertCircle className="mr-4 h-5 w-5 text-ink group-hover:text-canvas transition-colors" />
+                  <span className="font-bold">System Manifest</span>
+                </div>
                 <ChevronRight size={16} className="opacity-40 group-hover:opacity-100" />
               </Button>
             </CardContent>

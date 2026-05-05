@@ -1,12 +1,12 @@
 "use client";
 import { motion } from "framer-motion";
 
-export function Logo({ className = "w-10 h-10", isDark = false }: { className?: string, isDark?: boolean }) {
+export function Logo({ className = "w-10 h-10" }: { className?: string }) {
   return (
     <motion.div 
       className={`relative flex items-center justify-center cursor-pointer ${className}`}
-      whileHover={{ rotate: 360 }}
-      transition={{ duration: 0.8, ease: "easeInOut" }}
+      whileHover={{ scale: 1.05 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
     >
       <motion.svg
         viewBox="0 0 100 100"
@@ -24,7 +24,8 @@ export function Logo({ className = "w-10 h-10", isDark = false }: { className?: 
             cy="50"
             rx={15 + i * 7}
             ry="48"
-            stroke={isDark ? "rgba(255,255,255,0.2)" : "rgba(45, 74, 62, 0.2)"}
+            stroke="var(--ink)"
+            strokeOpacity="0.1"
             strokeWidth="0.5"
           />
         ))}
@@ -37,7 +38,8 @@ export function Logo({ className = "w-10 h-10", isDark = false }: { className?: 
             cy="50"
             rx="48"
             ry={15 + i * 7}
-            stroke={isDark ? "rgba(255,255,255,0.2)" : "rgba(45, 74, 62, 0.2)"}
+            stroke="var(--ink)"
+            strokeOpacity="0.1"
             strokeWidth="0.5"
           />
         ))}
@@ -56,8 +58,8 @@ export function Logo({ className = "w-10 h-10", isDark = false }: { className?: 
             key={`node-${i}`}
             cx={pt.x}
             cy={pt.y}
-            r="2"
-            fill={isDark ? "#FFFFFF" : "#2D4A3E"}
+            r="1.5"
+            fill="var(--ink)"
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: i * 0.05 }}
@@ -65,7 +67,7 @@ export function Logo({ className = "w-10 h-10", isDark = false }: { className?: 
         ))}
         
         {/* Main Orbit Circle */}
-        <circle cx="50" cy="50" r="48" stroke={isDark ? "#FFFFFF" : "#2D4A3E"} strokeWidth="1.5" />
+        <circle cx="50" cy="50" r="48" stroke="var(--ink)" strokeWidth="1.2" />
       </motion.svg>
     </motion.div>
   );

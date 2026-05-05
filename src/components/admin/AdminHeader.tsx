@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 export function AdminHeader() {
-  const { theme, setTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -36,90 +36,103 @@ export function AdminHeader() {
   }, []);
 
   return (
-    <header className="h-16 border-b bg-card/50 backdrop-blur-xl sticky top-0 z-40 px-4 md:px-6 flex items-center justify-between">
+    <header className="h-20 border-b border-hairline bg-canvas/80 backdrop-blur-xl sticky top-0 z-40 px-6 md:px-8 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <MobileSidebar />
         <div className="relative hidden md:flex items-center w-80 group">
-          <Search className="absolute left-3.5 text-muted-foreground h-4 w-4 transition-colors group-focus-within:text-primary" />
-          <Input 
-            placeholder="Search administrative tools..." 
-            className="pl-10 h-10 bg-accent/40 border-none rounded-2xl focus-visible:ring-2 focus-visible:ring-primary/20 transition-all text-sm"
+          <Search className="absolute left-4 text-muted/40 h-3.5 w-3.5 transition-colors group-focus-within:text-ink shrink-0" />
+          <input 
+            placeholder="Search terminal..." 
+            className="w-full pl-10 pr-12 h-10 bg-canvas-soft/50 border border-hairline rounded-pill outline-none focus:border-ink/20 focus:bg-canvas-soft transition-all text-[11px] font-bold text-ink placeholder:text-muted/50 placeholder:font-normal uppercase tracking-widest"
           />
-          <div className="absolute right-3 flex items-center gap-1 px-1.5 py-0.5 rounded border bg-background/50 text-[10px] font-bold text-muted-foreground">
-            <Command size={10} />
+          <div className="absolute right-4 flex items-center gap-1 px-1.5 py-0.5 rounded border border-hairline bg-canvas text-[8px] font-bold text-muted/60 uppercase tracking-widest shadow-sm">
+            <Command size={8} />
             <span>K</span>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 md:gap-3">
-        {/* Theme Toggle */}
-        {mounted && (
+      <div className="flex items-center gap-2">
+        {/* Theme Toggle (Hidden for now) */}
+        {/* {mounted && (
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="rounded-full text-foreground hover:bg-accent/50 transition-colors"
+            onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+            className="rounded-xl text-muted hover:text-ink hover:bg-canvas-soft transition-all h-9 w-9"
           >
-            {theme === "dark" ? <Sun size={20} className="text-amber-500" /> : <Moon size={20} className="text-blue-600" />}
+            {resolvedTheme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
           </Button>
-        )}
+        )} */}
 
-        <Button variant="ghost" size="icon" className="rounded-full text-foreground hover:bg-accent/50 relative">
-          <Bell size={20} />
+        <Button variant="ghost" size="icon" className="rounded-xl text-muted hover:text-ink hover:bg-canvas-soft relative group h-9 w-9">
+          <Bell size={17} className="group-hover:rotate-12 transition-transform" />
+          <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-ink border border-canvas" />
         </Button>
 
-        <div className="w-[1px] h-6 bg-border mx-1 md:mx-2 hidden sm:block" />
+        <div className="w-px h-6 bg-hairline mx-2 hidden sm:block" />
 
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative flex items-center gap-2 px-1.5 h-10 rounded-full hover:bg-accent/50 transition-all group">
-              <Avatar className="h-8 w-8 border-2 border-primary/20 group-hover:border-primary/50 transition-colors">
-                <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs uppercase">HK</AvatarFallback>
-              </Avatar>
-              <div className="hidden lg:flex flex-col items-start pr-2">
-                <span className="text-xs font-bold text-foreground">Hasan Khalid</span>
-                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">Super Admin</span>
-              </div>
-            </Button>
+          <DropdownMenuTrigger 
+            render={
+              <Button variant="ghost" className="relative flex items-center gap-4 px-2 h-12 rounded-xl hover:bg-canvas-soft transition-all group" />
+            }
+          >
+            <Avatar className="h-9 w-9 border border-hairline group-hover:border-ink/30 transition-all shadow-sm">
+              <AvatarFallback className="bg-ink text-canvas font-bold text-xs uppercase tracking-widest">HK</AvatarFallback>
+            </Avatar>
+            <div className="hidden lg:flex flex-col items-start text-left">
+              <span className="text-xs font-bold text-ink uppercase tracking-widest">Hasan Khalid</span>
+              <span className="text-[9px] text-muted font-bold uppercase tracking-[0.2em]">Super Admin</span>
+            </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-64 rounded-2xl p-2 mt-2" align="end">
-            <DropdownMenuLabel className="font-normal p-4">
-              <div className="flex flex-col space-y-2">
-                <p className="text-sm font-bold leading-none text-foreground">Hasan Khalid</p>
-                <p className="text-xs leading-none text-muted-foreground italic">hasankhalid@gmail.com</p>
-                <div className="flex items-center gap-1.5 mt-2">
-                  <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[9px] font-extrabold uppercase">Production Node</span>
+          <DropdownMenuContent className="w-72 rounded-2xl p-3 mt-4 border-hairline bg-surface-card shadow-premium" align="end">
+            <DropdownMenuLabel className="font-normal p-6 border-b border-hairline mb-2">
+              <div className="flex flex-col space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-ink flex items-center justify-center text-canvas font-bold text-sm tracking-widest">HK</div>
+                  <div>
+                    <p className="text-sm font-bold leading-none text-ink uppercase tracking-wider">Hasan Khalid</p>
+                    <p className="text-[10px] leading-none text-muted mt-1 uppercase tracking-widest">hasankhalid@gmail.com</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 pt-2">
+                  <span className="px-3 py-1 rounded-pill bg-canvas-soft text-ink text-[9px] font-bold uppercase tracking-widest border border-hairline/50">Production Node</span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator className="mx-2" />
-            <DropdownMenuItem asChild className="cursor-pointer rounded-xl py-2.5">
-              <Link href="/admin/settings" className="flex items-center w-full">
-                <UserIcon className="mr-3 h-4 w-4 text-primary" />
-                <span className="font-medium">Account Settings</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild className="cursor-pointer rounded-xl py-2.5">
-              <Link href="/admin/settings" className="flex items-center w-full">
-                <Settings className="mr-3 h-4 w-4 text-primary" />
-                <span className="font-medium">System Config</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer rounded-xl py-2.5">
-              <HelpCircle className="mr-3 h-4 w-4 text-primary" />
-              <span className="font-medium">Support Center</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator className="mx-2" />
+            <div className="p-1 space-y-1">
+              <DropdownMenuItem 
+                render={
+                  <Link href="/admin/settings" className="flex items-center w-full cursor-pointer rounded-xl p-3 focus:bg-canvas-soft focus:text-ink transition-colors group" />
+                }
+              >
+                <UserIcon className="mr-4 h-4 w-4 text-muted group-hover:text-ink transition-colors" />
+                <span className="font-bold text-[10px] uppercase tracking-[0.2em]">Account Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                render={
+                  <Link href="/admin/settings" className="flex items-center w-full cursor-pointer rounded-xl p-3 focus:bg-canvas-soft focus:text-ink transition-colors group" />
+                }
+              >
+                <Settings className="mr-4 h-4 w-4 text-muted group-hover:text-ink transition-colors" />
+                <span className="font-bold text-[10px] uppercase tracking-[0.2em]">System Config</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer rounded-xl p-3 focus:bg-canvas-soft focus:text-ink transition-colors group">
+                <HelpCircle className="mr-4 h-4 w-4 text-muted group-hover:text-ink transition-colors" />
+                <span className="font-bold text-[10px] uppercase tracking-[0.2em]">Support Center</span>
+              </DropdownMenuItem>
+            </div>
+            <DropdownMenuSeparator className="mx-2 bg-hairline h-px" />
             <DropdownMenuItem 
-              className="text-rose-500 cursor-pointer focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/30 rounded-xl py-2.5 mt-1"
+              className="text-red-500 cursor-pointer focus:text-red-600 focus:bg-red-500/5 rounded-xl p-3 mt-1 group"
               onClick={() => {
                 localStorage.removeItem("JobSphere_Admin_Token");
                 window.location.href = "/admin/login";
               }}
             >
-              <LogOut className="mr-3 h-4 w-4" />
-              <span className="font-bold uppercase text-xs tracking-wider">Terminate Session</span>
+              <LogOut className="mr-4 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <span className="font-bold uppercase text-[10px] tracking-[0.2em]">Terminate Session</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

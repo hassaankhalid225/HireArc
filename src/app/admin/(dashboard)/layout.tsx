@@ -9,7 +9,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const { isCollapsed } = useSidebar();
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-canvas">
       {/* Sidebar */}
       <AdminSidebar />
       
@@ -29,7 +29,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </main>
         
         {/* Footer inside admin */}
-        <footer className="py-6 px-8 border-t text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground bg-card/30 backdrop-blur-sm">
+        <footer className="py-6 px-8 border-t border-hairline text-center text-[10px] font-bold uppercase tracking-widest text-muted bg-canvas-soft">
           &copy; 2024 HireArc Enterprise Solutions • Secure Administrative Environment • Node v2.1.0-Release
         </footer>
       </div>

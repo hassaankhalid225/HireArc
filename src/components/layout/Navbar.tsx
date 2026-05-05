@@ -48,10 +48,8 @@ export default function Navbar() {
   const { user, logout, isAuthenticated, isLoading } = useAuth();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
-  // Only the home page has a dark hero — every other page needs a solid navbar
-  const isHome = pathname === "/";
-  // Treat as "dark background" when on home AND not yet scrolled
-  const isDark = isHome && !scrolled;
+  // In ElevenLabs theme, the canvas is always light (off-white).
+  // No separate dark hero logic needed for nav.
 
   useEffect(() => {
     setMounted(true);
@@ -92,35 +90,31 @@ export default function Navbar() {
     setActiveDropdown(activeDropdown === name ? null : name);
 
   // Shared icon button style
-  const iconBtn = `p-2 rounded-xl transition-all duration-300 ${
-    isDark
-      ? "text-white/70 hover:bg-white/10 hover:text-white"
-      : "text-[var(--text-secondary)] hover:bg-gray-100 dark:hover:bg-white/5 hover:text-[var(--primary)]"
-  }`;
+  const iconBtn = `p-2 rounded-xl transition-all duration-300 text-[var(--ink)] hover:bg-[var(--canvas-soft)]`;
 
   // Dropdown container style - UI/UX Pro Max Glassmorphism
   const dropdownCls =
-    "absolute top-[calc(100%+16px)] right-0 bg-white/95 dark:bg-[#15221B]/95 backdrop-blur-2xl border-2 border-[var(--border)] dark:border-white/10 rounded-2xl shadow-premium overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300 z-[110]";
+    "absolute top-[calc(100%+16px)] right-0 bg-[var(--surface-card)]/95 backdrop-blur-2xl border border-[var(--hairline-strong)] rounded-[16px] shadow-premium overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300 z-[110]";
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 h-[88px] flex items-center z-[100] transition-all duration-500 transform ${
+      className={`fixed top-0 left-0 right-0 h-[64px] flex items-center z-[100] transition-all duration-500 transform ${
         visible ? "translate-y-0" : "-translate-y-full"
       } ${
-        isDark
-          ? "bg-transparent border-transparent"
-          : "bg-white/80 dark:bg-[#0F1713]/80 backdrop-blur-xl border-b-2 border-[var(--border)] dark:border-white/5 shadow-sm"
+        scrolled
+          ? "bg-[var(--canvas)]/80 backdrop-blur-xl border-b border-[var(--hairline-strong)] shadow-sm"
+          : "bg-[var(--canvas)] border-transparent"
       }`}
       ref={navRef}
     >
-      <div className="max-w-[1400px] mx-auto px-8 w-full flex justify-between items-center relative">
+      <div className="max-w-[1440px] mx-auto px-8 w-full flex justify-between items-center relative">
         {/* ── Left: Logo + Nav Links ── */}
         <div className="flex items-center gap-16">
           <Link href="/" className="flex items-center gap-2 group cursor-pointer">
             <div className="w-10 h-10 flex items-center justify-center">
               <HireArcGlobe size={40} />
             </div>
-            <span className={`text-xl font-extrabold font-headline tracking-tighter ${isDark ? 'text-white' : 'text-[var(--text-primary)]'}`}>
+            <span className={`text-xl font-extrabold font-headline tracking-tighter text-[var(--ink)]`}>
               HireArc
             </span>
           </Link>
@@ -128,21 +122,13 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-8">
             <Link
               href="/search"
-              className={`text-sm font-bold transition-all ${
-                isDark
-                  ? "text-white/80 hover:text-white"
-                  : "text-[var(--text-secondary)] hover:text-[var(--primary)]"
-              }`}
+              className={`text-[15px] font-medium transition-all text-[var(--body)] hover:text-[var(--ink)]`}
             >
               Find Jobs
             </Link>
             <Link
               href="/search?type=remote"
-              className={`text-sm font-bold transition-all ${
-                isDark
-                  ? "text-white/80 hover:text-white"
-                  : "text-[var(--text-secondary)] hover:text-[var(--primary)]"
-              }`}
+              className={`text-[15px] font-medium transition-all text-[var(--body)] hover:text-[var(--ink)]`}
             >
               Remote
             </Link>
@@ -151,25 +137,23 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => toggleDropdown("companies")}
-                className={`flex items-center gap-1 text-sm font-bold transition-all ${
+                className={`flex items-center gap-1 text-[15px] font-medium transition-all ${
                   activeDropdown === "companies"
-                    ? isDark ? "text-white" : "text-[var(--primary)]"
-                    : isDark
-                    ? "text-white/80 hover:text-white"
-                    : "text-[var(--text-secondary)] hover:text-[var(--primary)]"
+                    ? "text-[var(--ink)]"
+                    : "text-[var(--body)] hover:text-[var(--ink)]"
                 }`}
               >
                 Companies
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "companies" ? "rotate-180" : ""}`} />
               </button>
               {activeDropdown === "companies" && (
-                <div className="absolute top-[calc(100%+20px)] left-0 w-64 bg-white dark:bg-[#1C261F] border-2 border-[var(--border)] dark:border-white/10 rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-[calc(100%+20px)] left-0 w-64 bg-[var(--surface-card)] border border-[var(--hairline-strong)] rounded-xl shadow-premium p-4 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="grid grid-cols-1 gap-1">
                     {COMPANIES.map((c) => (
                       <Link
                         key={c.name}
                         href={c.href}
-                        className="px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[#F0FDF4] hover:text-[#166534] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
+                        className="px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-gray-100 hover:text-[var(--primary)] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
                         onClick={() => setActiveDropdown(null)}
                       >
                         {c.name}
@@ -178,7 +162,7 @@ export default function Navbar() {
                     <div className="border-t-2 border-[var(--border)] dark:border-white/5 mt-2 pt-2">
                       <Link
                         href="/companies"
-                        className="block px-3 py-2 rounded-lg text-sm font-bold text-[var(--primary)] hover:bg-[#F0FDF4] dark:hover:bg-white/5 transition-colors"
+                        className="block px-3 py-2 rounded-lg text-sm font-bold text-[var(--primary)] dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         onClick={() => setActiveDropdown(null)}
                       >
                         Browse all companies &rarr;
@@ -193,28 +177,26 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => toggleDropdown("categories")}
-                className={`flex items-center gap-1 text-sm font-bold transition-all ${
+                className={`flex items-center gap-1 text-[15px] font-medium transition-all ${
                   activeDropdown === "categories"
-                    ? isDark ? "text-white" : "text-[var(--primary)]"
-                    : isDark
-                    ? "text-white/80 hover:text-white"
-                    : "text-[var(--text-secondary)] hover:text-[var(--primary)]"
+                    ? "text-[var(--ink)]"
+                    : "text-[var(--body)] hover:text-[var(--ink)]"
                 }`}
               >
                 Categories
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "categories" ? "rotate-180" : ""}`} />
               </button>
               {activeDropdown === "categories" && (
-                <div className="absolute top-[calc(100%+20px)] left-0 w-72 bg-white dark:bg-[#1C261F] border-2 border-[var(--border)] dark:border-white/10 rounded-xl shadow-xl p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-[calc(100%+20px)] left-0 w-72 bg-[var(--surface-card)] border border-[var(--hairline-strong)] rounded-xl shadow-premium p-4 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="grid grid-cols-1 gap-1">
                     {CATEGORIES.map((cat) => (
                       <Link
                         key={cat.name}
                         href={cat.href}
-                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[#F0FDF4] hover:text-[#166534] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-gray-100 hover:text-[var(--primary)] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
                         onClick={() => setActiveDropdown(null)}
                       >
-                        <span className="text-[#678D63]">{cat.icon}</span>
+                        <span className="text-[var(--text-muted)] dark:text-white/50">{cat.icon}</span>
                         {cat.name}
                       </Link>
                     ))}
@@ -260,7 +242,7 @@ export default function Navbar() {
                         }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm transition-colors ${
                           lang === l.code
-                            ? "bg-[#F0FDF4] text-[#166534] dark:bg-white/10 dark:text-white font-semibold"
+                            ? "bg-gray-100 text-[var(--primary)] dark:bg-white/10 dark:text-white font-semibold"
                             : "text-[var(--text-secondary)] hover:bg-gray-50 dark:hover:bg-white/5"
                         }`}
                       >
@@ -269,7 +251,7 @@ export default function Navbar() {
                           <span>{l.nativeLabel}</span>
                         </span>
                         {lang === l.code && (
-                          <Check className="w-3.5 h-3.5 text-[#678D63]" />
+                          <Check className="w-3.5 h-3.5 text-[var(--primary)] dark:text-white" />
                         )}
                       </button>
                     ))}
@@ -306,7 +288,7 @@ export default function Navbar() {
                           Mark all read
                         </button>
                       )}
-                      <span className="text-xs font-medium text-[var(--primary)] bg-[#F0FDF4] dark:bg-white/10 px-2 py-0.5 rounded-full">
+                      <span className="text-xs font-medium text-[var(--primary)] dark:text-white bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-full">
                         {unreadCount} new
                       </span>
                     </div>
@@ -320,9 +302,9 @@ export default function Navbar() {
                             markAsRead(n.id);
                             setActiveDropdown(null);
                           }}
-                          className={`flex items-start gap-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${n.unread ? "bg-[#F0FDF4]/60 dark:bg-white/[0.03]" : ""}`}
+                          className={`flex items-start gap-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${n.unread ? "bg-gray-50 dark:bg-white/[0.03]" : ""}`}
                         >
-                          <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${n.unread ? "bg-[#678D63]" : "bg-gray-200 dark:bg-white/10"}`} />
+                          <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${n.unread ? "bg-[var(--primary)] dark:bg-white" : "bg-gray-200 dark:bg-white/10"}`} />
                           <div className="min-w-0">
                             <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{n.title}</p>
                             <p className="text-xs text-[var(--text-muted)] truncate">{n.description}</p>
@@ -350,8 +332,8 @@ export default function Navbar() {
             </div>
           )}
 
-          {/* ── Theme Toggle ── */}
-          {mounted && theme && (
+          {/* ── Theme Toggle (Hidden for now) ── */}
+          {/* {mounted && theme && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className={iconBtn}
@@ -359,7 +341,7 @@ export default function Navbar() {
             >
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-          )}
+          )} */}
 
           {/* ── Profile (icon only) ── */}
           {mounted && !isLoading && (
@@ -370,7 +352,7 @@ export default function Navbar() {
                   className="group cursor-pointer"
                   aria-label="User menu"
                 >
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] border-2 border-white/50 dark:border-[#3E5F43] shadow-md flex items-center justify-center text-white text-sm font-bold overflow-hidden transition-all duration-200 group-hover:scale-110 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-[#678D63]/40">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-gray-700 to-gray-900 dark:from-white/20 dark:to-white/10 border-2 border-white/50 dark:border-white/20 shadow-md flex items-center justify-center text-white text-sm font-bold overflow-hidden transition-all duration-200 group-hover:scale-110 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-black/20 dark:group-hover:ring-white/20">
                     {user?.name?.split(" ").map(n => n[0]).join("") || "HK"}
                   </div>
                 </button>
@@ -379,7 +361,7 @@ export default function Navbar() {
                   <div className={`${dropdownCls} w-60`}>
                     {/* User info */}
                     <div className="px-4 py-3.5 border-b-2 border-[var(--border)] dark:border-white/5 flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-gray-700 to-gray-900 dark:from-white/20 dark:to-white/10 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                         {user?.name?.split(" ").map(n => n[0]).join("") || "HK"}
                       </div>
                       <div className="min-w-0">
@@ -393,14 +375,14 @@ export default function Navbar() {
                       <div className="flex items-center justify-between mb-1.5">
                         <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Notifications</p>
                         {unreadCount > 0 && (
-                          <span className="text-[10px] font-bold text-[var(--primary)] bg-[#F0FDF4] dark:bg-white/10 px-1.5 py-0.5 rounded-full">
+                          <span className="text-[10px] font-bold text-[var(--primary)] dark:text-white bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded-full">
                             {unreadCount} new
                           </span>
                         )}
                       </div>
                       {notifications.slice(0, 2).map((n) => (
                         <div key={n.id} className="flex items-center gap-2 py-1">
-                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${n.unread ? "bg-[#678D63]" : "bg-gray-300 dark:bg-white/20"}`} />
+                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${n.unread ? "bg-[var(--primary)] dark:bg-white" : "bg-gray-300 dark:bg-white/20"}`} />
                           <p className="text-xs text-[var(--text-secondary)] truncate">{n.title}</p>
                         </div>
                       ))}
@@ -427,10 +409,10 @@ export default function Navbar() {
                         <Link
                           key={item.name}
                           href={item.href}
-                          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[#F0FDF4] hover:text-[#166534] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
+                          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-gray-100 hover:text-[var(--primary)] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
                           onClick={() => setActiveDropdown(null)}
                         >
-                          <span className="text-[#678D63]">{item.icon}</span>
+                          <span className="text-[var(--text-muted)] dark:text-white/40">{item.icon}</span>
                           {item.name}
                         </Link>
                       ))}
@@ -456,7 +438,7 @@ export default function Navbar() {
               <div className="flex items-center gap-3 ml-2">
                 <Link 
                   href="/login" 
-                  className={`text-sm font-bold transition-all ${isDark ? "text-white/80 hover:text-white" : "text-[var(--text-secondary)] hover:text-[var(--primary)]"}`}
+                  className={`text-[15px] font-medium transition-all text-[var(--body)] hover:text-[var(--ink)]`}
                 >
                   Log In
                 </Link>
@@ -464,7 +446,7 @@ export default function Navbar() {
                   href="/signup" 
                   className="btn btn-primary h-10 px-5 text-sm"
                 >
-                  Join Now
+                  Sign up
                 </Link>
               </div>
             )

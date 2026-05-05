@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,35 +10,65 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#1A56DB",
-        "primary-dark": "#1240A8",
-        "primary-light": "#EEF2FF",
-        accent: "#0EA5E9",
-        success: "#10B981",
-        warning: "#F59E0B",
-        "bg-base": "#F8FAFC",
-        "bg-card": "#FFFFFF",
-        "bg-dark": "#0F172A",
-        "text-primary": "#0F172A",
-        "text-secondary": "#475569",
-        "text-muted": "#94A3B8",
-        border: "#E2E8F0",
+        /* ElevenLabs colors */
+        primary: "var(--primary)",
+        "primary-active": "var(--primary-active)",
+        ink: "var(--ink)",
+        body: "var(--body)",
+        muted: "var(--muted)",
+        "muted-soft": "var(--muted-soft)",
+        
+        hairline: "var(--hairline)",
+        "hairline-soft": "var(--hairline-soft)",
+        "hairline-strong": "var(--hairline-strong)",
+        
+        canvas: "var(--canvas)",
+        "canvas-soft": "var(--canvas-soft)",
+        "canvas-deep": "var(--canvas-deep)",
+        
+        "surface-card": "var(--surface-card)",
+        "surface-strong": "var(--surface-strong)",
+        "surface-dark": "var(--surface-dark)",
+        "surface-dark-elevated": "var(--surface-dark-elevated)",
+        
+        /* Gradients as colors to allow bg-gradient-mint, etc. */
+        "gradient-mint": "var(--gradient-mint)",
+        "gradient-peach": "var(--gradient-peach)",
+        "gradient-lavender": "var(--gradient-lavender)",
+        "gradient-sky": "var(--gradient-sky)",
+        "gradient-rose": "var(--gradient-rose)",
+        
+        /* Semantic */
+        success: "var(--semantic-success)",
+        error: "var(--semantic-error)",
+
+        /* Legacy mappings (so existing components don't break immediately) */
+        "bg-base": "var(--canvas)",
+        "bg-card": "var(--surface-card)",
+        "bg-dark": "var(--surface-dark)",
+        "text-primary": "var(--ink)",
+        "text-secondary": "var(--body)",
+        "text-muted": "var(--muted)",
+        border: "var(--hairline)",
       },
       fontFamily: {
-        headline: ["var(--font-headline)", "sans-serif"],
+        headline: ["var(--font-headline)", "serif"],
         body: ["var(--font-body)", "sans-serif"],
-        mono: ["var(--font-mono)", "monospace"],
+        mono: ["monospace"],
       },
       borderRadius: {
+        none: "0px",
+        xs: "4px",
         sm: "6px",
-        md: "10px",
-        lg: "16px",
-        xl: "24px",
+        md: "8px",
+        lg: "12px",
+        xl: "16px",
+        xxl: "24px",
+        pill: "9999px",
       },
       boxShadow: {
-        card: "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
-        hover: "0 4px 12px rgba(26,86,219,0.12), 0 8px 32px rgba(0,0,0,0.08)",
-        modal: "0 24px 64px rgba(0,0,0,0.18)",
+        premium: "0 12px 32px rgba(0, 0, 0, 0.06)",
+        "premium-sm": "0 4px 16px rgba(0, 0, 0, 0.04)",
       },
     },
   },

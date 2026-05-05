@@ -1,13 +1,19 @@
-"use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { useTheme } from "next-themes";
 
 export default function HireArcGlobe({ size = 400 }: { size?: number }) {
   const mountRef = useRef<HTMLDivElement>(null);
+  const { theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const mount = mountRef.current;
-    if (!mount) return;
+    if (!mount || !mounted) return;
 
     // Clear any existing canvas (StrictMode fix)
     while (mount.firstChild) mount.removeChild(mount.firstChild);
@@ -22,13 +28,16 @@ export default function HireArcGlobe({ size = 400 }: { size?: number }) {
     const canvas = renderer.domElement;
     mount.appendChild(canvas);
 
+    const currentTheme = resolvedTheme || theme || "light";
+    const isDark = currentTheme === "dark";
+    
     // ── Scene & Camera ────────────────────────────────────
     const scene  = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
     camera.position.z = 2.8;
 
-    const LINE_COLOR = new THREE.Color("#3a8c5c");
-    const DOT_COLOR  = new THREE.Color("#2d6e45");
+    const LINE_COLOR = new THREE.Color(isDark ? "#ffffff" : "#0c0a09");
+    const DOT_COLOR  = new THREE.Color(isDark ? "#ffffff" : "#0c0a09");
     const RADIUS     = 1;
     const LAT_LINES  = 12;
     const LON_LINES  = 16;
@@ -174,7 +183,7 @@ export default function HireArcGlobe({ size = 400 }: { size?: number }) {
       renderer.dispose();
       if (mount.contains(canvas)) mount.removeChild(canvas);
     };
-  }, [size]);
+  }, [size, resolvedTheme, theme, mounted]);
 
   return (
     <div

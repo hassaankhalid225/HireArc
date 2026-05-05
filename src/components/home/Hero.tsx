@@ -5,86 +5,73 @@ import HireArcGlobe from "./HireArcGlobe";
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[var(--bg-dark)] dark:bg-[#0A110D] flex flex-col justify-center">
-      {/* ── Premium Background Architecture ── */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Architectural Grid */}
-        <div 
-          className="absolute inset-0 opacity-[0.1] dark:opacity-[0.05]" 
-          style={{ 
-            backgroundImage: `
-              linear-gradient(to right, white 1px, transparent 1px),
-              linear-gradient(to bottom, white 1px, transparent 1px)
-            `,
-            backgroundSize: '60px 60px',
-          }} 
-        />
+    <section className="relative min-h-screen overflow-hidden bg-canvas flex flex-col justify-center pt-24 pb-24">
+      {/* ── Editorial Atmospheric Background ── */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Layered Gradient Orbs */}
+        <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-gradient-sky/20 dark:bg-gradient-sky/30 rounded-full blur-[160px] animate-pulse" style={{ animationDuration: '15s' }} />
+        <div className="absolute top-[10%] right-[-15%] w-[60%] h-[60%] bg-gradient-lavender/15 dark:bg-gradient-lavender/25 rounded-full blur-[140px] animate-pulse" style={{ animationDuration: '18s', animationDelay: '2s' }} />
+        <div className="absolute bottom-[-20%] left-[10%] w-[50%] h-[50%] bg-gradient-mint/15 dark:bg-gradient-mint/25 rounded-full blur-[150px]" />
+        <div className="absolute bottom-[10%] right-[10%] w-[40%] h-[40%] bg-gradient-rose/10 dark:bg-gradient-rose/20 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '20s', animationDelay: '5s' }} />
         
-        {/* Dynamic Mesh Gradients */}
-        <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] bg-emerald-500/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-[var(--primary-light)]/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
-        
-        {/* Overlay to ensure text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-dark)]/50 via-transparent to-[var(--bg-dark)]" />
+        {/* Subtle Grain Overlay */}
+        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-8 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-16">
+      <div className="container-custom relative z-10">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
           {/* Left Content */}
-          <div className="max-w-[800px] text-center lg:text-left">
+          <div className="max-w-[750px] text-center lg:text-left">
             <FadeIn>
-              <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-10 group hover:border-emerald-500/30 transition-all duration-500">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <span className="text-[10px] font-extrabold uppercase tracking-[0.3em] text-white/60 group-hover:text-white transition-colors">
-                  The Future of Career Finding
+              <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-pill bg-canvas-soft border border-hairline mb-10">
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink">
+                  Next-Gen Career Intelligence
                 </span>
               </div>
             </FadeIn>
 
             <FadeIn delay={0.2}>
-              <h1 className="text-5xl md:text-7xl lg:text-[92px] font-extrabold font-headline leading-[0.95] mb-8 tracking-[-0.04em]">
-                The future of<br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-100 to-white/40">
+              <h1 className="text-6xl md:text-8xl lg:text-[110px] font-headline font-normal leading-[0.82] mb-10 tracking-[-0.055em] text-ink">
+                The future of
+                <br />
+                <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-rose-500 dark:from-indigo-400 dark:via-violet-400 dark:to-rose-400 bg-clip-text text-transparent block pb-6 -mb-6 drop-shadow-[0_2px_10px_rgba(99,102,241,0.15)]">
                   career finding.
                 </span>
               </h1>
             </FadeIn>
 
             <FadeIn delay={0.3}>
-              <p className="text-lg md:text-xl text-white/50 max-w-[620px] lg:mx-0 mx-auto leading-relaxed mb-12 font-medium">
-                Aggregating the world's highest-signal job data into one unified, 
+              <p className="text-lg md:text-xl text-body max-w-[620px] lg:mx-0 mx-auto leading-relaxed mb-12 font-medium">
+                Aggregating the world&apos;s highest-signal job data into one unified,
                 AI-enhanced interface. No sponsored noise, just your next big move.
               </p>
             </FadeIn>
 
             <FadeIn delay={0.4}>
-              <div className="relative group max-w-[800px] lg:mx-0 mx-auto">
-                {/* Outer Glow */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/20 to-sage-500/20 rounded-[40px] blur-xl opacity-0 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
-                
-                <div className="relative bg-white dark:bg-[#1A2E26] p-2 rounded-[32px] shadow-2xl flex flex-col md:flex-row gap-2 hover:translate-y-[-2px] transition-all duration-500 border-2 border-[var(--border)] dark:border-white/10">
-                  <div className="flex-1 flex items-center gap-3 px-6 py-4">
-                    <Search className="w-5 h-5 text-gray-400" />
-                    <input 
-                      type="text" 
-                      placeholder="Search by role or company..." 
-                      className="w-full bg-transparent outline-none text-gray-900 dark:text-white text-base font-bold placeholder:text-gray-400"
+              <div className="relative group max-w-[850px] lg:mx-0 mx-auto">
+                <div className="relative bg-white/60 dark:bg-white/5 backdrop-blur-xl p-2 rounded-pill shadow-premium border border-white/40 dark:border-white/10 flex flex-col md:flex-row items-center transition-all duration-700 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 focus-within:border-ink/10 dark:focus-within:border-white/20 focus-within:ring-4 focus-within:ring-ink/5 dark:focus-within:ring-white/5">
+                  <div className="flex-[1.4] flex items-center gap-4 px-7 py-3 w-full group/input">
+                    <Search className="w-5 h-5 text-muted dark:text-muted/80 group-focus-within/input:text-ink dark:group-focus-within/input:text-white transition-colors shrink-0" />
+                    <input
+                      type="text"
+                      placeholder="Search by role or company..."
+                      className="w-full bg-transparent outline-none text-ink text-base font-medium placeholder:text-muted/50 dark:placeholder:text-muted/70"
                     />
                   </div>
-                  <div className="hidden md:block w-[1px] h-8 self-center bg-gray-100 dark:bg-white/5" />
-                  <div className="flex-1 flex items-center gap-3 px-6 py-4">
-                    <MapPin className="w-5 h-5 text-gray-400" />
-                    <input 
-                      type="text" 
-                      placeholder="Location or Remote" 
-                      className="w-full bg-transparent outline-none text-gray-900 dark:text-white text-base font-bold placeholder:text-gray-400"
+                  
+                  <div className="hidden md:block w-px h-10 bg-hairline/60 dark:bg-white/10 mx-2" />
+                  
+                  <div className="flex-1 flex items-center gap-4 px-7 py-3 w-full group/input">
+                    <MapPin className="w-5 h-5 text-muted dark:text-muted/80 group-focus-within/input:text-ink dark:group-focus-within/input:text-white transition-colors shrink-0" />
+                    <input
+                      type="text"
+                      placeholder="Location or Remote"
+                      className="w-full bg-transparent outline-none text-ink text-base font-medium placeholder:text-muted/50 dark:placeholder:text-muted/70"
                     />
                   </div>
-                  <button className="bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white font-extrabold px-10 py-4 rounded-[24px] shadow-lg shadow-emerald-950/20 transition-all active:scale-[0.98] text-sm uppercase tracking-wider">
-                    Find Talent
+
+                  <button className="h-14 px-12 rounded-pill bg-ink dark:bg-white dark:text-canvas text-canvas text-[15px] font-bold w-full md:w-auto hover:bg-ink/90 dark:hover:bg-white/90 active:scale-[0.97] transition-all shadow-xl shadow-ink/10 dark:shadow-white/5 shrink-0">
+                    Find Jobs
                   </button>
                 </div>
               </div>
@@ -92,30 +79,40 @@ export default function Hero() {
 
             {/* Trusted by — below search bar */}
             <FadeIn delay={0.5}>
-              <div className="flex flex-wrap items-center gap-5 mt-6">
-                <span className="text-[11px] font-bold uppercase tracking-widest text-white/30">Trusted by:</span>
-                <div className="flex gap-6">
-                  {['Stripe', 'Linear', 'OpenAI', 'Vercel'].map(brand => (
-                    <span key={brand} className="text-sm font-bold font-headline tracking-tighter text-white/40 hover:text-white/70 transition-colors">{brand}</span>
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 mt-16">
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">
+                  Trusted by
+                </span>
+                <div className="flex gap-8 items-center">
+                  {["Stripe", "Linear", "OpenAI", "Vercel"].map((brand) => (
+                    <span
+                      key={brand}
+                      className="text-lg font-headline font-medium tracking-tight text-muted hover:text-ink transition-colors cursor-default"
+                    >
+                      {brand}
+                    </span>
                   ))}
                 </div>
               </div>
             </FadeIn>
           </div>
 
-          {/* Right Side: 3D Model */}
-          <div className="hidden lg:flex relative items-center justify-center" style={{ flexShrink: 0 }}>
+          {/* Right Side: 3D Globe */}
+          <div
+            className="hidden lg:flex relative items-center justify-center lg:-mr-16"
+            style={{ flexShrink: 0 }}
+          >
             <FadeIn direction="left" delay={0.5}>
               <div className="relative">
-                {/* Ambient Glow behind the globe */}
-                <div className="absolute inset-0 bg-emerald-500/15 rounded-full blur-[80px] -z-10 scale-75" />
-                <HireArcGlobe size={480} />
+                {/* Subtle Glow behind the globe */}
+                <div className="absolute inset-0 bg-canvas-soft rounded-full blur-[100px] -z-10 scale-90 opacity-50" />
+                <div className="opacity-90 mix-blend-multiply dark:mix-blend-normal">
+                  <HireArcGlobe size={580} />
+                </div>
               </div>
             </FadeIn>
           </div>
         </div>
-
-
       </div>
     </section>
   );

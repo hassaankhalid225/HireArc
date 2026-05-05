@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Building2, 
   Search, 
@@ -28,6 +28,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { apiClient } from "@/services/api";
 import { cn } from "@/lib/utils";
 
 export default function CompanyManagement() {
@@ -60,40 +62,40 @@ export default function CompanyManagement() {
   const categories = ["All", ...Array.from(new Set(companies.map(c => c.category)))];
 
   return (
-    <div className="space-y-10 pb-10">
+    <div className="space-y-12 pb-12">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-accent/20 p-6 md:p-10 rounded-3xl md:rounded-[3rem] border border-accent/30 shadow-inner">
-        <div>
-          <div className="flex items-center gap-2 text-primary font-bold mb-3">
-            <Building className="w-5 h-5 fill-primary/20" />
-            <span className="text-[11px] uppercase tracking-[0.3em] font-black">Enterprise Cluster</span>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 py-8 border-b border-hairline">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-ink/40 font-bold mb-1">
+            <Building className="w-4 h-4 fill-current opacity-20" />
+            <span className="text-[9px] uppercase tracking-[0.25em]">Enterprise Cluster</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-foreground">Global Nodes</h1>
-          <p className="text-muted-foreground font-medium mt-2 text-base md:text-lg max-w-xl">Centralized authorization center for managing corporate entities and their workforce vectors.</p>
+          <h1 className="text-4xl md:text-5xl font-headline tracking-tighter text-ink leading-[0.9]">Entity Directory</h1>
+          <p className="text-body text-base max-w-xl font-medium leading-relaxed opacity-70">Centralized authorization center for managing corporate entities and their workforce vectors.</p>
         </div>
-        <div className="flex items-center gap-4">
-          <Button className="h-14 md:h-16 px-6 md:px-10 rounded-2xl md:rounded-[2rem] font-black shadow-xl shadow-primary/20 hover:scale-105 transition-all active:scale-95 bg-primary text-white">
-            <Plus className="mr-3 h-5 w-5 md:h-6 w-6" />
+        <div>
+          <Button className="h-11 px-8 rounded-pill font-bold text-[10px] uppercase tracking-widest bg-ink text-canvas hover:opacity-90 transition-all shadow-lg shadow-ink/10">
+            <Plus className="mr-2 h-3.5 w-3.5" />
             Onboard Entity
           </Button>
         </div>
       </div>
 
       {/* Stats Quick View */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
-          { label: "Active Partners", value: companies.length, icon: Building2, color: "text-blue-500", bg: "bg-blue-500/10" },
-          { label: "Verified Nodes", value: "100%", icon: ShieldCheck, color: "text-emerald-500", bg: "bg-emerald-500/10" },
-          { label: "Aggregate Roles", value: companies.reduce((acc, c) => acc + (c.roles || 0), 0), icon: ArrowUpRight, color: "text-violet-500", bg: "bg-violet-500/10" }
+          { label: "Active Partners", value: companies.length, icon: Building2 },
+          { label: "Verified Nodes", value: "100%", icon: ShieldCheck },
+          { label: "Aggregate Roles", value: companies.reduce((acc, c) => acc + (c.roles || 0), 0), icon: ArrowUpRight }
         ].map((stat, idx) => (
-          <Card key={idx} className="bg-card/40 backdrop-blur-xl border-none shadow-2xl rounded-[2rem] hover:ring-2 hover:ring-primary/10 transition-all">
+          <Card key={idx} className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card hover:border-hairline-strong transition-all duration-300">
             <CardContent className="p-8 flex items-center gap-6">
-              <div className={cn("w-16 h-16 rounded-[1.25rem] flex items-center justify-center transition-transform hover:scale-110 hover:rotate-3", stat.bg, stat.color)}>
-                <stat.icon size={32} />
+              <div className="w-14 h-14 rounded-xl bg-canvas-soft flex items-center justify-center transition-transform hover:scale-110 text-ink">
+                <stat.icon size={28} />
               </div>
               <div>
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">{stat.label}</p>
-                <h3 className="text-4xl font-black text-foreground tracking-tighter">
+                <p className="text-[10px] font-bold text-muted uppercase tracking-[0.2em] mb-1">{stat.label}</p>
+                <h3 className="text-3xl font-headline text-ink leading-none">
                   {isLoading ? "..." : stat.value}
                 </h3>
               </div>
@@ -103,27 +105,27 @@ export default function CompanyManagement() {
       </div>
 
       {/* Filters & Search */}
-      <div className="flex flex-col md:flex-row gap-6 items-center justify-between bg-card/20 p-6 rounded-[2rem] border border-border/40 backdrop-blur-sm">
+      <div className="flex flex-col md:flex-row gap-8 items-center justify-between bg-canvas-soft/30 p-6 rounded-xl border border-hairline">
         <div className="relative w-full md:w-[450px] group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5 group-focus-within:text-primary transition-colors" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted w-5 h-5 group-focus-within:text-ink transition-colors" />
           <Input 
             placeholder="Filter entities by identifier or geographic node..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-14 h-14 rounded-2xl bg-background/50 border-none focus-visible:ring-2 focus-visible:ring-primary/10 text-base font-medium"
+            className="pl-14 h-12 rounded-xl bg-surface-card border-hairline focus-visible:ring-2 focus-visible:ring-ink/10 text-sm font-medium"
           />
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto no-scrollbar pb-2 md:pb-0">
-          <div className="flex items-center gap-2 bg-accent/10 p-1.5 rounded-2xl border border-accent/20">
+          <div className="flex items-center gap-2 bg-canvas-soft p-1.5 rounded-pill border border-hairline">
             {categories.map(cat => (
               <button
                 key={cat}
                 onClick={() => setFilterCategory(cat)}
                 className={cn(
-                  "px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+                  "px-6 py-2 rounded-pill text-[11px] font-bold uppercase tracking-widest transition-all whitespace-nowrap",
                   filterCategory === cat 
-                    ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" 
-                    : "text-muted-foreground hover:bg-accent/40 hover:text-foreground"
+                    ? "bg-ink text-canvas shadow-premium-sm" 
+                    : "text-muted hover:bg-surface-card hover:text-ink"
                 )}
               >
                 {cat}
@@ -134,81 +136,86 @@ export default function CompanyManagement() {
       </div>
 
       {/* Main Grid */}
-      <Card className="border-none shadow-2xl rounded-[3rem] bg-card/30 backdrop-blur-2xl overflow-hidden border border-white/5">
+      <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card overflow-hidden">
         <CardContent className="p-0 overflow-x-auto no-scrollbar">
           <Table className="min-w-[1000px]">
-            <TableHeader className="bg-accent/20 border-b border-border/50">
+            <TableHeader className="bg-canvas-soft/50 border-b border-hairline">
               <TableRow className="border-none hover:bg-transparent">
-                <TableHead className="px-10 py-7 text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground">Entity Identifier</TableHead>
-                <TableHead className="px-10 py-7 text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground">Categorization</TableHead>
-                <TableHead className="px-10 py-7 text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground">Geographic Node</TableHead>
-                <TableHead className="px-10 py-7 text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground">Active Vectors</TableHead>
-                <TableHead className="px-10 py-7 text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground text-right">Access Controls</TableHead>
+                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Entity Identifier</TableHead>
+                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Categorization</TableHead>
+                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Geographic Node</TableHead>
+                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Active Vectors</TableHead>
+                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted text-right">Access Controls</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <AnimatePresence mode="popLayout">
                 {isLoading ? (
                   Array.from({ length: 5 }).map((_, i) => (
-                    <TableRow key={i} className="border-b border-border/30">
-                      <TableCell colSpan={5} className="h-24"><Skeleton className="h-16 w-full rounded-2xl" /></TableCell>
+                    <TableRow key={i} className="border-b border-hairline">
+                      <TableCell colSpan={5} className="h-24 px-8"><Skeleton className="h-16 w-full rounded-xl opacity-20" /></TableCell>
                     </TableRow>
                   ))
                 ) : filteredCompanies.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="h-64 text-center text-muted-foreground font-bold uppercase tracking-widest">No Entities Found</TableCell>
+                    <TableCell colSpan={5} className="h-64 text-center text-muted font-bold uppercase tracking-widest text-xs opacity-50">No Entities Found</TableCell>
                   </TableRow>
                 ) : (
                   filteredCompanies.map((company) => (
                     <motion.tr 
                       key={company.id}
                       layout
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      className="group border-b border-border/30 hover:bg-primary/5 transition-all duration-500 ease-out"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="group border-b border-hairline hover:bg-canvas-soft/50 transition-all duration-300"
                     >
-                      <TableCell className="px-10 py-8">
-                        <div className="flex items-center gap-6">
-                          <div className="w-16 h-16 rounded-[1.25rem] bg-white p-3 shadow-md border-2 border-accent/20 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:border-primary/30">
+                      <TableCell className="px-8 py-6">
+                        <div className="flex items-center gap-5">
+                          <div className="w-14 h-14 rounded-xl bg-white p-2 shadow-sm border border-hairline flex items-center justify-center transition-all duration-300 group-hover:scale-110">
                             <img src={company.logo} alt={company.name} className="max-h-full max-w-full object-contain" />
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-xl font-black text-foreground tracking-tight group-hover:text-primary transition-colors">{company.name}</span>
-                            <span className="text-xs text-muted-foreground font-bold flex items-center gap-2 mt-1 opacity-70">
-                              <Globe size={14} className="text-primary" />
+                            <span className="text-base font-bold text-ink leading-tight">{company.name}</span>
+                            <span className="text-xs text-muted font-medium flex items-center gap-2 mt-1 opacity-70">
+                              <Globe size={12} className="text-ink/40" />
                               {company.website}
                             </span>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="px-10 py-8">
-                        <Badge variant="outline" className="bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full border-primary/20">
+                      <TableCell className="px-8 py-6">
+                        <Badge variant="outline" className="bg-ink/5 text-ink text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-pill border-hairline">
                           {company.category}
                         </Badge>
                       </TableCell>
-                      <TableCell className="px-10 py-8">
-                        <div className="flex items-center gap-2.5 text-sm font-bold text-foreground opacity-80">
-                          <MapPin size={16} className="text-rose-500 fill-rose-500/10" />
+                      <TableCell className="px-8 py-6">
+                        <div className="flex items-center gap-2.5 text-xs font-bold text-body">
+                          <MapPin size={14} className="text-ink/40" />
                           {company.location}
                         </div>
                       </TableCell>
-                      <TableCell className="px-10 py-8">
+                      <TableCell className="px-8 py-6">
                         <div className="flex flex-col">
-                          <span className="text-2xl font-black text-foreground tracking-tighter group-hover:scale-110 origin-left transition-transform duration-300">{company.roles}</span>
-                          <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest opacity-60">Open Roles</span>
+                          <span className="text-2xl font-headline text-ink leading-none">{company.roles}</span>
+                          <span className="text-[10px] font-bold text-muted uppercase tracking-widest opacity-60">Open Roles</span>
                         </div>
                       </TableCell>
-                      <TableCell className="px-10 py-8 text-right">
-                        <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-4 group-hover:translate-x-0">
-                          <Button variant="outline" size="sm" className="h-11 rounded-xl font-bold px-4 border-2 hover:bg-primary hover:text-white transition-all" asChild>
-                            <a href={`https://${company.website}`} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink size={16} className="mr-2" />
-                              Portal
-                            </a>
+                      <TableCell className="px-8 py-6 text-right">
+                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-10 rounded-xl font-bold px-4 border-hairline hover:bg-ink hover:text-canvas transition-all" 
+                            render={
+                              <a href={`https://${company.website}`} target="_blank" rel="noopener noreferrer" />
+                            }
+                          >
+                            <ExternalLink size={14} className="mr-2" />
+                            Portal
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-11 w-11 rounded-xl hover:bg-accent/40 text-muted-foreground hover:text-foreground border border-transparent hover:border-border/50 transition-all">
-                            <MoreVertical size={20} />
+                          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-canvas-soft text-muted hover:text-ink transition-all">
+                            <MoreVertical size={18} />
                           </Button>
                         </div>
                       </TableCell>
@@ -221,20 +228,20 @@ export default function CompanyManagement() {
         </CardContent>
       </Card>
       
-      <div className="mt-8 flex items-center justify-between p-8 bg-card/40 backdrop-blur-xl rounded-[2.5rem] border border-border/30">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between p-8 bg-surface-card rounded-xl border border-hairline shadow-premium-sm group cursor-pointer hover:border-hairline-strong transition-all">
+        <div className="flex items-center gap-6">
           <div className="flex -space-x-4">
             {[1, 2, 3].map(i => (
-              <Avatar key={i} className="border-4 border-card h-12 w-12">
-                <AvatarFallback className="bg-primary/10 text-primary font-bold">U{i}</AvatarFallback>
+              <Avatar key={i} className="border-4 border-surface-card h-10 w-10 shadow-sm">
+                <AvatarFallback className="bg-canvas-soft text-ink font-bold text-xs">U{i}</AvatarFallback>
               </Avatar>
             ))}
           </div>
-          <p className="text-sm font-bold text-muted-foreground italic">12 new partner requests pending authorization.</p>
+          <p className="text-sm font-medium text-body italic">12 new partner requests pending authorization.</p>
         </div>
-        <Button variant="link" className="font-black uppercase tracking-widest text-[11px] text-primary hover:no-underline flex items-center gap-2">
+        <Button variant="link" className="font-bold uppercase tracking-widest text-[11px] text-ink hover:no-underline flex items-center gap-2">
           View Permission Queue
-          <ChevronRight size={14} />
+          <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
         </Button>
       </div>
     </div>

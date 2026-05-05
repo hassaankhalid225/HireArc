@@ -1,10 +1,14 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { 
   ArrowLeft, Camera, User, Mail, Phone, MapPin, Briefcase, 
-  Globe, Plus, X, Upload, Check, Lock, Eye, EyeOff, Save
+  Globe, Plus, X, Upload, Check, Lock, Eye, EyeOff, Save,
+  Loader2
 } from "lucide-react";
+import { apiClient } from "@/services/api";
+import { config } from "@/config";
+import { toast } from "sonner";
 
 interface IconProps {
   className?: string;
@@ -34,38 +38,141 @@ const SKILL_SUGGESTIONS = [
 ];
 
 export default function EditProfilePage() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<"personal" | "skills" | "social" | "security">("personal");
-  const [skills, setSkills] = useState<string[]>(["React", "TypeScript", "Next.js"]);
+  
+  const [profile, setProfile] = useState({
+    name: "",
+    jobTitle: "",
+    email: "",
+    phone: "",
+    location: "",
+    about: "",
+    portfolio: "",
+    avatarUrl: "",
+    contact: {
+      email: "",
+      linkedin: "",
+      github: "",
+      twitter: ""
+    },
+    skills: [] as string[]
+  });
+
   const [skillInput, setSkillInput] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const data = await apiClient.get<any>("/user/profile");
+        if (data) {
+          setProfile({
+            name: data.name || "",
+            jobTitle: data.jobTitle || "",
+            email: data.email || "",
+            phone: data.phone || "",
+            location: data.location || "",
+            about: data.about || "",
+            portfolio: data.portfolio || "",
+            avatarUrl: data.avatarUrl || "",
+            contact: {
+              email: data.contact?.email || "",
+              linkedin: data.contact?.linkedin || "",
+              github: data.contact?.github || "",
+              twitter: data.contact?.twitter || "",
+            },
+            skills: data.skills || []
+          });
+          if (data.avatarUrl) setAvatarPreview(data.avatarUrl);
+        }
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchProfile();
+  }, []);
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const localUrl = URL.createObjectURL(file);
+    setAvatarPreview(localUrl);
+    setIsUploading(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      // Use our new backend upload endpoint
+      const response = await fetch(`${config.BACKEND_URL}/user/upload-avatar`, {
+        method: "POST",
+        body: formData,
+        // Don't set Content-Type header, let browser set it with boundary
+      });
+      
+      if (!response.ok) throw new Error("Upload failed");
+      
+      const data = await response.json();
+      if (data.url) {
+        setProfile(prev => ({ ...prev, avatarUrl: data.url }));
+        setAvatarPreview(data.url);
+        toast.success("Photo uploaded successfully!");
+      }
+    } catch (error) {
+      console.error("Upload failed:", error);
+      toast.error("Failed to upload photo via backend.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await apiClient.put("/user/profile", profile);
+      toast.success("Profile updated successfully!");
+    } catch (error) {
+      console.error("Failed to save profile:", error);
+      toast.error("Failed to save profile. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const addSkill = (skill: string) => {
     const trimmed = skill.trim();
-    if (trimmed && !skills.includes(trimmed)) {
-      setSkills(prev => [...prev, trimmed]);
+    if (trimmed && !profile.skills.includes(trimmed)) {
+      setProfile(prev => ({ ...prev, skills: [...prev.skills, trimmed] }));
     }
     setSkillInput("");
   };
 
   const removeSkill = (skill: string) => {
-    setSkills(prev => prev.filter(s => s !== skill));
+    setProfile(prev => ({ ...prev, skills: prev.skills.filter(s => s !== skill) }));
   };
 
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+  const updateContact = (key: string, value: string) => {
+    setProfile(prev => ({
+      ...prev,
+      contact: { ...prev.contact, [key]: value }
+    }));
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setAvatarPreview(url);
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-10 h-10 text-[var(--primary)] animate-spin" />
+      </div>
+    );
+  }
 
   const TABS = [
     { key: "personal", label: "Personal Info" },
@@ -75,7 +182,7 @@ export default function EditProfilePage() {
   ] as const;
 
   return (
-    <div className="min-h-screen pt-[100px] pb-20 px-4">
+    <div className="min-h-screen pt-[100px] pb-20 px-4 bg-[#F8FAFC] dark:bg-[#0B1110]">
       <div className="max-w-2xl mx-auto">
 
         {/* Header */}
@@ -92,19 +199,22 @@ export default function EditProfilePage() {
         </div>
 
         {/* Avatar Section */}
-        <div className="bg-white/80 dark:bg-[#1C261F]/80 backdrop-blur-xl border border-white/60 dark:border-white/10 rounded-2xl p-6 mb-6 shadow-sm">
+        <div className="bg-white dark:bg-[#15201E] border border-slate-200 dark:border-white/5 rounded-2xl p-6 mb-6 shadow-sm">
           <div className="flex items-center gap-6">
             <div className="relative group">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#678D63] to-[#A8BA9A] flex items-center justify-center text-white text-2xl font-bold overflow-hidden shadow-lg">
-                {avatarPreview ? (
+              <div className="w-24 h-24 rounded-2xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-400 text-2xl font-bold overflow-hidden shadow-sm border border-slate-200 dark:border-white/10">
+                {isUploading ? (
+                  <Loader2 className="w-8 h-8 animate-spin" />
+                ) : avatarPreview ? (
                   <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
-                  "HK"
+                  profile.name ? profile.name[0] : <User />
                 )}
               </div>
               <button
                 onClick={() => fileRef.current?.click()}
-                className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer"
+                disabled={isUploading}
+                className="absolute inset-0 rounded-2xl bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
               >
                 <Camera className="w-6 h-6 text-white" />
               </button>
@@ -117,27 +227,28 @@ export default function EditProfilePage() {
               />
             </div>
             <div>
-              <h3 className="font-bold text-[var(--text-primary)]">Hassaan Khalid</h3>
-              <p className="text-sm text-[var(--text-muted)] mb-3">Premium Member</p>
+              <h3 className="font-bold text-[var(--text-primary)] text-xl">{profile.name || "Set your name"}</h3>
+              <p className="text-sm text-[var(--text-muted)] mb-3">{profile.jobTitle || "Your role"}</p>
               <button
                 onClick={() => fileRef.current?.click()}
-                className="text-sm font-semibold text-[var(--primary)] border border-[var(--primary)]/30 px-4 py-1.5 rounded-full hover:bg-[#F0FDF4] dark:hover:bg-white/10 transition-colors"
+                disabled={isUploading}
+                className="text-xs font-bold text-[var(--primary)] border border-[var(--primary)]/30 px-4 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
               >
-                Change Photo
+                {isUploading ? "Uploading..." : "Change Photo"}
               </button>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 p-1 bg-white/60 dark:bg-[#1C261F]/60 backdrop-blur-xl border border-white/50 dark:border-white/10 rounded-xl mb-6 shadow-sm">
+        <div className="flex gap-1 p-1 bg-white/60 dark:bg-[#1C261F]/60 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-xl mb-6 shadow-sm">
           {TABS.map(tab => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex-1 py-2 px-3 text-sm font-semibold rounded-lg transition-all duration-200 ${
+              className={`flex-1 py-2 px-3 text-xs font-bold uppercase tracking-wider rounded-lg transition-all duration-200 ${
                 activeTab === tab.key
-                  ? "bg-[var(--primary)] text-white shadow-sm"
+                  ? "bg-[var(--primary)] text-white shadow-md"
                   : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               }`}
             >
@@ -147,109 +258,96 @@ export default function EditProfilePage() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white/80 dark:bg-[#1C261F]/80 backdrop-blur-xl border border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-sm">
+        <div className="bg-white dark:bg-[#15201E] border border-slate-200 dark:border-white/5 rounded-2xl p-6 shadow-sm min-h-[400px]">
 
           {/* Personal Info */}
           {activeTab === "personal" && (
-            <div className="space-y-5">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-5 animate-in fade-in duration-300">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">First Name</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2 ml-1">Full Name</label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
                     <input
                       type="text"
-                      defaultValue="Hassaan"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                      value={profile.name}
+                      onChange={e => setProfile(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="e.g. Hassaan Khalid"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)] transition-all font-medium"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Last Name</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2 ml-1">Job Title</label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
+                    <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
                     <input
                       type="text"
-                      defaultValue="Khalid"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                      value={profile.jobTitle}
+                      onChange={e => setProfile(prev => ({ ...prev, jobTitle: e.target.value }))}
+                      placeholder="e.g. Full Stack Developer"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)] transition-all font-medium"
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Email Address</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
-                  <input
-                    type="email"
-                    defaultValue="hassaankhalid@HireArc.com"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Phone Number</label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
-                  <input
-                    type="tel"
-                    defaultValue="+92 300 1234567"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Location</label>
+                <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2 ml-1">Location</label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
                   <input
                     type="text"
-                    defaultValue="Lahore, Pakistan"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                    value={profile.location}
+                    onChange={e => setProfile(prev => ({ ...prev, location: e.target.value }))}
+                    placeholder="e.g. Lahore, Pakistan"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)] transition-all font-medium"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Job Title</label>
-                <div className="relative">
-                  <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
-                  <input
-                    type="text"
-                    defaultValue="Full Stack Developer"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Bio</label>
+                <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2 ml-1">Bio / Headline</label>
                 <textarea
                   rows={4}
-                  defaultValue="Passionate full-stack developer with 4+ years of experience building scalable web applications using React, Next.js, and Node.js."
-                  className="w-full px-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all resize-none"
+                  value={profile.about}
+                  onChange={e => setProfile(prev => ({ ...prev, about: e.target.value }))}
+                  placeholder="Tell us about yourself..."
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)] transition-all resize-none font-medium leading-relaxed"
                 />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2 ml-1">Portfolio URL</label>
+                <div className="relative">
+                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
+                  <input
+                    type="text"
+                    value={profile.portfolio}
+                    onChange={e => setProfile(prev => ({ ...prev, portfolio: e.target.value }))}
+                    placeholder="https://yourportfolio.com"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)] transition-all font-medium"
+                  />
+                </div>
               </div>
             </div>
           )}
 
           {/* Skills & Resume */}
           {activeTab === "skills" && (
-            <div className="space-y-6">
+            <div className="space-y-6 animate-in fade-in duration-300">
               <div>
-                <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3">Your Skills</label>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {skills.map(skill => (
-                    <span key={skill} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F0FDF4] dark:bg-white/10 text-[#166534] dark:text-white text-sm font-semibold rounded-full">
+                <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4 ml-1">Professional Skills</label>
+                <div className="flex flex-wrap gap-2 mb-4 min-h-[40px]">
+                  {profile.skills.map(skill => (
+                    <span key={skill} className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white text-xs font-bold rounded-lg border border-slate-200 dark:border-white/5">
                       {skill}
                       <button onClick={() => removeSkill(skill)} className="hover:text-red-500 transition-colors">
-                        <X className="w-3 h-3" />
+                        <X className="w-3.5 h-3.5" />
                       </button>
                     </span>
                   ))}
+                  {profile.skills.length === 0 && <p className="text-xs text-slate-400 italic">No skills added yet.</p>}
                 </div>
                 <div className="flex gap-2">
                   <input
@@ -258,21 +356,22 @@ export default function EditProfilePage() {
                     onChange={e => setSkillInput(e.target.value)}
                     onKeyDown={e => { if (e.key === "Enter") addSkill(skillInput); }}
                     placeholder="Add a skill..."
-                    className="flex-1 px-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                    className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)] transition-all font-medium"
                   />
                   <button
                     onClick={() => addSkill(skillInput)}
-                    className="px-4 py-2.5 rounded-xl bg-[var(--primary)] text-white text-sm font-semibold hover:bg-[#2a3d2d] transition-colors"
+                    className="px-5 py-3 rounded-xl bg-[var(--primary)] text-white text-sm font-bold hover:shadow-lg transition-all active:scale-95"
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-5 h-5" />
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {SKILL_SUGGESTIONS.filter(s => !skills.includes(s)).map(s => (
+                <div className="flex flex-wrap gap-1.5 mt-4">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase w-full mb-1">Suggestions:</p>
+                  {SKILL_SUGGESTIONS.filter(s => !profile.skills.includes(s)).map(s => (
                     <button
                       key={s}
                       onClick={() => addSkill(s)}
-                      className="text-xs px-2.5 py-1 border-2 border-[var(--border)] rounded-full text-[var(--text-muted)] hover:border-[#678D63] hover:text-[#678D63] transition-colors"
+                      className="text-[10px] font-bold px-3 py-1.5 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg text-slate-500 hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all"
                     >
                       + {s}
                     </button>
@@ -280,13 +379,13 @@ export default function EditProfilePage() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3">Resume / CV</label>
-                <div className="border-2 border-dashed border-[var(--border)] rounded-2xl p-8 text-center hover:border-[#678D63] transition-colors cursor-pointer group">
-                  <Upload className="w-8 h-8 text-[var(--text-muted)] group-hover:text-[#678D63] mx-auto mb-3 transition-colors" />
-                  <p className="text-sm font-semibold text-[var(--text-primary)]">Drop your resume here</p>
-                  <p className="text-xs text-[var(--text-muted)] mt-1">PDF, DOC, DOCX up to 5MB</p>
-                  <button className="mt-4 text-sm font-bold text-[var(--primary)] border border-[var(--primary)]/30 px-4 py-1.5 rounded-full hover:bg-[#F0FDF4] dark:hover:bg-white/10 transition-colors">
+              <div className="pt-4 border-t border-slate-200 dark:border-white/5">
+                <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4 ml-1">Resume / CV</label>
+                <div className="border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-8 text-center hover:border-[var(--primary)] hover:bg-slate-50 dark:hover:bg-white/5 transition-all cursor-pointer group">
+                  <Upload className="w-8 h-8 text-slate-300 group-hover:text-[var(--primary)] mx-auto mb-3 transition-colors" />
+                  <p className="text-sm font-bold text-slate-700 dark:text-white">Drop your resume here</p>
+                  <p className="text-xs text-slate-400 mt-1 uppercase tracking-tighter">PDF, DOC, DOCX up to 5MB</p>
+                  <button className="mt-5 text-xs font-bold text-[var(--primary)] border border-[var(--primary)]/30 px-5 py-2 rounded-xl hover:bg-white dark:hover:bg-white/10 transition-all shadow-sm">
                     Browse Files
                   </button>
                 </div>
@@ -296,22 +395,23 @@ export default function EditProfilePage() {
 
           {/* Social Links */}
           {activeTab === "social" && (
-            <div className="space-y-5">
+            <div className="space-y-5 animate-in fade-in duration-300">
               {[
-                { icon: <Globe className="w-4 h-4" />, label: "Website", placeholder: "https://yourwebsite.com", defaultVal: "" },
-                { icon: <LinkedinIcon className="w-4 h-4" />, label: "LinkedIn", placeholder: "linkedin.com/in/username", defaultVal: "linkedin.com/in/hassaan" },
-                { icon: <GithubIcon />, label: "GitHub", placeholder: "github.com/username", defaultVal: "github.com/hassaan" },
-                { icon: <TwitterIcon />, label: "Twitter / X", placeholder: "twitter.com/username", defaultVal: "" },
-              ].map(({ icon, label, placeholder, defaultVal }) => (
+                { icon: <LinkedinIcon />, label: "LinkedIn", key: "linkedin", placeholder: "linkedin.com/in/username" },
+                { icon: <GithubIcon />, label: "GitHub", key: "github", placeholder: "github.com/username" },
+                { icon: <TwitterIcon />, label: "Twitter / X", key: "twitter", placeholder: "twitter.com/username" },
+                { icon: <Mail className="w-4 h-4" />, label: "Public Contact Email", key: "email", placeholder: "public@example.com" },
+              ].map(({ icon, label, key, placeholder }) => (
                 <div key={label}>
-                  <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">{label}</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2 ml-1">{label}</label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">{icon}</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">{icon}</span>
                     <input
-                      type="url"
-                      defaultValue={defaultVal}
+                      type="text"
+                      value={(profile.contact as any)[key]}
+                      onChange={e => updateContact(key, e.target.value)}
                       placeholder={placeholder}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)] transition-all font-medium"
                     />
                   </div>
                 </div>
@@ -321,47 +421,36 @@ export default function EditProfilePage() {
 
           {/* Security */}
           {activeTab === "security" && (
-            <div className="space-y-5">
+            <div className="space-y-5 animate-in fade-in duration-300">
               <div>
-                <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Current Password</label>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Current Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                    className="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)] transition-all"
                   />
                   <button
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">New Password</label>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">New Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)] transition-all"
                   />
                 </div>
               </div>
-              <div>
-                <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Confirm New Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[var(--border)] bg-white/50 dark:bg-white/5 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#678D63] focus:ring-2 focus:ring-[#678D63]/20 transition-all"
-                  />
-                </div>
-              </div>
-              <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl p-4 text-sm text-amber-700 dark:text-amber-400">
+              <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
                 Password must be at least 8 characters, containing uppercase, lowercase, and a number.
               </div>
             </div>
@@ -369,16 +458,18 @@ export default function EditProfilePage() {
         </div>
 
         {/* Save Button */}
-        <div className="mt-6 flex justify-end">
+        <div className="mt-8 flex justify-end">
           <button
             onClick={handleSave}
-            className={`flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-md ${
-              saved 
-                ? "bg-emerald-500 text-white scale-95" 
-                : "bg-[var(--primary)] text-white hover:bg-[#2a3d2d] hover:shadow-lg hover:-translate-y-0.5"
+            disabled={isSaving || isUploading}
+            className={`flex items-center gap-3 px-10 py-4 rounded-2xl text-sm font-bold uppercase tracking-widest transition-all duration-300 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed ${
+              isSaving 
+                ? "bg-slate-700 text-white animate-pulse" 
+                : "bg-[var(--primary)] text-white hover:shadow-primary/20 hover:-translate-y-1 active:translate-y-0"
             }`}
           >
-            {saved ? <><Check className="w-4 h-4" /> Saved!</> : <><Save className="w-4 h-4" /> Save Changes</>}
+            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {isSaving ? "Syncing..." : "Save Profile Changes"}
           </button>
         </div>
       </div>

@@ -36,11 +36,11 @@ export default function RootLayout({
         suppressHydrationWarning
         className="flex flex-col min-h-screen font-body transition-colors duration-300"
       >
-        <AppProviders>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AppProviders>
             <LayoutWrapper>{children}</LayoutWrapper>
-          </ThemeProvider>
-        </AppProviders>
+          </AppProviders>
+        </ThemeProvider>
       </body>
     </html>
   );

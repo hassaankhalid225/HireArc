@@ -19,12 +19,14 @@ import {
   Globe,
   X,
   Zap,
+  ChevronLeft,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { jobsService } from "@/services/jobs.service";
 import { Job } from "@/types";
 import { useAppliedJobs, useAuth } from "@/context";
 import { formatDescription } from "@/lib/utils";
+import React from "react";
 
 // ─── Return-visit popup component ─────────────────────────────────────────────
 function DidYouApplyPopup({
@@ -39,40 +41,32 @@ function DidYouApplyPopup({
   onNo: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white dark:bg-[#0f1a14] border-2 border-[var(--border)] rounded-3xl p-8 max-w-md w-full shadow-2xl animate-in slide-in-from-bottom-4 duration-300">
-        {/* Icon */}
-        <div className="w-16 h-16 rounded-2xl bg-[var(--primary)]/10 border-2 border-[var(--primary)]/20 flex items-center justify-center mx-auto mb-5">
-          <Zap className="w-8 h-8 text-[var(--primary)]" />
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="bg-[var(--surface-card)] border border-[var(--hairline-strong)] rounded-xxl p-8 max-w-md w-full shadow-premium animate-in slide-in-from-bottom-4 duration-300">
+        <div className="w-16 h-16 rounded-full bg-[var(--surface-strong)] flex items-center justify-center mx-auto mb-6">
+          <Zap className="w-8 h-8 text-[var(--ink)]" />
         </div>
 
-        <h2 className="text-xl font-bold font-headline text-center mb-2">
-          Welcome back! 👋
+        <h2 className="text-2xl font-headline font-normal text-center text-[var(--ink)] mb-3">
+          Welcome back
         </h2>
-        <p className="text-[var(--text-secondary)] text-center text-sm leading-relaxed mb-8">
-          You previously visited{" "}
-          <span className="font-bold text-[var(--text-primary)]">
-            {jobTitle}
-          </span>{" "}
-          at{" "}
-          <span className="font-bold text-[var(--text-primary)]">{company}</span>
-          . Did you apply for this position?
+        <p className="text-[var(--body)] text-center text-[15px] leading-relaxed mb-8">
+          You previously visited <span className="font-semibold text-[var(--ink)]">{jobTitle}</span> at <span className="font-semibold text-[var(--ink)]">{company}</span>. Did you apply for this position?
         </p>
 
         <div className="flex gap-3">
-          <Button
+          <button
             onClick={onNo}
-            variant="outline"
-            className="flex-1 h-11 font-semibold border-2 border-[var(--border)] hover:border-[var(--primary)]/40 rounded-xl"
+            className="flex-1 h-11 px-6 rounded-pill border border-[var(--hairline-strong)] text-[14px] font-medium text-[var(--ink)] hover:bg-[var(--surface-strong)] transition-colors"
           >
-            <X className="w-4 h-4 mr-2" /> Not yet
-          </Button>
-          <Button
+            Not yet
+          </button>
+          <button
             onClick={onYes}
-            className="flex-1 h-11 bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white font-semibold rounded-xl gap-2"
+            className="flex-1 h-11 px-6 rounded-pill bg-[var(--ink)] text-white text-[14px] font-medium hover:translate-y-[-1px] transition-all"
           >
-            <CheckCircle2 className="w-4 h-4" /> Yes, I applied!
-          </Button>
+            Yes, I applied
+          </button>
         </div>
       </div>
     </div>
@@ -82,28 +76,27 @@ function DidYouApplyPopup({
 // ─── Applied confirmation banner ───────────────────────────────────────────────
 function AppliedBanner({ company }: { company: string }) {
   return (
-    <div className="bg-emerald-50 dark:bg-emerald-900/20 border-2 border-emerald-200 dark:border-emerald-700/50 rounded-2xl p-4 flex items-center gap-3">
-      <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+    <div className="bg-[var(--surface-strong)] border border-[var(--hairline-strong)] rounded-xl p-5 flex items-center gap-4">
+      <div className="w-10 h-10 rounded-full bg-[var(--ink)] flex items-center justify-center shrink-0">
+        <CheckCircle2 className="w-5 h-5 text-white" />
+      </div>
       <div>
-        <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400">
-          Application tracked!
+        <p className="text-[15px] font-semibold text-[var(--ink)]">
+          Application tracked
         </p>
-        <p className="text-xs text-emerald-600/80 dark:text-emerald-500">
+        <p className="text-[14px] text-[var(--body)]">
           Your application to {company} is saved in{" "}
           <Link
             href="/applied-jobs"
-            className="underline font-bold hover:text-emerald-800"
+            className="underline font-medium hover:text-[var(--ink)]"
           >
             Applied Jobs
-          </Link>
-          .
+          </Link>.
         </p>
       </div>
     </div>
   );
 }
-
-import React from "react";
 
 // ─── Main Page ─────────────────────────────────────────────────────────────────
 export default function JobDetailPage({
@@ -137,18 +130,13 @@ export default function JobDetailPage({
     loadJob();
   }, [id]);
 
-  // Triggered when user returns to tab after applying
   const handleApply = () => {
     if (!isAuthenticated) {
       router.push(`/login?redirect=${encodeURIComponent(`/jobs/${id}`)}`);
       return;
     }
     if (!job?.apply_link) return;
-    // 1. Open external site in new tab
     window.open(job.apply_link, "_blank", "noopener,noreferrer");
-    
-    // 2. Immediately show the "Did you apply?" popup in the current tab
-    // giving them a chance to confirm once they're done with the external site
     setShowPopup(true);
   };
 
@@ -164,40 +152,22 @@ export default function JobDetailPage({
     setShowPopup(false);
   };
 
-  // ── Loading skeleton ────────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-base)] pt-24 pb-20">
-        <div className="container-custom mb-6">
-          <Skeleton className="h-4 w-1/4" />
-        </div>
+      <div className="min-h-screen bg-[var(--canvas)] pt-32 pb-20">
         <div className="container-custom max-w-5xl">
-          <Card className="mb-8 border-[var(--border)] overflow-hidden">
-            <CardContent className="p-8">
-              <div className="flex gap-6 items-center">
-                <Skeleton className="w-20 h-20 rounded-xl" />
-                <div className="flex-1 space-y-3">
-                  <Skeleton className="h-8 w-1/2" />
-                  <Skeleton className="h-4 w-3/4" />
-                  <div className="flex gap-2">
-                    <Skeleton className="h-6 w-20" />
-                    <Skeleton className="h-6 w-24" />
-                  </div>
-                </div>
+          <div className="flex flex-col lg:flex-row gap-12">
+            <div className="flex-1 space-y-8">
+              <Skeleton className="h-12 w-3/4" />
+              <Skeleton className="h-6 w-1/4" />
+              <div className="space-y-4">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
               </div>
-            </CardContent>
-          </Card>
-          <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex-1 space-y-4">
-              <Skeleton className="h-6 w-1/3" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-5/6" />
-              <Skeleton className="h-4 w-full" />
             </div>
             <aside className="w-full lg:w-[320px] space-y-6">
               <Skeleton className="h-48 w-full rounded-xl" />
-              <Skeleton className="h-64 w-full rounded-xl" />
             </aside>
           </div>
         </div>
@@ -207,24 +177,22 @@ export default function JobDetailPage({
 
   if (!job) {
     return (
-      <div className="min-h-screen bg-[var(--bg-base)] pt-24 pb-20 flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold font-headline">Job Not Found</h1>
-        <p className="text-[var(--text-secondary)]">
+      <div className="min-h-screen bg-[var(--canvas)] pt-32 pb-20 flex flex-col items-center justify-center gap-6 text-center">
+        <h1 className="text-3xl font-headline font-normal text-[var(--ink)]">Job Not Found</h1>
+        <p className="text-[var(--body)] max-w-sm">
           The job you are looking for does not exist or has been removed.
         </p>
-        <Button
+        <button
           onClick={() => router.push("/search")}
-          className="bg-[var(--primary)] text-white"
+          className="btn btn-primary h-11 px-8 rounded-pill font-medium"
         >
           Back to Jobs
-        </Button>
+        </button>
       </div>
     );
   }
 
   const alreadyApplied = isApplied(job.job_id) || justApplied;
-
-  // Derived: salary label (only if at least one value exists)
   const salaryLabel =
     job.salary_min || job.salary_max
       ? `$${job.salary_min ? Math.round(job.salary_min / 1000) : "?"}k – $${job.salary_max ? Math.round(job.salary_max / 1000) : "?"}k`
@@ -232,7 +200,6 @@ export default function JobDetailPage({
 
   return (
     <>
-      {/* Return-visit popup */}
       {showPopup && (
         <DidYouApplyPopup
           jobTitle={job.title}
@@ -242,301 +209,177 @@ export default function JobDetailPage({
         />
       )}
 
-      <div className="min-h-screen bg-[var(--bg-base)] pt-24 pb-20">
-        {/* Breadcrumbs */}
-        <div className="container-custom mb-6">
-          <div className="text-sm text-[var(--text-secondary)] flex items-center gap-2">
+      <div className="min-h-screen bg-[var(--canvas)] pt-32 pb-20 text-[var(--ink)]">
+        <div className="container-custom max-w-6xl">
+          {/* Breadcrumbs */}
+          <div className="mb-12">
             <Link
               href="/search"
-              className="hover:text-[var(--primary)] transition-colors"
+              className="inline-flex items-center gap-2 text-[14px] font-medium text-[var(--muted)] hover:text-[var(--ink)] transition-colors group"
             >
-              Jobs
+              <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Search
             </Link>
-            <span>›</span>
-            <span className="font-medium text-[var(--text-primary)] line-clamp-1">
-              {job.title} at {job.company}
-            </span>
           </div>
-        </div>
 
-        <div className="container-custom max-w-5xl">
-          {/* ── Main Header Card ── */}
-          <Card className="mb-8 border-[var(--border)] overflow-hidden">
-            <CardContent className="p-8">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                {/* Company + title */}
-                <div className="flex gap-6 items-center">
-                  <div className="w-20 h-20 rounded-xl bg-[#678D63]/10 border-2 border-[var(--border)] flex items-center justify-center flex-shrink-0 shadow-sm text-[#166534]">
-                    <span className="text-3xl font-bold uppercase">
-                      {job.company.substring(0, 2)}
-                    </span>
+          <div className="flex flex-col lg:flex-row gap-16">
+            {/* Main Content */}
+            <div className="flex-1 min-w-0">
+              <div className="mb-12">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-16 h-16 rounded-xl bg-[var(--surface-strong)] border border-[var(--hairline)] flex items-center justify-center text-[var(--ink)] font-medium text-2xl uppercase shrink-0">
+                    {job.company.substring(0, 2)}
                   </div>
                   <div>
-                    <h1 className="text-2xl md:text-3xl font-bold font-headline mb-2">
+                    <p className="text-[16px] font-medium text-[var(--body)] mb-1">{job.company}</p>
+                    <h1 className="text-3xl md:text-[44px] font-headline font-normal leading-tight tracking-tight">
                       {job.title}
                     </h1>
-                    <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--text-secondary)] mb-4">
-                      <span className="flex items-center gap-1 font-medium text-[var(--text-primary)]">
-                        <Building className="w-4 h-4" /> {job.company}
-                      </span>
-                      {job.location && (
-                        <>
-                          <span className="opacity-40">•</span>
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-4 h-4" /> {job.location}
-                          </span>
-                        </>
-                      )}
-                      {job.posted_at && (
-                        <>
-                          <span className="opacity-40">•</span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" /> Posted{" "}
-                            {new Date(job.posted_at).toLocaleDateString()}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {job.job_type && (
-                        <Badge
-                          variant="secondary"
-                          className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 uppercase text-xs font-bold rounded-sm"
-                        >
-                          {job.job_type}
-                        </Badge>
-                      )}
-                      {salaryLabel && (
-                        <Badge
-                          variant="secondary"
-                          className="bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300 uppercase text-xs font-bold rounded-sm"
-                        >
-                          {salaryLabel}
-                        </Badge>
-                      )}
-                      {job.is_remote && (
-                        <Badge
-                          variant="secondary"
-                          className="bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300 uppercase text-xs font-bold rounded-sm flex items-center gap-1"
-                        >
-                          <Globe className="w-3 h-3" /> Remote
-                        </Badge>
-                      )}
-                      {job.experience_level && (
-                        <Badge
-                          variant="secondary"
-                          className="bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 uppercase text-xs font-bold rounded-sm capitalize"
-                        >
-                          {job.experience_level}
-                        </Badge>
-                      )}
-                    </div>
                   </div>
                 </div>
 
-                {/* Action buttons */}
-                <div className="flex gap-3 w-full md:w-auto">
-                  {alreadyApplied ? (
-                    <div className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border-2 border-emerald-200 dark:border-emerald-700/50 text-emerald-700 dark:text-emerald-400 font-semibold text-sm">
-                      <CheckCircle2 className="w-4 h-4" /> Applied
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-[14px] font-medium text-[var(--body)] mb-8">
+                  {job.location && (
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="w-4 h-4 text-[var(--muted)]" /> {job.location}
                     </div>
-                  ) : (
-                    job.apply_link && (
-                      <Button
-                        onClick={handleApply}
-                        className="flex-1 md:flex-none bg-[var(--primary)] hover:bg-[var(--primary-dark)] font-semibold h-11 px-8 text-white gap-2"
-                      >
-                        Apply Now <ExternalLink className="w-4 h-4" />
-                      </Button>
-                    )
+                  )}
+                  {job.posted_at && (
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-4 h-4 text-[var(--muted)]" /> {new Date(job.posted_at).toLocaleDateString()}
+                    </div>
+                  )}
+                  <div className="flex items-center gap-1.5">
+                    <Globe className="w-4 h-4 text-[var(--muted)]" /> {job.source || "Direct ATS"}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2.5">
+                  {job.job_type && (
+                    <div className="px-4 py-1.5 rounded-pill bg-[var(--surface-strong)] text-[var(--ink)] text-[12px] font-semibold uppercase tracking-wider">
+                      {job.job_type}
+                    </div>
+                  )}
+                  {salaryLabel && (
+                    <div className="px-4 py-1.5 rounded-pill bg-[var(--surface-strong)] text-[var(--ink)] text-[12px] font-semibold uppercase tracking-wider">
+                      {salaryLabel}
+                    </div>
+                  )}
+                  {job.is_remote && (
+                    <div className="px-4 py-1.5 rounded-pill bg-[var(--surface-strong)] text-[var(--ink)] text-[12px] font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                      <Globe className="w-3.5 h-3.5" /> Remote
+                    </div>
                   )}
                 </div>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* ── Two Column Layout ── */}
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Left: Description + Tags */}
-            <div className="flex-1 space-y-8">
-              {/* Applied banner */}
               {alreadyApplied && (
-                <AppliedBanner company={job.company} />
+                <div className="mb-12">
+                  <AppliedBanner company={job.company} />
+                </div>
               )}
 
-              {/* Description */}
-              <section>
-                <h2 className="text-xl font-bold font-headline mb-4">
+              <section className="mb-16">
+                <h2 className="text-2xl font-headline font-normal mb-8 border-b border-[var(--hairline)] pb-4">
                   About the Role
                 </h2>
-                <div className="text-[var(--text-secondary)] space-y-4 text-[15px] leading-relaxed prose prose-slate dark:prose-invert max-w-none">
+                <div className="text-[var(--body)] space-y-6 text-[17px] leading-[1.7] prose-premium max-w-none">
                   {job.description ? (
                     <div 
-                      className="whitespace-pre-wrap break-words"
+                      className="whitespace-pre-wrap break-words font-body"
                       dangerouslySetInnerHTML={{ __html: formatDescription(job.description) }}
                     />
                   ) : (
                     <p>
-                      Full job description is hosted directly on the{" "}
-                      <strong>{job.company}</strong> careers portal. Click{" "}
-                      <strong>Apply Now</strong> to view complete details and
-                      submit your application.
+                      The full job description for this position is available on the official <span className="font-semibold text-[var(--ink)]">{job.company}</span> careers portal.
                     </p>
                   )}
                 </div>
               </section>
 
-              {/* Tags / Skills */}
               {job.tags && job.tags.length > 0 && (
                 <section>
-                  <h2 className="text-lg font-bold font-headline mb-4">
-                    Required Skills &amp; Tags
+                  <h2 className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[var(--muted)] mb-6">
+                    Core Competencies
                   </h2>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-3">
                     {job.tags.map((skill) => (
-                      <Badge
+                      <div
                         key={skill}
-                        variant="secondary"
-                        className="bg-[var(--bg-base)] text-[var(--text-primary)] border-2 border-[var(--border)] font-medium px-4 py-1.5 rounded-md hover:bg-[var(--border)] transition-colors"
+                        className="px-5 py-2 rounded-pill bg-[var(--canvas)] border border-[var(--hairline-strong)] text-[var(--body-strong)] font-medium text-[14px]"
                       >
                         {skill}
-                      </Badge>
+                      </div>
                     ))}
                   </div>
                 </section>
               )}
             </div>
 
-            {/* Right Sidebar */}
-            <aside className="w-full lg:w-[320px] flex-shrink-0 space-y-6">
-              {/* Apply Card */}
-              {job.apply_link && (
-                <Card className="border-[var(--border)] shadow-sm bg-white dark:bg-[var(--bg-card)]">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-6 h-6 bg-[#678D63]/20 rounded flex items-center justify-center text-[#166534]">
-                        <Briefcase className="w-3 h-3" />
+            {/* Sticky Sidebar */}
+            <aside className="w-full lg:w-[360px] flex-shrink-0">
+              <div className="sticky top-32 space-y-8">
+                <Card className="border-[var(--hairline-strong)] bg-[var(--surface-card)] rounded-xl shadow-premium-sm overflow-hidden">
+                  <CardContent className="p-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-8 h-8 rounded-full bg-[var(--surface-strong)] flex items-center justify-center">
+                        <Zap className="w-4 h-4 text-[var(--ink)]" />
                       </div>
-                      <span className="text-sm font-semibold capitalize">
-                        Apply via {job.source || "ATS"}
+                      <span className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">
+                        Hiring Signal
                       </span>
                     </div>
-                    <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-6">
-                      You will be redirected to the official{" "}
-                      <strong>{job.company}</strong> careers portal to complete
-                      your application.
+                    
+                    <p className="text-[15px] text-[var(--body)] leading-relaxed mb-8">
+                      Applications for this role are handled directly by <span className="font-semibold text-[var(--ink)]">{job.company}</span>.
                     </p>
+
                     {alreadyApplied ? (
-                      <div className="flex items-center gap-2 justify-center text-emerald-600 font-bold text-sm py-2">
-                        <CheckCircle2 className="w-5 h-5" /> Application
-                        Tracked
+                      <div className="w-full flex items-center gap-3 justify-center text-[var(--ink)] font-semibold text-[15px] py-4 rounded-pill border border-[var(--hairline-strong)] bg-[var(--surface-strong)]">
+                        <CheckCircle2 className="w-5 h-5" /> Application Tracked
                       </div>
                     ) : (
-                      <Button
+                      <button
                         onClick={handleApply}
-                        className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white font-semibold h-11 flex justify-between px-4"
+                        className="btn btn-primary w-full h-12 flex justify-between px-6 items-center"
                       >
-                        <span>Apply Now</span>
+                        <span className="text-[15px] font-medium">Apply Now</span>
                         <ExternalLink className="w-4 h-4" />
-                      </Button>
+                      </button>
                     )}
+                    
+                    <button className="w-full mt-3 flex items-center justify-center gap-2 text-[14px] font-medium text-[var(--body)] hover:text-[var(--ink)] transition-colors py-2">
+                      <Bookmark className="w-4 h-4" /> Save for later
+                    </button>
                   </CardContent>
                 </Card>
-              )}
 
-              {/* Job Summary Card */}
-              <Card className="border-[var(--border)] shadow-sm bg-white dark:bg-[var(--bg-card)]">
-                <CardContent className="p-0">
-                  <div className="p-5 border-b-2 border-[var(--border)]">
-                    <h3 className="font-semibold text-[var(--text-primary)]">
-                      Job Summary
-                    </h3>
+                <div className="p-8 rounded-xl border border-[var(--hairline)] bg-[var(--surface-card)]">
+                  <h3 className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[var(--muted)] mb-8">
+                    Job Details
+                  </h3>
+                  <div className="space-y-6">
+                    {[
+                      { icon: <MapPin className="w-4 h-4" />, label: "Location", value: job.location },
+                      { icon: <Banknote className="w-4 h-4" />, label: "Salary", value: salaryLabel },
+                      { icon: <Briefcase className="w-4 h-4" />, label: "Type", value: job.job_type },
+                      { icon: <Zap className="w-4 h-4" />, label: "Level", value: job.experience_level },
+                      { icon: <Globe className="w-4 h-4" />, label: "Portal", value: job.source }
+                    ].map((item, i) => item.value ? (
+                      <div key={i} className="flex justify-between items-start gap-4">
+                        <div className="flex items-center gap-3 text-[var(--muted)] text-[14px]">
+                          {item.icon}
+                          <span>{item.label}</span>
+                        </div>
+                        <span className="text-[14px] font-medium text-[var(--ink)] text-right capitalize">
+                          {item.value}
+                        </span>
+                      </div>
+                    ) : null)}
                   </div>
-                  <div className="p-5 space-y-4">
-                    {/* Location — always show */}
-                    {job.location && (
-                      <div className="flex justify-between items-center text-sm">
-                        <div className="flex items-center gap-2 text-[var(--text-muted)]">
-                          <MapPin className="w-4 h-4" /> Location
-                        </div>
-                        <span className="font-medium text-right text-[var(--text-primary)]">
-                          {job.location}
-                        </span>
-                      </div>
-                    )}
-                    {/* Salary — only if available */}
-                    {salaryLabel && (
-                      <div className="flex justify-between items-center text-sm">
-                        <div className="flex items-center gap-2 text-[var(--text-muted)]">
-                          <Banknote className="w-4 h-4" /> Salary Range
-                        </div>
-                        <span className="font-medium text-right text-[var(--text-primary)]">
-                          {salaryLabel}
-                        </span>
-                      </div>
-                    )}
-                    {/* Job type — only if available */}
-                    {job.job_type && (
-                      <div className="flex justify-between items-center text-sm">
-                        <div className="flex items-center gap-2 text-[var(--text-muted)]">
-                          <Briefcase className="w-4 h-4" /> Job Type
-                        </div>
-                        <span className="font-medium text-right text-[var(--text-primary)] capitalize">
-                          {job.job_type}
-                        </span>
-                      </div>
-                    )}
-                    {/* Experience level — only if available */}
-                    {job.experience_level && (
-                      <div className="flex justify-between items-center text-sm">
-                        <div className="flex items-center gap-2 text-[var(--text-muted)]">
-                          <Zap className="w-4 h-4" /> Level
-                        </div>
-                        <span className="font-medium text-right text-[var(--text-primary)] capitalize">
-                          {job.experience_level}
-                        </span>
-                      </div>
-                    )}
-                    {/* Source */}
-                    <div className="flex justify-between items-center text-sm">
-                      <div className="flex items-center gap-2 text-[var(--text-muted)]">
-                        <Globe className="w-4 h-4" /> Source
-                      </div>
-                      <span className="font-medium text-right text-[var(--text-primary)] capitalize">
-                        {job.source}
-                      </span>
-                    </div>
-                    {/* Posted date — only if available */}
-                    {job.posted_at && (
-                      <div className="flex justify-between items-center text-sm">
-                        <div className="flex items-center gap-2 text-[var(--text-muted)]">
-                          <Clock className="w-4 h-4" /> Posted
-                        </div>
-                        <span className="font-medium text-right text-[var(--text-primary)]">
-                          {new Date(job.posted_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </aside>
           </div>
-
-          {/* Explore More */}
-          <section className="mt-16 pt-10 border-t-2 border-[var(--border)]">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold font-headline">
-                Explore More Jobs
-              </h2>
-              <Link
-                href="/search"
-                className="text-sm font-semibold text-[var(--primary)] hover:underline flex items-center gap-1"
-              >
-                View all <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </section>
         </div>
       </div>
     </>

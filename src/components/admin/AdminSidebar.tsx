@@ -57,48 +57,45 @@ export function SidebarContent({ collapsed = false }: { collapsed?: boolean }) {
   
   return (
     <div className={cn(
-      "flex flex-col h-full bg-card border-r transition-all duration-300",
+      "flex flex-col h-full bg-canvas border-r border-hairline transition-all duration-300",
       collapsed ? "w-20" : "w-72"
     )}>
       {/* Brand Header */}
-      <div className="flex h-16 items-center px-4 border-b shrink-0 overflow-hidden">
-        <Link href="/admin/dashboard" className="flex items-center gap-3">
-          <Logo className="w-8 h-8 shrink-0" />
+      <div className="flex h-20 items-center px-6 border-b border-hairline shrink-0 overflow-hidden">
+        <Link href="/admin/dashboard" className="flex items-center gap-4">
+          <Logo className="w-9 h-9 shrink-0" />
           {!collapsed && (
-            <span className="text-lg font-bold tracking-tight whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-300">
-              HireArc <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded ml-1 font-extrabold uppercase">Admin</span>
+            <span className="text-xl font-headline font-normal tracking-tight whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-300 text-ink">
+              HireArc <span className="text-[9px] bg-ink text-canvas px-1.5 py-0.5 rounded-pill ml-1 font-bold uppercase tracking-widest border border-hairline/20">Admin</span>
             </span>
           )}
         </Link>
       </div>
 
       {/* Navigation menu */}
-      <ScrollArea className="flex-1 py-6 px-3">
-        <div className="space-y-4">
+      <ScrollArea className="flex-1 py-8 px-4">
+        <div className="space-y-1.5">
           {menuItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link key={item.href} href={item.href}>
                 <span className={cn(
-                  "group flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 relative",
+                  "group flex items-center gap-3.5 px-4 py-3 rounded-xl text-[11px] font-bold transition-all duration-300 relative uppercase tracking-[0.15em] outline-none",
                   isActive 
-                    ? "bg-primary text-white shadow-lg shadow-primary/20" 
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                    ? "bg-ink text-canvas shadow-xl shadow-ink/10" 
+                    : "text-muted hover:bg-canvas-soft hover:text-ink"
                 )}>
                   <item.icon className={cn(
-                    "h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110",
-                    isActive ? "text-primary-foreground" : "group-hover:text-primary"
+                    "h-[18px] w-[18px] shrink-0 transition-all duration-300 group-hover:scale-110",
+                    isActive ? "text-canvas" : "text-muted group-hover:text-ink"
                   )} />
                   {!collapsed && (
-                    <span className="truncate animate-in fade-in slide-in-from-left-2 duration-300">
+                    <span className="truncate animate-in fade-in slide-in-from-left-2 duration-500">
                       {item.name}
                     </span>
                   )}
                   {isActive && !collapsed && (
-                    <ChevronRight className="ml-auto h-4 w-4 opacity-50" />
-                  )}
-                  {collapsed && isActive && (
-                    <div className="absolute right-0 w-1 h-6 bg-primary-foreground rounded-l-full" />
+                    <div className="ml-auto w-1 h-1 rounded-full bg-canvas/40" />
                   )}
                 </span>
               </Link>
@@ -108,22 +105,28 @@ export function SidebarContent({ collapsed = false }: { collapsed?: boolean }) {
       </ScrollArea>
 
       {/* System Footer */}
-      <div className="p-4 border-t mt-auto">
+      <div className="p-6 border-t border-hairline mt-auto space-y-6">
         {!collapsed && (
-          <div className="p-4 rounded-2xl bg-accent/30 mb-4 animate-in fade-in zoom-in-95 duration-300">
-            <p className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest mb-1">System Node</p>
-            <p className="text-sm font-bold text-foreground">US-EAST-ALPHA</p>
-            <div className="flex items-center gap-1.5 mt-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-bold text-emerald-600 uppercase tracking-tighter">Connected</span>
+          <div className="p-6 rounded-2xl bg-canvas-soft border border-hairline animate-in fade-in zoom-in-95 duration-300">
+            <p className="text-[10px] font-bold text-muted uppercase tracking-[0.2em] mb-2">System Pulse</p>
+            <div className="flex justify-between items-end">
+              <div>
+                <p className="text-sm font-bold text-ink uppercase tracking-wider">US-EAST-ALPHA</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Active Link</span>
+                </div>
+              </div>
+              <Activity className="w-8 h-8 text-ink/5" />
             </div>
           </div>
         )}
         
         <Button 
           variant="ghost" 
+          size="lg"
           className={cn(
-            "w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-500/10 rounded-xl",
+            "w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-500/10",
             collapsed && "justify-center px-0"
           )}
           onClick={() => {
@@ -132,7 +135,7 @@ export function SidebarContent({ collapsed = false }: { collapsed?: boolean }) {
           }}
         >
           <LogOut className={cn("h-5 w-5", !collapsed && "mr-3")} />
-          {!collapsed && <span className="font-bold uppercase text-xs tracking-wider">Logout Session</span>}
+          {!collapsed && <span className="font-bold uppercase text-[10px] tracking-[0.2em]">Terminate Session</span>}
         </Button>
       </div>
     </div>
@@ -144,7 +147,7 @@ export function AdminSidebar() {
   
   return (
     <aside className={cn(
-      "hidden lg:flex flex-col fixed inset-y-0 z-[100] transition-all duration-300 ease-in-out",
+      "hidden lg:flex flex-col fixed inset-y-0 z-[100] transition-all duration-500 ease-in-out",
       isCollapsed ? "w-20" : "w-72"
     )}>
       <SidebarContent collapsed={isCollapsed} />
@@ -153,7 +156,7 @@ export function AdminSidebar() {
       <Button
         variant="outline"
         size="icon"
-        className="absolute -right-4 top-4 h-8 w-8 rounded-full border shadow-md bg-background z-50 hover:bg-primary hover:text-primary-foreground transition-all duration-300 group-hover:scale-110"
+        className="absolute -right-4 top-6 h-8 w-8 rounded-full border border-hairline shadow-premium-sm bg-canvas z-50 hover:bg-ink hover:text-canvas transition-all duration-300 group-hover:scale-110"
         onClick={toggle}
       >
         {isCollapsed ? <ChevronRightIcon size={14} /> : <PanelLeftClose size={14} />}
@@ -165,10 +168,12 @@ export function AdminSidebar() {
 export function MobileSidebar() {
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="lg:hidden">
-          <Menu className="h-6 w-6 text-foreground" />
-        </Button>
+      <SheetTrigger 
+        render={
+          <Button variant="ghost" size="icon" className="lg:hidden" />
+        }
+      >
+        <Menu className="h-6 w-6 text-foreground" />
       </SheetTrigger>
       <SheetContent side="left" className="p-0 w-72 border-none">
         <SidebarContent />

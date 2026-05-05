@@ -4,7 +4,6 @@ import FieldsSection from "@/components/home/FieldsSection";
 import StatsSection from "@/components/home/StatsSection";
 import JobCard from "@/components/ui/JobCard";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/fade-in";
-import BentoShowcase from "@/components/home/BentoShowcase";
 import {
   Select,
   SelectContent,
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { jobsService } from "@/services/jobs.service";
 import { apiClient } from "@/services/api";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 // Server Component
@@ -30,7 +30,7 @@ export default async function Home() {
   const realCompanies = companiesRes.companies?.slice(0, 8) || [];
 
   return (
-    <div>
+    <div className="bg-canvas">
       <Hero />
       <div className="space-y-0 -mt-10">
         <CompaniesSection companies={realCompanies} />
@@ -39,52 +39,41 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* Latest Jobs Feed — UI/UX Pro Max Refinement */}
-      <section className="relative py-14 bg-[var(--bg-base)]">
-        {/* Architectural Background Lines */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div
-            className="absolute inset-0 opacity-[0.03] dark:opacity-[0.06]"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, var(--primary) 1px, transparent 1px),
-                linear-gradient(to bottom, var(--primary) 1px, transparent 1px)
-              `,
-              backgroundSize: "80px 80px",
-            }}
-          />
-          {/* Transition Gradient to StatsSection */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-base)] via-transparent to-[var(--bg-dark)]/10" />
-        </div>
-
-        <div className="relative max-w-[1400px] mx-auto px-8">
+      {/* Latest Jobs Feed — ElevenLabs Editorial Refinement */}
+      <section className="relative py-24 bg-canvas">
+        <div className="container-custom">
           <FadeIn direction="up">
-            <div className="bg-white/40 dark:bg-[#15221B]/40 backdrop-blur-xl rounded-[48px] p-10 md:p-16 border-2 border-[var(--border)] dark:border-white/5 shadow-premium">
-              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-10 mb-12">
-                <div className="max-w-[600px]">
-                  <div className="inline-block px-4 py-1.5 rounded-full bg-[var(--primary)]/5 border border-[var(--primary)]/10 text-[var(--primary)] text-[10px] font-extrabold uppercase tracking-[0.2em] mb-4">
+            <div className="bg-surface-card rounded-xl p-8 md:p-20 border border-hairline shadow-premium-sm">
+              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-10 mb-20 pb-10 border-b border-hairline">
+                <div className="max-w-[600px] space-y-4">
+                  <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-pill bg-canvas-soft border border-hairline text-ink text-[10px] font-bold uppercase tracking-[0.2em]">
                     Fresh Opportunities
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-extrabold font-headline tracking-tight mb-3">Latest Openings</h2>
-                  <p className="text-[var(--text-secondary)] text-lg font-medium">Curated roles from top company job boards, updated in real-time.</p>
+                  <h2 className="text-5xl md:text-7xl font-headline tracking-tight text-ink leading-none">
+                    Latest Openings
+                  </h2>
+                  <p className="text-body text-xl font-medium leading-relaxed">
+                    Curated roles from top company job boards, updated in real-time.
+                  </p>
                 </div>
-                <div className="flex items-center gap-4 p-2 bg-[var(--bg-base)]/50 rounded-2xl border-2 border-[var(--border)]">
-                  <span className="pl-4 text-[10px] font-extrabold uppercase tracking-widest text-[var(--text-muted)]">Sort:</span>
+                
+                <div className="flex items-center gap-4 p-2 bg-canvas-soft rounded-pill border border-hairline shadow-sm">
+                  <span className="pl-6 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Sort</span>
                   <Select defaultValue="newest">
-                    <SelectTrigger className="bg-transparent border-none font-extrabold text-sm outline-none cursor-pointer pr-4 py-2 text-[var(--primary)] h-auto shadow-none focus:ring-0">
+                    <SelectTrigger className="bg-transparent border-none font-bold text-xs outline-none cursor-pointer pr-6 py-2 text-ink h-auto shadow-none focus:ring-0 uppercase tracking-widest">
                       <SelectValue placeholder="Sort" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="newest">Newest First</SelectItem>
-                      <SelectItem value="salary">High Salary</SelectItem>
-                      <SelectItem value="remote">Remote Only</SelectItem>
+                    <SelectContent className="bg-surface-card border-hairline rounded-xl">
+                      <SelectItem value="newest" className="text-xs font-bold uppercase tracking-widest">Newest First</SelectItem>
+                      <SelectItem value="salary" className="text-xs font-bold uppercase tracking-widest">High Salary</SelectItem>
+                      <SelectItem value="remote" className="text-xs font-bold uppercase tracking-widest">Remote Only</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               {latestJobs.length > 0 ? (
-                <StaggerContainer className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <StaggerContainer className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                   {latestJobs.map((job) => (
                     <StaggerItem key={job.job_id}>
                       <JobCard job={job} />
@@ -92,16 +81,16 @@ export default async function Home() {
                   ))}
                 </StaggerContainer>
               ) : (
-                <div className="text-center py-10">
-                  <p className="text-[var(--text-muted)] font-bold">Checking for new jobs...</p>
+                <div className="text-center py-32 border border-dashed border-hairline rounded-xl bg-canvas-soft/30">
+                  <p className="text-muted font-bold uppercase tracking-[0.2em] text-xs">Checking for new jobs...</p>
                 </div>
               )}
 
-              <div className="text-center mt-12">
+              <div className="text-center mt-20">
                 <Link href="/search">
-                  <button className="btn btn-primary h-14 px-10 text-base font-bold shadow-xl shadow-emerald-950/20 hover:scale-105 transition-transform">
+                  <Button className="h-14 px-12 rounded-pill bg-ink text-canvas text-base font-bold shadow-premium-sm hover:opacity-90 transition-all">
                     Explore {realStats.total_jobs?.toLocaleString() || "1,000"}+ Jobs
-                  </button>
+                  </Button>
                 </Link>
               </div>
             </div>
@@ -109,9 +98,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Premium Stats + Features + Testimonials */}
-      <div className="-mt-4">
-        <BentoShowcase />
+      {/* Premium Stats + Testimonials */}
+      <div className="space-y-0">
         <StatsSection stats={realStats} />
       </div>
     </div>

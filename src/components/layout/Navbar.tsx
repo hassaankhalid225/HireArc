@@ -332,16 +332,21 @@ export default function Navbar() {
             </div>
           )}
 
-          {/* ── Theme Toggle (Hidden for now) ── */}
-          {/* {mounted && theme && (
+          {/* ── Theme Toggle ── */}
+          {mounted && theme && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className={iconBtn}
               aria-label="Toggle theme"
+              title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
             >
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {theme === "dark" ? (
+                <Sun className="w-5 h-5 animate-in spin-in-180 duration-500" />
+              ) : (
+                <Moon className="w-5 h-5 animate-in spin-in-180 duration-500" />
+              )}
             </button>
-          )} */}
+          )}
 
           {/* ── Profile (icon only) ── */}
           {mounted && !isLoading && (

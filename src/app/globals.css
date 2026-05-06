@@ -291,4 +291,22 @@
 
   --shadow-premium-sm: var(--shadow-premium-sm);
   --shadow-premium: var(--shadow-premium);
+
+  /* Custom Editorial Colors */
+  --color-canvas: var(--canvas);
+  --color-canvas-soft: var(--canvas-soft);
+  --color-canvas-deep: var(--canvas-deep);
+  --color-surface-card: var(--surface-card);
+  --color-surface-strong: var(--surface-strong);
+  --color-hairline: var(--hairline);
+  --color-hairline-soft: var(--hairline-soft);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-ink: var(--ink);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-gradient-mint: var(--gradient-mint);
+  --color-gradient-peach: var(--gradient-peach);
+  --color-gradient-lavender: var(--gradient-lavender);
+  --color-gradient-sky: var(--gradient-sky);
+  --color-gradient-rose: var(--gradient-rose);
 }

@@ -35,9 +35,9 @@ export default async function Home() {
   return (
     <div className="bg-canvas">
       <Hero />
-      <div className="space-y-0 -mt-10">
+      <div className="space-y-0">
         <CompaniesSection companies={realCompanies} />
-        <div className="-mt-8">
+        <div>
           <FieldsSection />
         </div>
       </div>

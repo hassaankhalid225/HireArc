@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
@@ -8,176 +8,219 @@ import {
   Briefcase, 
   Building2, 
   Settings, 
-  ChevronRight,
   LogOut,
-  Menu,
-  ChevronLeft,
-  ChevronRight as ChevronRightIcon,
-  PanelLeftClose,
-  PanelLeft,
-  Activity
+  Activity,
+  ChevronRight,
+  Plus,
+  Shield,
+  Zap,
+  HelpCircle,
+  ChevronsUpDown,
+  Home,
+  Database,
+  Search,
+  Globe
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Logo } from "@/components/ui/Logo";
+import { 
+  Sidebar, 
+  SidebarContent, 
+  SidebarFooter, 
+  SidebarHeader, 
+  SidebarMenu, 
+  SidebarMenuButton, 
+  SidebarMenuItem, 
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  useSidebar
+} from "@/components/ui/sidebar";
 
-const menuItems = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "User Management", href: "/admin/users", icon: Users },
-  { name: "Job Listings", href: "/admin/jobs", icon: Briefcase },
-  { name: "Company Profiles", href: "/admin/companies", icon: Building2 },
-  { name: "Scraping Logs", href: "/admin/scraping", icon: Activity },
-  { name: "Platform Settings", href: "/admin/settings", icon: Settings },
+// JobSphere Original Admin Data
+const mainItems = [
+  { name: "Dashboard", href: "/admin/dashboard", icon: Home },
+  { name: "Users", href: "/admin/users", icon: Users, hasAction: true },
+  { name: "Jobs", href: "/admin/jobs", icon: Briefcase },
+  { name: "Companies", href: "/admin/companies", icon: Building2 },
 ];
 
-// Sidebar Context for state sharing
-const SidebarContext = createContext({
-  isCollapsed: false,
-  toggle: () => {},
-});
+const systemItems = [
+  { name: "Scraping Logs", href: "/admin/scraping", icon: Activity },
+  { name: "Settings", href: "/admin/settings", icon: Settings },
+];
 
-export const useSidebar = () => useContext(SidebarContext);
-
-export function SidebarProvider({ children }: { children: React.ReactNode }) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  
-  const toggle = () => setIsCollapsed(!isCollapsed);
-
-  return (
-    <SidebarContext.Provider value={{ isCollapsed, toggle }}>
-      {children}
-    </SidebarContext.Provider>
-  );
-}
-
-export function SidebarContent({ collapsed = false }: { collapsed?: boolean }) {
-  const pathname = usePathname();
-  
-  return (
-    <div className={cn(
-      "flex flex-col h-full bg-canvas border-r border-hairline transition-all duration-300",
-      collapsed ? "w-20" : "w-72"
-    )}>
-      {/* Brand Header */}
-      <div className="flex h-20 items-center px-6 border-b border-hairline shrink-0 overflow-hidden">
-        <Link href="/admin/dashboard" className="flex items-center gap-4">
-          <Logo className="w-9 h-9 shrink-0" />
-          {!collapsed && (
-            <span className="text-xl font-headline font-normal tracking-tight whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-300 text-ink">
-              HireArc <span className="text-[9px] bg-ink text-canvas px-1.5 py-0.5 rounded-pill ml-1 font-bold uppercase tracking-widest border border-hairline/20">Admin</span>
-            </span>
-          )}
-        </Link>
-      </div>
-
-      {/* Navigation menu */}
-      <ScrollArea className="flex-1 py-8 px-4">
-        <div className="space-y-1.5">
-          {menuItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link key={item.href} href={item.href}>
-                <span className={cn(
-                  "group flex items-center gap-3.5 px-4 py-3 rounded-xl text-[11px] font-bold transition-all duration-300 relative uppercase tracking-[0.15em] outline-none",
-                  isActive 
-                    ? "bg-ink text-canvas shadow-xl shadow-ink/10" 
-                    : "text-muted hover:bg-canvas-soft hover:text-ink"
-                )}>
-                  <item.icon className={cn(
-                    "h-[18px] w-[18px] shrink-0 transition-all duration-300 group-hover:scale-110",
-                    isActive ? "text-canvas" : "text-muted group-hover:text-ink"
-                  )} />
-                  {!collapsed && (
-                    <span className="truncate animate-in fade-in slide-in-from-left-2 duration-500">
-                      {item.name}
-                    </span>
-                  )}
-                  {isActive && !collapsed && (
-                    <div className="ml-auto w-1 h-1 rounded-full bg-canvas/40" />
-                  )}
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-      </ScrollArea>
-
-      {/* System Footer */}
-      <div className="p-6 border-t border-hairline mt-auto space-y-6">
-        {!collapsed && (
-          <div className="p-6 rounded-2xl bg-canvas-soft border border-hairline animate-in fade-in zoom-in-95 duration-300">
-            <p className="text-[10px] font-bold text-muted uppercase tracking-[0.2em] mb-2">System Pulse</p>
-            <div className="flex justify-between items-end">
-              <div>
-                <p className="text-sm font-bold text-ink uppercase tracking-wider">US-EAST-ALPHA</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Active Link</span>
-                </div>
-              </div>
-              <Activity className="w-8 h-8 text-ink/5" />
-            </div>
-          </div>
-        )}
-        
-        <Button 
-          variant="ghost" 
-          size="lg"
-          className={cn(
-            "w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-500/10",
-            collapsed && "justify-center px-0"
-          )}
-          onClick={() => {
-            localStorage.removeItem("JobSphere_Admin_Token");
-            window.location.href = "/admin/login";
-          }}
-        >
-          <LogOut className={cn("h-5 w-5", !collapsed && "mr-3")} />
-          {!collapsed && <span className="font-bold uppercase text-[10px] tracking-[0.2em]">Terminate Session</span>}
-        </Button>
-      </div>
-    </div>
-  );
-}
+const pinnedItems = [
+  { name: "Search Index", href: "/admin/dashboard", icon: Search },
+  { name: "Node Status", href: "/admin/scraping", icon: Zap },
+  { name: "Database", href: "/admin/settings", icon: Database },
+];
 
 export function AdminSidebar() {
-  const { isCollapsed, toggle } = useSidebar();
-  
-  return (
-    <aside className={cn(
-      "hidden lg:flex flex-col fixed inset-y-0 z-[100] transition-all duration-500 ease-in-out",
-      isCollapsed ? "w-20" : "w-72"
-    )}>
-      <SidebarContent collapsed={isCollapsed} />
-      
-      {/* Collapse Toggle Button */}
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute -right-4 top-6 h-8 w-8 rounded-full border border-hairline shadow-premium-sm bg-canvas z-50 hover:bg-ink hover:text-canvas transition-all duration-300 group-hover:scale-110"
-        onClick={toggle}
-      >
-        {isCollapsed ? <ChevronRightIcon size={14} /> : <PanelLeftClose size={14} />}
-      </Button>
-    </aside>
-  );
-}
+  const pathname = usePathname();
+  const { state } = useSidebar();
+  const collapsed = state === "collapsed";
 
-export function MobileSidebar() {
   return (
-    <Sheet>
-      <SheetTrigger 
-        render={
-          <Button variant="ghost" size="icon" className="lg:hidden" />
-        }
-      >
-        <Menu className="h-6 w-6 text-foreground" />
-      </SheetTrigger>
-      <SheetContent side="left" className="p-0 w-72 border-none">
-        <SidebarContent />
-      </SheetContent>
-    </Sheet>
+    <Sidebar collapsible="icon" className="border-r border-zinc-200 bg-white dark:bg-zinc-950 transition-all duration-300">
+      <SidebarHeader className="p-4 shrink-0 overflow-hidden">
+        {/* Workspace Selector - ElevenLabs Style with JobSphere Branding */}
+        <div className="flex items-center justify-between p-2.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm hover:bg-zinc-50 dark:hover:bg-zinc-800/50 cursor-pointer transition-colors group/selector">
+          <div className="flex items-center gap-3">
+            <div className="size-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center shadow-sm shrink-0">
+               <span className="text-[10px] font-black text-white">JS</span>
+            </div>
+            {!collapsed && (
+              <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100 tracking-tight truncate animate-in fade-in slide-in-from-left-2 duration-300">
+                JobSphere Admin
+              </span>
+            )}
+          </div>
+          {!collapsed && (
+            <ChevronsUpDown size={14} className="text-zinc-400 group-hover/selector:text-zinc-600 transition-colors" />
+          )}
+        </div>
+      </SidebarHeader>
+
+      <SidebarContent className="px-3 py-2 no-scrollbar">
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-1">
+              {mainItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <SidebarMenuItem key={item.name}>
+                    <SidebarMenuButton
+                      isActive={isActive}
+                      tooltip={item.name}
+                      render={
+                        <Link 
+                          href={item.href} 
+                          className={cn(
+                            "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group/link",
+                            isActive 
+                              ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-bold" 
+                              : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100"
+                          )} 
+                        />
+                      }
+                    >
+                      <item.icon className={cn(
+                        "size-[18px] shrink-0 transition-colors",
+                        isActive ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400 group-hover/link:text-zinc-900 dark:group-hover/link:text-zinc-100"
+                      )} />
+                      {!collapsed && (
+                        <div className="flex items-center justify-between w-full">
+                          <span className="text-[13px] tracking-tight">{item.name}</span>
+                          {item.hasAction && (
+                            <button className="p-1 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-700 opacity-0 group-hover/link:opacity-100 transition-opacity">
+                              <Plus size={12} className="text-zinc-500" />
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="mt-4">
+          {!collapsed && (
+            <SidebarGroupLabel className="px-4 text-[11px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-2">
+              System
+            </SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-1">
+              {systemItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <SidebarMenuItem key={item.name}>
+                    <SidebarMenuButton
+                      isActive={isActive}
+                      tooltip={item.name}
+                      render={
+                        <Link 
+                          href={item.href} 
+                          className={cn(
+                            "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group/link",
+                            isActive 
+                              ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-bold" 
+                              : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100"
+                          )} 
+                        />
+                      }
+                    >
+                      <item.icon className={cn(
+                        "size-[18px] shrink-0 transition-colors",
+                        isActive ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400 group-hover/link:text-zinc-900 dark:group-hover/link:text-zinc-100"
+                      )} />
+                      {!collapsed && (
+                        <div className="flex items-center justify-between w-full">
+                          <span className="text-[13px] tracking-tight">{item.name}</span>
+                        </div>
+                      )}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="mt-4">
+          {!collapsed && (
+            <SidebarGroupLabel className="px-4 text-[11px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-2">
+              Pinned
+            </SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-1">
+              {pinnedItems.map((item) => {
+                return (
+                  <SidebarMenuItem key={item.name}>
+                    <SidebarMenuButton
+                      tooltip={item.name}
+                      render={
+                        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group/link text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100 cursor-pointer" />
+                      }
+                    >
+                      <item.icon className="size-[18px] shrink-0 text-zinc-400 group-hover/link:text-zinc-900 dark:group-hover/link:text-zinc-100" />
+                      {!collapsed && (
+                        <div className="flex items-center justify-between w-full">
+                          <span className="text-[13px] tracking-tight">{item.name}</span>
+                        </div>
+                      )}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter className="p-4 mt-auto">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip="Terminate Session"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors"
+              onClick={() => {
+                localStorage.removeItem("JobSphere_Admin_Token");
+                window.location.href = "/admin/login";
+              }}
+            >
+              <LogOut className="size-5 shrink-0" />
+              {!collapsed && (
+                <span className="text-[13px] font-bold tracking-tight">Sign out</span>
+              )}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </Sidebar>
   );
 }

@@ -12,7 +12,9 @@ import {
   ArrowUpRight,
   ShieldCheck,
   Building,
-  ChevronRight
+  ChevronRight,
+  Zap,
+  Activity
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -25,7 +27,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -53,50 +55,53 @@ export default function CompanyManagement() {
   }, []);
 
   const filteredCompanies = companies.filter(company => {
-    const matchesSearch = company.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          company.location.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = (company.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          (company.location || "").toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = filterCategory === "All" || company.category === filterCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const categories = ["All", ...Array.from(new Set(companies.map(c => c.category)))];
+  const categories = ["All", ...Array.from(new Set(companies.map(c => c.category).filter(Boolean)))];
 
   return (
-    <div className="space-y-12 pb-12">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 py-8 border-b border-hairline">
-        <div className="space-y-3">
+    <div className="flex flex-col gap-12 pb-12">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 py-10 border-b border-hairline">
+        <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 text-ink/40 font-bold mb-1">
-            <Building className="w-4 h-4 fill-current opacity-20" />
-            <span className="text-[9px] uppercase tracking-[0.25em]">Enterprise Cluster</span>
+            <Building size={12} className="fill-current animate-pulse text-indigo-500" />
+            <span className="text-[9px] uppercase tracking-[0.3em]">Enterprise Cluster Protocol</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-headline tracking-tighter text-ink leading-[0.9]">Entity Directory</h1>
-          <p className="text-body text-base max-w-xl font-medium leading-relaxed opacity-70">Centralized authorization center for managing corporate entities and their workforce vectors.</p>
+          <h1 className="text-5xl md:text-6xl font-headline tracking-tighter text-ink leading-none">Entity Directory</h1>
+          <p className="text-body text-lg max-w-xl font-medium leading-relaxed opacity-70">Centralized authorization center for managing corporate entities and their workforce vectors.</p>
         </div>
-        <div>
-          <Button className="h-11 px-8 rounded-pill font-bold text-[10px] uppercase tracking-widest bg-ink text-canvas hover:opacity-90 transition-all shadow-lg shadow-ink/10">
-            <Plus className="mr-2 h-3.5 w-3.5" />
+        <div className="shrink-0">
+          <Button size="lg" className="rounded-pill font-bold text-[10px] uppercase tracking-widest bg-ink text-canvas hover:opacity-90 transition-all shadow-xl shadow-ink/10">
+            <Plus className="mr-2 size-3.5" />
             Onboard Entity
           </Button>
         </div>
       </div>
 
-      {/* Stats Quick View */}
+      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
-          { label: "Active Partners", value: companies.length, icon: Building2 },
-          { label: "Verified Nodes", value: "100%", icon: ShieldCheck },
-          { label: "Aggregate Roles", value: companies.reduce((acc, c) => acc + (c.roles || 0), 0), icon: ArrowUpRight }
+          { label: "Active Partners", value: companies.length, icon: Building2, trend: "+2 Nodes" },
+          { label: "Verified Nodes", value: "100%", icon: ShieldCheck, trend: "SECURE" },
+          { label: "Aggregate Roles", value: companies.reduce((acc, c) => acc + (c.roles || 0), 0), icon: ArrowUpRight, trend: "GROWING" }
         ].map((stat, idx) => (
-          <Card key={idx} className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card hover:border-hairline-strong transition-all duration-300">
+          <Card key={idx} className="overflow-hidden border border-hairline shadow-premium-sm bg-surface-card hover:border-hairline-strong transition-all duration-500 rounded-xl group">
             <CardContent className="p-8 flex items-center gap-6">
-              <div className="w-14 h-14 rounded-xl bg-canvas-soft flex items-center justify-center transition-transform hover:scale-110 text-ink">
+              <div className="size-14 rounded-2xl bg-canvas-soft text-ink flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:bg-ink group-hover:text-canvas shadow-sm">
                 <stat.icon size={28} />
               </div>
-              <div>
-                <p className="text-[10px] font-bold text-muted uppercase tracking-[0.2em] mb-1">{stat.label}</p>
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                    <p className="text-[10px] font-bold text-muted uppercase tracking-[0.2em]">{stat.label}</p>
+                    <span className="text-[8px] font-black text-indigo-500 bg-indigo-500/5 px-1.5 py-0.5 rounded border border-indigo-500/10 uppercase tracking-widest">{stat.trend}</span>
+                </div>
                 <h3 className="text-3xl font-headline text-ink leading-none">
-                  {isLoading ? "..." : stat.value}
+                  {isLoading ? <Skeleton className="h-8 w-16" /> : stat.value}
                 </h3>
               </div>
             </CardContent>
@@ -105,26 +110,26 @@ export default function CompanyManagement() {
       </div>
 
       {/* Filters & Search */}
-      <div className="flex flex-col md:flex-row gap-8 items-center justify-between bg-canvas-soft/30 p-6 rounded-xl border border-hairline">
-        <div className="relative w-full md:w-[450px] group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted w-5 h-5 group-focus-within:text-ink transition-colors" />
+      <div className="flex flex-col lg:flex-row gap-6 items-center justify-between bg-canvas-soft/30 p-8 rounded-2xl border border-hairline backdrop-blur-md">
+        <div className="relative w-full lg:w-[500px] group">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted size-5 group-focus-within:text-ink transition-colors" />
           <Input 
             placeholder="Filter entities by identifier or geographic node..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-14 h-12 rounded-xl bg-surface-card border-hairline focus-visible:ring-2 focus-visible:ring-ink/10 text-sm font-medium"
+            className="pl-14 h-14 rounded-xl bg-surface-card border-hairline focus-visible:ring-2 focus-visible:ring-ink/10 text-sm font-medium placeholder:text-muted/40 transition-all"
           />
         </div>
-        <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto no-scrollbar pb-2 md:pb-0">
-          <div className="flex items-center gap-2 bg-canvas-soft p-1.5 rounded-pill border border-hairline">
+        <div className="flex items-center gap-3 w-full lg:w-auto overflow-x-auto no-scrollbar pb-2 lg:pb-0">
+          <div className="flex items-center gap-1.5 bg-canvas-soft p-1.5 rounded-pill border border-hairline shadow-inner">
             {categories.map(cat => (
               <button
                 key={cat}
                 onClick={() => setFilterCategory(cat)}
                 className={cn(
-                  "px-6 py-2 rounded-pill text-[11px] font-bold uppercase tracking-widest transition-all whitespace-nowrap",
+                  "px-6 py-2.5 rounded-pill text-[10px] font-bold uppercase tracking-[0.2em] transition-all whitespace-nowrap",
                   filterCategory === cat 
-                    ? "bg-ink text-canvas shadow-premium-sm" 
+                    ? "bg-ink text-canvas shadow-lg shadow-ink/10" 
                     : "text-muted hover:bg-surface-card hover:text-ink"
                 )}
               >
@@ -135,49 +140,68 @@ export default function CompanyManagement() {
         </div>
       </div>
 
-      {/* Main Grid */}
-      <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card overflow-hidden">
+      {/* Main Table Card */}
+      <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card overflow-hidden transition-all duration-500 hover:border-hairline-strong">
         <CardContent className="p-0 overflow-x-auto no-scrollbar">
           <Table className="min-w-[1000px]">
             <TableHeader className="bg-canvas-soft/50 border-b border-hairline">
               <TableRow className="border-none hover:bg-transparent">
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Entity Identifier</TableHead>
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Categorization</TableHead>
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Geographic Node</TableHead>
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Active Vectors</TableHead>
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted text-right">Access Controls</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Entity Identifier</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Categorization</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Geographic Node</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Active Vectors</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted text-right">Access Controls</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <AnimatePresence mode="popLayout">
                 {isLoading ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <TableRow key={i} className="border-b border-hairline">
-                      <TableCell colSpan={5} className="h-24 px-8"><Skeleton className="h-16 w-full rounded-xl opacity-20" /></TableCell>
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <TableRow key={i} className="border-b border-hairline/50">
+                      <TableCell className="px-8 py-6">
+                        <div className="flex items-center gap-4">
+                          <Skeleton className="size-14 rounded-xl" />
+                          <div className="flex flex-col gap-2">
+                            <Skeleton className="h-5 w-48" />
+                            <Skeleton className="h-3 w-32" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-8 py-6"><Skeleton className="h-7 w-24 rounded-pill" /></TableCell>
+                      <TableCell className="px-8 py-6"><Skeleton className="h-5 w-28" /></TableCell>
+                      <TableCell className="px-8 py-6"><Skeleton className="h-8 w-12" /></TableCell>
+                      <TableCell className="px-8 py-6 text-right"><Skeleton className="h-10 w-28 rounded-xl ml-auto" /></TableCell>
                     </TableRow>
                   ))
                 ) : filteredCompanies.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="h-64 text-center text-muted font-bold uppercase tracking-widest text-xs opacity-50">No Entities Found</TableCell>
+                    <TableCell colSpan={5} className="h-96 text-center">
+                       <div className="flex flex-col items-center justify-center gap-6 opacity-20 group">
+                        <div className="size-20 rounded-full bg-canvas-soft flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                          <Building2 size={48} />
+                        </div>
+                        <p className="text-sm font-bold tracking-[0.25em] uppercase">No Corporate Entities Syncing</p>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ) : (
                   filteredCompanies.map((company) => (
                     <motion.tr 
                       key={company.id}
                       layout
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="group border-b border-hairline hover:bg-canvas-soft/50 transition-all duration-300"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="group border-b border-hairline hover:bg-canvas-soft/50 transition-all duration-300 cursor-pointer"
                     >
                       <TableCell className="px-8 py-6">
                         <div className="flex items-center gap-5">
-                          <div className="w-14 h-14 rounded-xl bg-white p-2 shadow-sm border border-hairline flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                          <div className="size-14 rounded-2xl bg-white dark:bg-white/5 p-2 shadow-sm border border-hairline flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:shadow-lg">
                             <img src={company.logo} alt={company.name} className="max-h-full max-w-full object-contain" />
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-base font-bold text-ink leading-tight">{company.name}</span>
-                            <span className="text-xs text-muted font-medium flex items-center gap-2 mt-1 opacity-70">
+                            <span className="text-base font-bold text-ink leading-tight group-hover:text-indigo-600 transition-colors">{company.name}</span>
+                            <span className="text-xs text-muted font-medium flex items-center gap-2 mt-1.5 opacity-70">
                               <Globe size={12} className="text-ink/40" />
                               {company.website}
                             </span>
@@ -185,36 +209,36 @@ export default function CompanyManagement() {
                         </div>
                       </TableCell>
                       <TableCell className="px-8 py-6">
-                        <Badge variant="outline" className="bg-ink/5 text-ink text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-pill border-hairline">
+                        <Badge variant="outline" className="bg-ink/5 text-ink text-[9px] font-bold uppercase tracking-[0.25em] px-3 py-1.5 rounded-pill border-hairline shadow-sm">
                           {company.category}
                         </Badge>
                       </TableCell>
                       <TableCell className="px-8 py-6">
-                        <div className="flex items-center gap-2.5 text-xs font-bold text-body">
-                          <MapPin size={14} className="text-ink/40" />
+                        <div className="flex items-center gap-2.5 text-xs font-bold text-ink uppercase tracking-widest opacity-80">
+                          <MapPin size={14} className="text-indigo-500" />
                           {company.location}
                         </div>
                       </TableCell>
                       <TableCell className="px-8 py-6">
-                        <div className="flex flex-col">
-                          <span className="text-2xl font-headline text-ink leading-none">{company.roles}</span>
-                          <span className="text-[10px] font-bold text-muted uppercase tracking-widest opacity-60">Open Roles</span>
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-3xl font-headline text-ink leading-none tracking-tighter">{company.roles}</span>
+                          <span className="text-[9px] font-black text-muted uppercase tracking-[0.2em] opacity-60">Open Vectors</span>
                         </div>
                       </TableCell>
                       <TableCell className="px-8 py-6 text-right">
-                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500">
                           <Button 
                             variant="outline" 
                             size="sm" 
-                            className="h-10 rounded-xl font-bold px-4 border-hairline hover:bg-ink hover:text-canvas transition-all" 
+                            className="h-10 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] px-5 border-hairline hover:bg-ink hover:text-canvas transition-all shadow-sm" 
                             render={
                               <a href={`https://${company.website}`} target="_blank" rel="noopener noreferrer" />
                             }
                           >
-                            <ExternalLink size={14} className="mr-2" />
+                            <ExternalLink size={12} className="mr-2" />
                             Portal
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-canvas-soft text-muted hover:text-ink transition-all">
+                          <Button variant="ghost" size="icon" className="size-10 rounded-xl hover:bg-canvas-soft text-muted hover:text-ink transition-all">
                             <MoreVertical size={18} />
                           </Button>
                         </div>
@@ -228,20 +252,27 @@ export default function CompanyManagement() {
         </CardContent>
       </Card>
       
-      <div className="flex items-center justify-between p-8 bg-surface-card rounded-xl border border-hairline shadow-premium-sm group cursor-pointer hover:border-hairline-strong transition-all">
-        <div className="flex items-center gap-6">
+      {/* Pending Queue Cluster */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6 p-8 bg-surface-card rounded-2xl border border-hairline shadow-premium-sm transition-all hover:border-hairline-strong duration-500 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:rotate-12 group-hover:scale-125 transition-transform duration-700">
+            <Activity size={100} />
+        </div>
+        <div className="flex items-center gap-8 relative z-10">
           <div className="flex -space-x-4">
             {[1, 2, 3].map(i => (
-              <Avatar key={i} className="border-4 border-surface-card h-10 w-10 shadow-sm">
-                <AvatarFallback className="bg-canvas-soft text-ink font-bold text-xs">U{i}</AvatarFallback>
+              <Avatar key={i} className="border-4 border-surface-card size-12 shadow-xl transition-transform hover:translate-y-[-4px] cursor-pointer">
+                <AvatarFallback className="bg-ink text-canvas font-black text-[10px] uppercase tracking-widest">P{i}</AvatarFallback>
               </Avatar>
             ))}
           </div>
-          <p className="text-sm font-medium text-body italic">12 new partner requests pending authorization.</p>
+          <div className="flex flex-col gap-1">
+            <h4 className="text-2xl font-headline text-ink tracking-tight">Enterprise Onboarding Queue</h4>
+            <p className="text-base font-medium text-muted opacity-80 italic leading-none">12 new corporate nodes are pending authorization in the current cluster.</p>
+          </div>
         </div>
-        <Button variant="link" className="font-bold uppercase tracking-widest text-[11px] text-ink hover:no-underline flex items-center gap-2">
-          View Permission Queue
-          <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+        <Button variant="ghost" className="rounded-pill font-black uppercase tracking-[0.2em] text-[10px] text-ink hover:bg-canvas-soft flex items-center gap-3 px-8 h-12 relative z-10">
+          Sync Queue
+          <ChevronRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
         </Button>
       </div>
     </div>

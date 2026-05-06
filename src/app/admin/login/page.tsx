@@ -1,9 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Shield, Lock, Mail, ChevronRight, ChevronLeft } from "lucide-react";
+import { Loader2, Shield, Lock, Mail, ChevronRight, ChevronLeft, Zap, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import DotField from "@/components/ui/DotField";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -26,113 +31,138 @@ export default function AdminLoginPage() {
         setError("Invalid credentials. Access denied.");
         setLoading(false);
       }
-    }, 800);
+    }, 1200); // Increased slightly for higher-fidelity "authenticating" feel
   };
 
   return (
-    <div className="min-h-screen bg-[#0d0b10] flex items-center justify-center p-6 relative overflow-hidden">
-      {/* DotField Interactive Background */}
+    <div className="min-h-screen bg-canvas flex items-center justify-center p-6 relative overflow-hidden transition-colors duration-500">
+      {/* DotField Interactive Background - Optimized for Premium Look */}
       <DotField
-        dotRadius={1.5}
-        dotSpacing={14}
-        bulgeStrength={67}
-        glowRadius={160}
-        sparkle={false}
-        waveAmplitude={0}
-        cursorRadius={500}
-        cursorForce={0.1}
-        bulgeOnly
-        gradientFrom="#A855F7"
-        gradientTo="#B497CF"
-        glowColor="#120F17"
+        dotRadius={1.2}
+        dotSpacing={18}
+        bulgeStrength={80}
+        glowRadius={250}
+        sparkle={true}
+        waveAmplitude={2}
+        cursorRadius={400}
+        cursorForce={0.2}
+        bulgeOnly={false}
+        gradientFrom="#6366f1"
+        gradientTo="#818cf8"
+        glowColor="rgba(99, 102, 241, 0.05)"
       />
 
       <Link 
         href="/" 
-        className="absolute top-8 left-8 flex items-center gap-2 text-[14px] font-medium text-[var(--body)] hover:text-[var(--ink)] transition-colors group"
+        className="absolute top-10 left-10 flex items-center gap-2.5 text-[10px] font-black text-muted uppercase tracking-[0.3em] hover:text-ink transition-all group z-20"
       >
-        <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Home
+        <ChevronLeft size={14} className="group-hover:-translate-x-1.5 transition-transform" /> 
+        Back to Nexus
       </Link>
 
-      <div className="w-full max-w-[420px] bg-[var(--surface-card)] border border-[var(--hairline-strong)] rounded-xxl shadow-premium-sm overflow-hidden relative z-10">
-        <div className="p-10">
-          <div className="flex justify-center mb-8">
-            <div className="w-14 h-14 rounded-full bg-[var(--surface-strong)] flex items-center justify-center border border-[var(--hairline)]">
-              <Shield className="w-7 h-7 text-[var(--ink)]" strokeWidth={1.5} />
-            </div>
-          </div>
-
-          <div className="text-center mb-10">
-            <h1 className="text-3xl font-headline font-normal text-[var(--ink)] mb-2 tracking-tight">System Access</h1>
-            <p className="text-[var(--body)] text-[15px]">Secure administrative authorization</p>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[12px] font-semibold text-[var(--muted)] uppercase tracking-[0.08em] ml-1">Admin Email</label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--muted-soft)]" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-transparent border border-[var(--hairline-strong)] rounded-xl py-3 pl-12 pr-4 text-[15px] text-[var(--ink)] placeholder:text-[var(--muted-soft)] focus:outline-none focus:border-[var(--ink)] transition-all"
-                  placeholder="admin@jobsphere.com"
-                  required
-                />
+      <motion.div 
+        initial={{ opacity: 0, y: 40, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-[440px] relative z-10"
+      >
+        <Card className="border border-hairline shadow-premium-lg rounded-[2.5rem] bg-surface-card/80 backdrop-blur-2xl overflow-hidden relative">
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
+          
+          <CardContent className="p-12">
+            <div className="flex justify-center mb-10">
+              <div className="size-20 rounded-[2rem] bg-canvas-soft flex items-center justify-center border border-hairline shadow-inner group overflow-hidden relative">
+                <div className="absolute inset-0 bg-indigo-500/5 scale-0 group-hover:scale-100 transition-transform duration-700" />
+                <Shield size={32} className="text-ink relative z-10 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[12px] font-semibold text-[var(--muted)] uppercase tracking-[0.08em] ml-1">Security Key</label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--muted-soft)]" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-transparent border border-[var(--hairline-strong)] rounded-xl py-3 pl-12 pr-4 text-[15px] text-[var(--ink)] placeholder:text-[var(--muted-soft)] focus:outline-none focus:border-[var(--ink)] transition-all"
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
+            <div className="text-center mb-12">
+                <div className="flex items-center justify-center gap-2 text-indigo-500 font-black text-[9px] uppercase tracking-[0.4em] mb-4">
+                    <Zap size={10} className="fill-current" />
+                    <span>Secure Protocol</span>
+                </div>
+                <h1 className="text-4xl font-headline text-ink tracking-tighter leading-none mb-3">System Access</h1>
+                <p className="text-muted text-base font-medium italic opacity-70">Awaiting administrative clearance...</p>
             </div>
 
-            {error && (
-              <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                <div className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
-                <p className="text-[14px] text-red-600 font-medium">{error}</p>
+            <form onSubmit={handleLogin} className="flex flex-col gap-8">
+              <div className="flex flex-col gap-3">
+                <label className="text-[10px] font-black text-muted uppercase tracking-[0.25em] ml-1">Identity Token</label>
+                <div className="relative group">
+                  <Mail className="absolute left-5 top-1/2 -translate-y-1/2 size-4.5 text-muted transition-colors group-focus-within:text-ink" />
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-14 bg-canvas-soft/50 border-hairline rounded-2xl pl-14 text-sm font-bold text-ink placeholder:text-muted/40 transition-all focus-visible:ring-2 focus-visible:ring-ink/10"
+                    placeholder="admin@jobsphere.pro"
+                    required
+                  />
+                </div>
               </div>
-            )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full h-12 flex items-center justify-center gap-3 bg-[var(--ink)] hover:translate-y-[-1px] text-white rounded-pill text-[15px] font-medium transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Authenticating...</span>
-                </>
-              ) : (
-                <>
-                  <span>Authorize Access</span>
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </>
-              )}
-            </button>
-          </form>
+              <div className="flex flex-col gap-3">
+                <label className="text-[10px] font-black text-muted uppercase tracking-[0.25em] ml-1">Security Key</label>
+                <div className="relative group">
+                  <Lock className="absolute left-5 top-1/2 -translate-y-1/2 size-4.5 text-muted transition-colors group-focus-within:text-ink" />
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="h-14 bg-canvas-soft/50 border-hairline rounded-2xl pl-14 text-sm font-bold text-ink placeholder:text-muted/40 transition-all focus-visible:ring-2 focus-visible:ring-ink/10"
+                    placeholder="••••••••"
+                    required
+                  />
+                </div>
+              </div>
 
-          <div className="mt-12 text-center border-t border-[var(--hairline-soft)] pt-8">
-            <p className="text-[11px] text-[var(--muted)] font-mono uppercase tracking-widest">JobSphere Admin Node • v2.1.0</p>
-            <div className="flex items-center justify-center gap-2 mt-3">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] text-[var(--muted)] font-medium">Core Systems Online</span>
+              <AnimatePresence>
+                {error && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="p-5 bg-rose-500/5 border border-rose-500/10 rounded-2xl flex items-center gap-4"
+                  >
+                    <ShieldAlert size={18} className="text-rose-500 shrink-0" />
+                    <p className="text-xs text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider leading-relaxed">{error}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="h-14 w-full rounded-pill bg-ink text-canvas hover:opacity-90 transition-all shadow-xl shadow-ink/20 font-black text-[11px] uppercase tracking-[0.25em] relative group overflow-hidden"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-3">
+                    <Loader2 size={18} className="animate-spin" />
+                    <span>Synchronizing...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <span>Authorize Access</span>
+                    <ChevronRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
+                  </div>
+                )}
+              </Button>
+            </form>
+
+            <div className="mt-16 text-center pt-10 border-t border-hairline flex flex-col gap-4">
+              <p className="text-[10px] text-muted font-black uppercase tracking-[0.3em] opacity-40 italic">JobSphere Administrative Node • v2.1.0-Release</p>
+              <div className="flex items-center justify-center gap-3">
+                <div className="size-2 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.5)] animate-pulse" />
+                <span className="text-[10px] text-muted font-black uppercase tracking-[0.2em] opacity-60">Authentication Systems Live</span>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </CardContent>
+        </Card>
+        
+        {/* Subtle decorative shadow */}
+        <div className="absolute -bottom-10 inset-x-10 h-20 bg-indigo-500/10 blur-[100px] -z-10 rounded-full" />
+      </motion.div>
     </div>
   );
 }

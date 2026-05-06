@@ -10,16 +10,14 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Users, 
   Search, 
   Shield, 
-  Trash2, 
   CheckCircle, 
-  Loader2,
   Filter,
   UserPlus,
   ShieldCheck,
@@ -29,7 +27,8 @@ import {
   Eye,
   UserCheck,
   UserMinus,
-  Mail
+  Mail,
+  Zap
 } from "lucide-react";
 import { 
   DropdownMenu, 
@@ -39,6 +38,7 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 import { apiClient } from "@/services/api";
 import { User } from "@/types";
@@ -93,46 +93,46 @@ export default function UserManagement() {
   });
 
   return (
-    <div className="space-y-12 pb-12">
+    <div className="flex flex-col gap-12 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 py-8 border-b border-hairline">
-        <div className="space-y-3">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 py-10 border-b border-hairline">
+        <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 text-ink/40 font-bold mb-1">
-            <ShieldCheck className="w-4 h-4 fill-current opacity-20" />
-            <span className="text-[9px] uppercase tracking-[0.25em]">Identity Service</span>
+            <ShieldCheck size={12} className="fill-current animate-pulse text-indigo-500" />
+            <span className="text-[9px] uppercase tracking-[0.3em]">Identity Service Protocol</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-headline tracking-tighter text-ink leading-[0.9]">Access Control</h1>
-          <p className="text-body text-base max-w-xl font-medium leading-relaxed opacity-70">Global system for managing user permissions, audit logs, and security clearance.</p>
+          <h1 className="text-5xl md:text-6xl font-headline tracking-tighter text-ink leading-none">Access Control</h1>
+          <p className="text-body text-lg max-w-xl font-medium leading-relaxed opacity-70">Global system for managing user permissions, audit logs, and security clearance.</p>
         </div>
-        <div>
-          <Button className="h-11 px-8 rounded-pill font-bold text-[10px] uppercase tracking-widest bg-ink text-canvas hover:opacity-90 transition-all shadow-lg shadow-ink/10">
-            <UserPlus className="mr-2 h-3.5 w-3.5" />
+        <div className="shrink-0">
+          <Button size="lg" className="rounded-pill font-bold text-[10px] uppercase tracking-widest bg-ink text-canvas hover:opacity-90 transition-all shadow-xl shadow-ink/10">
+            <UserPlus className="mr-2 size-3.5" />
             Provision User
           </Button>
         </div>
       </div>
 
       {/* Filters & Search */}
-      <div className="flex flex-col md:flex-row gap-8 items-center justify-between bg-canvas-soft/30 p-6 rounded-xl border border-hairline">
-        <div className="relative w-full md:w-[450px] group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted w-5 h-5 group-focus-within:text-ink transition-colors" />
+      <div className="flex flex-col lg:flex-row gap-6 items-center justify-between bg-canvas-soft/30 p-8 rounded-2xl border border-hairline backdrop-blur-md">
+        <div className="relative w-full lg:w-[500px] group">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted size-5 group-focus-within:text-ink transition-colors" />
           <Input 
             placeholder="Search identity by name or digital address..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-14 h-12 rounded-xl bg-surface-card border-hairline focus-visible:ring-2 focus-visible:ring-ink/10 text-sm font-medium"
+            className="pl-14 h-14 rounded-xl bg-surface-card border-hairline focus-visible:ring-2 focus-visible:ring-ink/10 text-sm font-medium placeholder:text-muted/40 transition-all"
           />
         </div>
-        <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto no-scrollbar">
-          <div className="flex items-center gap-2 bg-canvas-soft p-1.5 rounded-pill border border-hairline">
+        <div className="flex items-center gap-3 w-full lg:w-auto overflow-x-auto no-scrollbar pb-2 lg:pb-0">
+          <div className="flex items-center gap-1.5 bg-canvas-soft p-1.5 rounded-pill border border-hairline shadow-inner">
             {["all", "admin", "user", "company"].map(role => (
               <button
                 key={role}
                 onClick={() => setFilterRole(role)}
                 className={cn(
-                  "px-6 py-2 rounded-pill text-[11px] font-bold uppercase tracking-widest transition-all whitespace-nowrap",
+                  "px-6 py-2.5 rounded-pill text-[10px] font-bold uppercase tracking-[0.2em] transition-all whitespace-nowrap",
                   filterRole === role 
-                    ? "bg-ink text-canvas shadow-premium-sm" 
+                    ? "bg-ink text-canvas shadow-lg shadow-ink/10" 
                     : "text-muted hover:bg-surface-card hover:text-ink"
                 )}
               >
@@ -144,35 +144,46 @@ export default function UserManagement() {
       </div>
 
       {/* Main Table Card */}
-      <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card overflow-hidden">
+      <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card overflow-hidden transition-all duration-500 hover:border-hairline-strong">
         <CardContent className="p-0 overflow-x-auto no-scrollbar">
           <Table className="min-w-[1000px]">
             <TableHeader className="bg-canvas-soft/50 border-b border-hairline">
               <TableRow className="border-none hover:bg-transparent">
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Identity Cluster</TableHead>
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Authorization</TableHead>
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Auth State</TableHead>
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Registry Date</TableHead>
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted text-right">Overrides</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Identity Cluster</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Authorization</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Auth State</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Registry Date</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted text-right">Overrides</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <AnimatePresence mode="popLayout">
                 {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={5} className="h-96 text-center">
-                      <div className="flex flex-col items-center justify-center space-y-4">
-                        <Loader2 className="w-10 h-10 animate-spin text-ink opacity-20" />
-                        <p className="text-sm font-bold tracking-widest text-muted uppercase">Syncing Identity Matrix...</p>
-                      </div>
-                    </TableCell>
-                  </TableRow>
+                  Array.from({ length: 8 }).map((_, i) => (
+                    <TableRow key={i} className="border-b border-hairline/50">
+                      <TableCell className="px-8 py-6">
+                        <div className="flex items-center gap-4">
+                          <Skeleton className="size-12 rounded-xl" />
+                          <div className="flex flex-col gap-2">
+                            <Skeleton className="h-5 w-32" />
+                            <Skeleton className="h-3 w-48" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-8 py-6"><Skeleton className="h-7 w-20 rounded-pill" /></TableCell>
+                      <TableCell className="px-8 py-6"><Skeleton className="h-7 w-24 rounded-pill" /></TableCell>
+                      <TableCell className="px-8 py-6"><Skeleton className="h-4 w-28" /></TableCell>
+                      <TableCell className="px-8 py-6 text-right"><Skeleton className="h-10 w-10 rounded-xl ml-auto" /></TableCell>
+                    </TableRow>
+                  ))
                 ) : filteredUsers.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} className="h-96 text-center">
-                      <div className="flex flex-col items-center justify-center opacity-20 space-y-4">
-                        <Users className="w-16 h-16" />
-                        <p className="text-sm font-bold tracking-widest uppercase">No Identity Fragments Found</p>
+                      <div className="flex flex-col items-center justify-center gap-6 opacity-20 group">
+                        <div className="size-20 rounded-full bg-canvas-soft flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                          <Users size={48} />
+                        </div>
+                        <p className="text-sm font-bold tracking-[0.25em] uppercase">No Identity Fragments Found</p>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -181,29 +192,29 @@ export default function UserManagement() {
                     <motion.tr 
                       key={user.id}
                       layout
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="group border-b border-hairline hover:bg-canvas-soft/50 transition-all duration-300"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="group border-b border-hairline hover:bg-canvas-soft/50 transition-all duration-300 cursor-pointer"
                     >
                       <TableCell className="px-8 py-6">
                         <div className="flex items-center gap-4">
-                          <Avatar className="h-12 w-12 border border-hairline shadow-sm">
+                          <Avatar className="size-12 rounded-xl border border-hairline shadow-sm transition-transform group-hover:scale-110">
                             <AvatarImage src={user.avatarUrl} />
-                            <AvatarFallback className="bg-canvas-soft text-ink font-bold text-base">
+                            <AvatarFallback className="bg-ink text-canvas font-bold text-base uppercase tracking-widest">
                               {user.name[0]}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex flex-col">
-                            <span className="text-base font-bold text-ink leading-tight">{user.name}</span>
-                            <span className="text-xs text-muted font-medium">{user.email}</span>
+                            <span className="text-base font-bold text-ink leading-tight group-hover:text-indigo-600 transition-colors">{user.name}</span>
+                            <span className="text-xs text-muted font-medium mt-0.5">{user.email}</span>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell className="px-8 py-6">
                         <Badge variant="outline" className={cn(
-                          "text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-pill border transition-all",
-                          user.role === "admin" ? "bg-amber-500/5 text-amber-600 border-amber-500/20" :
+                          "text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-pill border transition-all",
+                          user.role === "admin" ? "bg-amber-500/10 text-amber-600 border-amber-500/20" :
                           user.role === "company" ? "bg-ink/5 text-ink border-hairline" :
                           "bg-canvas-soft text-muted border-hairline"
                         )}>
@@ -211,58 +222,66 @@ export default function UserManagement() {
                         </Badge>
                       </TableCell>
                       <TableCell className="px-8 py-6">
-                        <div className="flex items-center gap-2 text-emerald-600 font-bold text-[10px] uppercase tracking-widest bg-emerald-500/5 w-fit px-3 py-1 rounded-pill border border-emerald-500/10">
-                          <CheckCircle size={12} />
-                          Active
+                        <div className="flex items-center gap-2 text-emerald-600 font-bold text-[9px] uppercase tracking-[0.2em] bg-emerald-500/5 w-fit px-3 py-1.5 rounded-pill border border-emerald-500/10 shadow-sm">
+                          <CheckCircle size={12} className="text-emerald-500" />
+                          Authorized
                         </div>
                       </TableCell>
-                      <TableCell className="px-8 py-6 text-[11px] font-bold text-muted uppercase tracking-wider opacity-60">
+                      <TableCell className="px-8 py-6 text-[11px] font-bold text-muted uppercase tracking-[0.15em] opacity-60">
                         Oct 12, 2023
                       </TableCell>
                       <TableCell className="px-8 py-6 text-right">
-                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-300">
                           <Button 
                             variant="outline" 
                             size="icon"
-                            onClick={() => updateRole(user.id, user.role === "admin" ? "user" : "admin")}
-                            className="h-10 w-10 rounded-xl border-hairline hover:bg-ink hover:text-canvas transition-all"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                updateRole(user.id, user.role === "admin" ? "user" : "admin");
+                            }}
+                            className="size-10 rounded-xl border-hairline hover:bg-ink hover:text-canvas transition-all shadow-sm"
                           >
-                            <Shield className="h-4 w-4" />
+                            <Shield className="size-4" />
                           </Button>
                           
                           <DropdownMenu>
                             <DropdownMenuTrigger 
                               render={
-                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-canvas-soft text-muted hover:text-ink" />
+                                <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="size-10 rounded-xl hover:bg-canvas-soft text-muted hover:text-ink transition-colors"
+                                    onClick={(e) => e.stopPropagation()} 
+                                />
                               }
                             >
                               <MoreVertical size={18} />
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-56 rounded-xl p-2 border-hairline shadow-premium bg-surface-card">
-                              <DropdownMenuLabel className="text-[10px] uppercase tracking-widest font-bold text-muted px-3 py-2">Actions</DropdownMenuLabel>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem className="rounded-lg px-3 py-2.5 cursor-pointer focus:bg-canvas-soft focus:text-ink">
-                                <Eye className="mr-2 h-4 w-4" />
-                                <span className="font-bold text-xs uppercase tracking-wider">View Profile</span>
+                            <DropdownMenuContent align="end" className="w-64 rounded-2xl p-2 border-hairline shadow-premium bg-surface-card animate-in fade-in zoom-in-95 duration-300">
+                              <DropdownMenuLabel className="text-[10px] uppercase tracking-[0.25em] font-black text-muted/60 px-4 py-3">Identity Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator className="bg-hairline/50 mx-2" />
+                              <DropdownMenuItem className="rounded-xl px-4 py-3 cursor-pointer focus:bg-canvas-soft focus:text-ink transition-colors group/item">
+                                <Eye className="mr-3 size-4 text-muted group-hover/item:text-ink" />
+                                <span className="font-bold text-[10px] uppercase tracking-[0.2em]">View Dossier</span>
                               </DropdownMenuItem>
-                              <DropdownMenuItem className="rounded-lg px-3 py-2.5 cursor-pointer focus:bg-canvas-soft focus:text-ink">
-                                <Mail className="mr-2 h-4 w-4" />
-                                <span className="font-bold text-xs uppercase tracking-wider">Contact User</span>
+                              <DropdownMenuItem className="rounded-xl px-4 py-3 cursor-pointer focus:bg-canvas-soft focus:text-ink transition-colors group/item">
+                                <Mail className="mr-3 size-4 text-muted group-hover/item:text-ink" />
+                                <span className="font-bold text-[10px] uppercase tracking-[0.2em]">Direct Protocol</span>
                               </DropdownMenuItem>
-                              <DropdownMenuSeparator />
+                              <DropdownMenuSeparator className="bg-hairline/50 mx-2" />
                               <DropdownMenuItem 
                                 onClick={() => updateRole(user.id, "company")}
-                                className="rounded-lg px-3 py-2.5 cursor-pointer focus:bg-canvas-soft focus:text-ink"
+                                className="rounded-xl px-4 py-3 cursor-pointer focus:bg-canvas-soft focus:text-ink transition-colors group/item"
                               >
-                                <UserCheck className="mr-2 h-4 w-4" />
-                                <span className="font-bold text-xs uppercase tracking-wider">Convert to Employer</span>
+                                <UserCheck className="mr-3 size-4 text-muted group-hover/item:text-ink" />
+                                <span className="font-bold text-[10px] uppercase tracking-[0.2em]">Escalate to Employer</span>
                               </DropdownMenuItem>
                               <DropdownMenuItem 
-                                className="rounded-lg px-3 py-2.5 cursor-pointer text-rose-600 focus:bg-rose-500/10 focus:text-rose-600"
+                                className="rounded-xl px-4 py-3 cursor-pointer text-rose-600 focus:bg-rose-500/10 focus:text-rose-600 transition-colors group/item"
                                 onClick={() => deleteUser(user.id)}
                               >
-                                <UserMinus className="mr-2 h-4 w-4" />
-                                <span className="font-bold text-xs uppercase tracking-wider">Terminate Session</span>
+                                <UserMinus className="mr-3 size-4 transition-transform group-hover/item:-translate-x-0.5" />
+                                <span className="font-bold text-[10px] uppercase tracking-[0.2em]">Terminate Node</span>
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -278,19 +297,22 @@ export default function UserManagement() {
       </Card>
 
       {/* Access Queue Notification */}
-      <div className="flex items-center justify-between p-8 bg-surface-card rounded-xl border border-hairline shadow-premium-sm group cursor-pointer hover:border-hairline-strong transition-all">
-        <div className="flex items-center gap-6">
-          <div className="w-12 h-12 rounded-xl bg-canvas-soft flex items-center justify-center text-ink group-hover:scale-110 transition-transform">
-            <ShieldAlert size={24} />
+      <div className="flex items-center justify-between p-8 bg-surface-card rounded-2xl border border-hairline shadow-premium-sm group cursor-pointer hover:border-hairline-strong transition-all duration-500 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:scale-125 transition-transform duration-700">
+            <Zap size={100} />
+        </div>
+        <div className="flex items-center gap-8 relative z-10">
+          <div className="size-16 rounded-2xl bg-canvas-soft flex items-center justify-center text-ink group-hover:bg-ink group-hover:text-canvas transition-all duration-500 shadow-sm">
+            <ShieldAlert size={28} />
           </div>
-          <div>
-            <h4 className="text-lg font-headline text-ink">Privilege Escalation Queue</h4>
-            <p className="text-sm font-medium text-body italic">4 accounts are requesting administrative clearance levels.</p>
+          <div className="flex flex-col gap-1">
+            <h4 className="text-2xl font-headline text-ink tracking-tight">Privilege Escalation Queue</h4>
+            <p className="text-base font-medium text-muted opacity-80 italic leading-none">4 digital entities are requesting administrative clearance level overrides.</p>
           </div>
         </div>
-        <Button variant="link" className="font-bold uppercase tracking-widest text-[11px] text-ink hover:no-underline flex items-center gap-2">
+        <Button variant="ghost" className="rounded-pill font-black uppercase tracking-[0.2em] text-[10px] text-ink hover:bg-canvas-soft flex items-center gap-3 px-8 h-12 relative z-10">
           Process Requests
-          <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          <ChevronRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
         </Button>
       </div>
     </div>

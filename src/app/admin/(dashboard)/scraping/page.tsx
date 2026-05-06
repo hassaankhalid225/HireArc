@@ -9,7 +9,7 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { 
   Database, 
   Activity, 
@@ -20,11 +20,13 @@ import {
   TrendingUp,
   Building2,
   Box,
-  RefreshCw
+  RefreshCw,
+  Zap
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { apiClient } from "@/services/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface ScrapingLog {
@@ -59,109 +61,123 @@ export default function ScrapingLogs() {
   const lastLog = logs[0];
 
   return (
-    <div className="space-y-12 pb-12">
+    <div className="flex flex-col gap-12 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 py-8 border-b border-hairline">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-ink font-bold mb-1">
-            <Activity className="w-4 h-4" />
-            <span className="text-[10px] uppercase tracking-[0.2em]">System Pulse</span>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 py-10 border-b border-hairline">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2 text-ink/40 font-bold mb-1">
+            <Activity size={12} className="fill-current animate-pulse text-indigo-500" />
+            <span className="text-[9px] uppercase tracking-[0.3em]">System Pulse Protocol</span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-headline tracking-tight text-ink leading-none">Scraping Logs</h1>
-          <p className="text-body text-lg max-w-xl font-medium">Audit trail of automated ingestion cycles and corporate node synchronization history.</p>
+          <h1 className="text-5xl md:text-6xl font-headline tracking-tighter text-ink leading-none">Scraping Logs</h1>
+          <p className="text-body text-lg max-w-xl font-medium leading-relaxed opacity-70">Audit trail of automated ingestion cycles and corporate node synchronization history.</p>
         </div>
-        <div>
-          <button 
+        <div className="shrink-0">
+          <Button 
+            variant="outline" 
+            size="icon-lg"
             onClick={fetchLogs}
-            className="h-12 w-12 flex items-center justify-center rounded-full bg-canvas-soft border border-hairline hover:border-ink hover:text-ink transition-all active:scale-95 shadow-premium-sm group"
+            className="rounded-full border-hairline hover:bg-canvas-soft hover:text-ink transition-all shadow-premium-sm group"
           >
-            <RefreshCw className={cn("w-5 h-5", isLoading && "animate-spin")} />
-          </button>
+            <RefreshCw size={20} className={cn("transition-transform duration-700", isLoading && "animate-spin")} />
+          </Button>
         </div>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card hover:border-hairline-strong transition-all duration-300">
-          <CardContent className="p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="w-12 h-12 rounded-xl bg-canvas-soft flex items-center justify-center text-ink">
-                <CheckCircle2 size={24} />
+        {[
+          { 
+            label: "Last Sync Status", 
+            value: lastLog?.status || "Unknown", 
+            icon: CheckCircle2, 
+            sub: lastLog ? new Date(lastLog.timestamp).toLocaleString() : "Never",
+            status: lastLog?.status === "Success" ? "stable" : "alert"
+          },
+          { 
+            label: "Vectors Ingested", 
+            value: lastLog?.total_jobs || 0, 
+            icon: Box, 
+            sub: "Total unique records fetched" 
+          },
+          { 
+            label: "Corporate Nodes", 
+            value: lastLog ? Object.keys(lastLog.company_stats).length : 0, 
+            icon: Building2, 
+            sub: "Sources tracked in last cycle" 
+          }
+        ].map((stat, idx) => (
+          <Card key={idx} className="overflow-hidden border border-hairline shadow-premium-sm bg-surface-card hover:border-hairline-strong transition-all duration-500 rounded-xl group">
+            <CardContent className="p-8">
+              <div className="flex items-center justify-between mb-8">
+                <div className="size-12 rounded-2xl bg-canvas-soft text-ink flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:bg-ink group-hover:text-canvas shadow-sm">
+                  <stat.icon size={24} />
+                </div>
+                <div className="flex flex-col items-end">
+                    <TrendingUp size={16} className="text-ink/10 group-hover:text-indigo-500/40 transition-colors" />
+                    {stat.status === "stable" && <span className="text-[8px] font-black text-emerald-500 bg-emerald-500/5 px-1.5 py-0.5 rounded border border-emerald-500/10 uppercase tracking-widest mt-2">Verified</span>}
+                </div>
               </div>
-              <TrendingUp size={18} className="text-ink/20" />
-            </div>
-            <p className="text-[10px] font-bold text-muted uppercase tracking-[0.2em] mb-1">Last Sync Status</p>
-            <h3 className="text-3xl font-headline text-ink leading-none">{lastLog?.status || "Unknown"}</h3>
-            <p className="text-[10px] text-muted mt-2 flex items-center gap-1.5 font-bold uppercase tracking-wider">
-              <Clock size={10} /> {lastLog ? new Date(lastLog.timestamp).toLocaleString() : "Never"}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card hover:border-hairline-strong transition-all duration-300">
-          <CardContent className="p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="w-12 h-12 rounded-xl bg-canvas-soft flex items-center justify-center text-ink">
-                <Box size={24} />
-              </div>
-              <Activity size={18} className="text-ink/20" />
-            </div>
-            <p className="text-[10px] font-bold text-muted uppercase tracking-[0.2em] mb-1">Vectors Ingested</p>
-            <h3 className="text-3xl font-headline text-ink leading-none">{lastLog?.total_jobs || 0}</h3>
-            <p className="text-[10px] text-muted mt-2 font-bold uppercase tracking-wider">Total unique records fetched</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card hover:border-hairline-strong transition-all duration-300">
-          <CardContent className="p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="w-12 h-12 rounded-xl bg-canvas-soft flex items-center justify-center text-ink">
-                <Building2 size={24} />
-              </div>
-              <TrendingUp size={18} className="text-ink/20" />
-            </div>
-            <p className="text-[10px] font-bold text-muted uppercase tracking-[0.2em] mb-1">Corporate Nodes</p>
-            <h3 className="text-3xl font-headline text-ink leading-none">{lastLog ? Object.keys(lastLog.company_stats).length : 0}</h3>
-            <p className="text-[10px] text-muted mt-2 font-bold uppercase tracking-wider">Sources tracked in last cycle</p>
-          </CardContent>
-        </Card>
+              <p className="text-[10px] font-bold text-muted uppercase tracking-[0.2em] mb-2">{stat.label}</p>
+              <h3 className="text-4xl font-headline text-ink leading-none tracking-tight">
+                {isLoading ? <Skeleton className="h-9 w-24" /> : stat.value}
+              </h3>
+              <p className="text-[10px] text-muted mt-4 flex items-center gap-2 font-bold uppercase tracking-widest opacity-60">
+                <Clock size={12} className="opacity-40" /> {stat.sub}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Main Logs Table */}
-      <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card overflow-hidden">
-        <CardHeader className="px-8 py-6 bg-canvas-soft/30 border-b border-hairline">
-          <CardTitle className="text-lg font-headline text-ink flex items-center gap-3 leading-none">
-            <Database className="w-4 h-4 text-ink/40" />
-            Cycle History
-          </CardTitle>
+      <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card overflow-hidden transition-all duration-500 hover:border-hairline-strong">
+        <CardHeader className="px-8 py-8 bg-canvas-soft/30 border-b border-hairline flex flex-row items-center justify-between">
+          <div className="flex flex-col gap-1">
+            <CardTitle className="text-2xl font-headline text-ink flex items-center gap-3 leading-none">
+              <Database size={20} className="text-ink/40" />
+              Cycle History
+            </CardTitle>
+            <CardDescription className="text-body font-medium text-muted">Raw stream of ingestion metadata and node synchronization events.</CardDescription>
+          </div>
+          <Badge variant="outline" className="bg-indigo-500/5 text-indigo-600 border-indigo-500/10 text-[9px] font-black uppercase px-4 py-1.5 rounded-pill shadow-sm">
+            Live Stream Active
+          </Badge>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto no-scrollbar">
-          <Table>
+          <Table className="min-w-[1000px]">
             <TableHeader className="bg-canvas-soft/50 border-b border-hairline">
               <TableRow className="border-none hover:bg-transparent">
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Timestamp</TableHead>
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Status</TableHead>
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Payload Size</TableHead>
-                <TableHead className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Node Distribution</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Timestamp</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Auth State</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Payload Density</TableHead>
+                <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Node Distribution Matrix</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <AnimatePresence mode="popLayout">
                 {isLoading ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <TableRow key={i} className="border-b border-hairline">
-                      <TableCell className="px-8 py-6"><Skeleton className="h-10 w-48 rounded-lg opacity-20" /></TableCell>
-                      <TableCell className="px-8 py-6"><Skeleton className="h-8 w-24 rounded-pill opacity-20" /></TableCell>
-                      <TableCell className="px-8 py-6"><Skeleton className="h-6 w-16 rounded opacity-20" /></TableCell>
-                      <TableCell className="px-8 py-6"><Skeleton className="h-6 w-full max-w-xs rounded opacity-20" /></TableCell>
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <TableRow key={i} className="border-b border-hairline/50">
+                      <TableCell className="px-8 py-6">
+                        <div className="flex flex-col gap-2">
+                          <Skeleton className="h-5 w-32" />
+                          <Skeleton className="h-3 w-20" />
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-8 py-6"><Skeleton className="h-7 w-24 rounded-pill" /></TableCell>
+                      <TableCell className="px-8 py-6"><Skeleton className="h-6 w-16" /></TableCell>
+                      <TableCell className="px-8 py-6"><Skeleton className="h-6 w-full max-w-sm rounded-lg" /></TableCell>
                     </TableRow>
                   ))
                 ) : logs.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="h-64 text-center">
-                      <div className="flex flex-col items-center justify-center opacity-20 space-y-4">
-                        <Database className="w-16 h-16" />
-                        <p className="text-xs font-bold uppercase tracking-widest">No logs available</p>
+                    <TableCell colSpan={4} className="h-96 text-center">
+                      <div className="flex flex-col items-center justify-center gap-6 opacity-20 group">
+                        <div className="size-20 rounded-full bg-canvas-soft flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                          <Database size={48} />
+                        </div>
+                        <p className="text-sm font-bold tracking-[0.25em] uppercase">No Ingestion Logs Found in Registry</p>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -169,44 +185,47 @@ export default function ScrapingLogs() {
                   logs.map((log) => (
                     <motion.tr 
                       key={log.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="group border-b border-hairline hover:bg-canvas-soft/50 transition-all duration-300"
+                      layout
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="group border-b border-hairline hover:bg-canvas-soft/50 transition-all duration-300 cursor-pointer"
                     >
-                      <TableCell className="px-8 py-6">
-                        <div className="flex flex-col">
-                          <span className="text-sm font-bold text-ink leading-tight">
+                      <TableCell className="px-8 py-8">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-base font-black text-ink leading-tight group-hover:text-indigo-600 transition-colors">
                             {new Date(log.timestamp).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                           </span>
-                          <span className="text-[10px] text-muted font-bold uppercase tracking-wider">
+                          <span className="text-[10px] text-muted font-black uppercase tracking-[0.2em] opacity-60">
                             {new Date(log.timestamp).toLocaleTimeString()}
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="px-8 py-6">
+                      <TableCell className="px-8 py-8">
                         <Badge variant="outline" className={cn(
-                          "text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-pill border transition-all",
+                          "text-[9px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-pill border transition-all shadow-sm",
                           log.status === "Success" 
-                            ? "bg-emerald-500/5 text-emerald-600 border-emerald-500/20" 
-                            : "bg-rose-500/5 text-rose-600 border-rose-500/20"
+                            ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" 
+                            : "bg-rose-500/10 text-rose-600 border-rose-500/20"
                         )}>
-                          {log.status === "Success" ? <CheckCircle2 size={10} className="mr-1.5 inline" /> : <AlertCircle size={10} className="mr-1.5 inline" />}
+                          {log.status === "Success" ? <CheckCircle2 size={12} className="mr-2 inline" /> : <AlertCircle size={12} className="mr-2 inline" />}
                           {log.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="px-8 py-6">
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg font-headline text-ink leading-none">{log.total_jobs}</span>
-                          <span className="text-[10px] text-muted font-bold uppercase tracking-wider">Vectors</span>
+                      <TableCell className="px-8 py-8">
+                        <div className="flex items-center gap-3">
+                          <span className="text-3xl font-headline text-ink leading-none tracking-tighter">{log.total_jobs}</span>
+                          <span className="text-[10px] text-muted font-black uppercase tracking-[0.2em] opacity-60">Vectors</span>
                         </div>
                       </TableCell>
-                      <TableCell className="px-8 py-6">
-                        <div className="flex flex-wrap gap-1.5 max-w-md">
+                      <TableCell className="px-8 py-8">
+                        <div className="flex flex-wrap gap-2 max-w-lg">
                           {Object.entries(log.company_stats).map(([company, count]) => (
                             count > 0 && (
-                              <div key={company} className="px-2 py-0.5 rounded bg-canvas-soft border border-hairline flex items-center gap-2 transition-all hover:border-ink/30 group/item">
-                                <span className="text-[9px] font-bold text-muted uppercase group-hover/item:text-ink transition-colors">{company}</span>
-                                <span className="text-[9px] font-bold text-ink">{count}</span>
+                              <div key={company} className="px-3 py-1.5 rounded-xl bg-white dark:bg-white/5 border border-hairline flex items-center gap-3 transition-all hover:border-indigo-500/30 hover:shadow-premium-sm group/item">
+                                <span className="text-[10px] font-black text-muted uppercase tracking-widest group-hover/item:text-ink transition-colors">{company}</span>
+                                <div className="w-px h-3 bg-hairline" />
+                                <span className="text-[10px] font-black text-indigo-500">{count}</span>
                               </div>
                             )
                           ))}

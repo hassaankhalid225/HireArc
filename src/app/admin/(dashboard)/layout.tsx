@@ -10,7 +10,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <TooltipProvider>
-        <div className="flex min-h-screen bg-canvas w-full">
+        <div className="flex min-h-screen bg-white dark:bg-zinc-950 w-full transition-colors duration-500">
           {/* Sidebar */}
           <AdminSidebar />
           
@@ -27,7 +27,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             </main>
             
             {/* Footer inside admin */}
-            <footer className="py-6 px-8 border-t border-hairline text-center text-[10px] font-bold uppercase tracking-widest text-muted bg-canvas-soft">
+            <footer className="py-6 px-8 border-t border-zinc-200 dark:border-zinc-800 text-center text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 bg-zinc-50 dark:bg-zinc-900/50">
               &copy; 2024 HireArc Enterprise Solutions • Secure Administrative Environment • Node v2.1.0-Release
             </footer>
           </div>

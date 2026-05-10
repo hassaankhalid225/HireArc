@@ -36,7 +36,7 @@ export function AdminHeader() {
   }, []);
 
   return (
-    <header className="h-20 border-b border-hairline bg-canvas/80 backdrop-blur-xl sticky top-0 z-40 px-6 md:px-8 flex items-center justify-between">
+    <header className="h-20 border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-40 px-6 md:px-8 flex items-center justify-between transition-colors duration-500">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="h-10 w-10 rounded-xl hover:bg-canvas-soft hover:text-ink text-muted transition-all" />
         
@@ -128,7 +128,7 @@ export function AdminHeader() {
             <DropdownMenuItem 
               className="text-red-500 cursor-pointer focus:text-red-600 focus:bg-red-500/5 rounded-xl p-3 mt-1 group"
               onClick={() => {
-                localStorage.removeItem("JobSphere_Admin_Token");
+                localStorage.removeItem("HireArc_Admin_Token");
                 window.location.href = "/admin/login";
               }}
             >

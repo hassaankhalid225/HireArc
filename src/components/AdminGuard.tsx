@@ -14,7 +14,7 @@ export default function AdminGuard({ children }: AdminGuardProps) {
 
   useEffect(() => {
     // Check local storage for the admin token
-    const token = localStorage.getItem("JobSphere_Admin_Token");
+    const token = localStorage.getItem("HireArc_Admin_Token");
     if (token === "super-secret-admin-token-123") {
       setIsAuthenticated(true);
     } else {

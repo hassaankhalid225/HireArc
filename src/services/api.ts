@@ -28,7 +28,7 @@ async function request<T>(
   { method = "GET", body, headers = {}, signal: signalProp }: RequestOptions = {}
 ): Promise<T> {
   // Get admin token from local storage
-  const adminToken = typeof window !== 'undefined' ? localStorage.getItem("JobSphere_Admin_Token") : null;
+  const adminToken = typeof window !== 'undefined' ? localStorage.getItem("HireArc_Admin_Token") : null;
   
   // Setup timeout
   const controller = new AbortController();

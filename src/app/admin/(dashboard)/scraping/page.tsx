@@ -63,7 +63,7 @@ export default function ScrapingLogs() {
   return (
     <div className="flex flex-col gap-12 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 py-10 border-b border-hairline">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 py-10 border-b border-zinc-200 dark:border-zinc-800">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 text-ink/40 font-bold mb-1">
             <Activity size={12} className="fill-current animate-pulse text-indigo-500" />
@@ -77,7 +77,7 @@ export default function ScrapingLogs() {
             variant="outline" 
             size="icon-lg"
             onClick={fetchLogs}
-            className="rounded-full border-hairline hover:bg-canvas-soft hover:text-ink transition-all shadow-premium-sm group"
+            className="rounded-full border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all shadow-sm group"
           >
             <RefreshCw size={20} className={cn("transition-transform duration-700", isLoading && "animate-spin")} />
           </Button>
@@ -107,10 +107,10 @@ export default function ScrapingLogs() {
             sub: "Sources tracked in last cycle" 
           }
         ].map((stat, idx) => (
-          <Card key={idx} className="overflow-hidden border border-hairline shadow-premium-sm bg-surface-card hover:border-hairline-strong transition-all duration-500 rounded-xl group">
+          <Card key={idx} className="overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-sm bg-white dark:bg-zinc-900 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-500 rounded-2xl group">
             <CardContent className="p-8">
               <div className="flex items-center justify-between mb-8">
-                <div className="size-12 rounded-2xl bg-canvas-soft text-ink flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:bg-ink group-hover:text-canvas shadow-sm">
+                <div className="size-12 rounded-2xl bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:bg-zinc-900 dark:group-hover:bg-zinc-100 group-hover:text-white dark:group-hover:text-zinc-900 shadow-sm">
                   <stat.icon size={24} />
                 </div>
                 <div className="flex flex-col items-end">
@@ -131,8 +131,8 @@ export default function ScrapingLogs() {
       </div>
 
       {/* Main Logs Table */}
-      <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card overflow-hidden transition-all duration-500 hover:border-hairline-strong">
-        <CardHeader className="px-8 py-8 bg-canvas-soft/30 border-b border-hairline flex flex-row items-center justify-between">
+      <Card className="border border-zinc-200 dark:border-zinc-800 shadow-sm rounded-2xl bg-white dark:bg-zinc-900 overflow-hidden transition-all duration-500 hover:border-zinc-300 dark:hover:border-zinc-700">
+        <CardHeader className="px-8 py-8 bg-zinc-50/30 dark:bg-zinc-800/30 border-b border-zinc-200 dark:border-zinc-800 flex flex-row items-center justify-between">
           <div className="flex flex-col gap-1">
             <CardTitle className="text-2xl font-headline text-ink flex items-center gap-3 leading-none">
               <Database size={20} className="text-ink/40" />
@@ -146,7 +146,7 @@ export default function ScrapingLogs() {
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto no-scrollbar">
           <Table className="min-w-[1000px]">
-            <TableHeader className="bg-canvas-soft/50 border-b border-hairline">
+            <TableHeader className="bg-zinc-50/50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800">
               <TableRow className="border-none hover:bg-transparent">
                 <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Timestamp</TableHead>
                 <TableHead className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted">Auth State</TableHead>
@@ -189,7 +189,7 @@ export default function ScrapingLogs() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className="group border-b border-hairline hover:bg-canvas-soft/50 transition-all duration-300 cursor-pointer"
+                      className="group border-b border-zinc-200/50 dark:border-zinc-800/50 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/50 transition-all duration-300 cursor-pointer"
                     >
                       <TableCell className="px-8 py-8">
                         <div className="flex flex-col gap-1">
@@ -222,9 +222,9 @@ export default function ScrapingLogs() {
                         <div className="flex flex-wrap gap-2 max-w-lg">
                           {Object.entries(log.company_stats).map(([company, count]) => (
                             count > 0 && (
-                              <div key={company} className="px-3 py-1.5 rounded-xl bg-white dark:bg-white/5 border border-hairline flex items-center gap-3 transition-all hover:border-indigo-500/30 hover:shadow-premium-sm group/item">
-                                <span className="text-[10px] font-black text-muted uppercase tracking-widest group-hover/item:text-ink transition-colors">{company}</span>
-                                <div className="w-px h-3 bg-hairline" />
+                              <div key={company} className="px-3 py-1.5 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center gap-3 transition-all hover:border-indigo-500/30 hover:shadow-sm group/item">
+                                <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest group-hover/item:text-zinc-900 dark:group-hover/item:text-zinc-100 transition-colors">{company}</span>
+                                <div className="w-px h-3 bg-zinc-200 dark:bg-zinc-700" />
                                 <span className="text-[10px] font-black text-indigo-500">{count}</span>
                               </div>
                             )

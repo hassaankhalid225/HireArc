@@ -27,10 +27,10 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const StatCard = ({ title, value, icon: Icon, change, trend, isLoading }: any) => (
-  <Card className="overflow-hidden border border-hairline shadow-premium-sm bg-surface-card hover:border-hairline-strong transition-all duration-500 rounded-xl group">
+  <Card className="overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-sm bg-white dark:bg-zinc-900 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-500 rounded-2xl group">
     <CardContent className="p-6">
       <div className="flex justify-between items-start mb-6">
-        <div className="size-12 rounded-xl bg-canvas-soft text-ink flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:bg-ink group-hover:text-canvas">
+        <div className="size-12 rounded-xl bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:bg-zinc-900 dark:group-hover:bg-zinc-100 group-hover:text-white dark:group-hover:text-zinc-900">
           <Icon size={20} />
         </div>
         {!isLoading ? (
@@ -85,7 +85,7 @@ export default function AdminDashboard() {
   return (
     <div className="flex flex-col gap-12 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 py-10 border-b border-hairline relative">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 py-10 border-b border-zinc-200 dark:border-zinc-800 relative">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 text-ink/40 font-bold mb-1">
             <Zap size={12} className="fill-current animate-pulse text-indigo-500" />
@@ -97,11 +97,11 @@ export default function AdminDashboard() {
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Button variant="outline" size="lg" className="rounded-pill border-hairline font-bold text-[10px] uppercase tracking-widest hover:bg-canvas-soft transition-all shadow-sm">
+          <Button variant="outline" size="lg" className="rounded-pill border-zinc-200 dark:border-zinc-800 font-bold text-[10px] uppercase tracking-widest hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all shadow-sm">
             <Database className="mr-2 size-3.5 opacity-50" />
             Export Logs
           </Button>
-          <Button size="lg" className="rounded-pill font-bold text-[10px] uppercase tracking-widest bg-ink text-canvas hover:opacity-90 transition-all shadow-xl shadow-ink/10">
+          <Button size="lg" className="rounded-pill font-bold text-[10px] uppercase tracking-widest bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:opacity-90 transition-all shadow-xl shadow-zinc-900/10">
             <Plus className="mr-2 size-3.5" />
             New Control Unit
           </Button>
@@ -146,8 +146,8 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         {/* Recent Activity Table */}
-        <Card className="xl:col-span-2 border border-hairline shadow-premium-sm overflow-hidden rounded-xl bg-surface-card transition-all duration-500 hover:border-hairline-strong">
-          <CardHeader className="flex flex-row items-center justify-between p-8 border-b border-hairline bg-canvas-soft/30">
+        <Card className="xl:col-span-2 border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 transition-all duration-500 hover:border-zinc-300 dark:hover:border-zinc-700">
+          <CardHeader className="flex flex-row items-center justify-between p-8 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/30 dark:bg-zinc-800/30">
             <div className="flex flex-col gap-1">
               <CardTitle className="text-2xl font-headline text-ink">Stream Protocol</CardTitle>
               <CardDescription className="text-body font-medium text-muted">Live audit trail of platform interactions.</CardDescription>
@@ -228,13 +228,13 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="border border-hairline shadow-premium-sm rounded-xl bg-surface-card p-2 transition-all hover:border-hairline-strong overflow-hidden">
+          <Card className="border border-zinc-200 dark:border-zinc-800 shadow-sm rounded-2xl bg-white dark:bg-zinc-900 p-2 transition-all hover:border-zinc-300 dark:hover:border-zinc-700 overflow-hidden">
             <CardHeader className="p-8 pb-4">
               <CardTitle className="text-xl font-headline text-ink">Control Panel</CardTitle>
               <CardDescription className="text-[11px] font-bold text-muted uppercase tracking-widest">Administrative Overrides</CardDescription>
             </CardHeader>
             <CardContent className="p-4 flex flex-col gap-2">
-              <Button className="w-full justify-between h-14 rounded-xl group px-5 bg-canvas-soft hover:bg-ink hover:text-canvas border-none transition-all shadow-none" variant="ghost">
+              <Button className="w-full justify-between h-14 rounded-xl group px-5 bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-900 dark:hover:bg-zinc-100 hover:text-white dark:hover:text-zinc-900 border-none transition-all shadow-none" variant="ghost">
                 <div className="flex items-center">
                   <div className="size-9 rounded-lg bg-white dark:bg-white/5 flex items-center justify-center mr-4 shadow-sm group-hover:bg-white/20 transition-colors">
                     <Database className="size-4 text-ink group-hover:text-canvas transition-colors" />

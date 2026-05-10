@@ -25,7 +25,7 @@ export default function AdminLoginPage() {
     // Simulate network delay for realistic feel
     setTimeout(() => {
       if (email === "hasankhalid@gmail.com" && password === "12345678") {
-        localStorage.setItem("JobSphere_Admin_Token", "super-secret-admin-token-123");
+        localStorage.setItem("HireArc_Admin_Token", "super-secret-admin-token-123");
         router.push("/admin/dashboard");
       } else {
         setError("Invalid credentials. Access denied.");
@@ -96,7 +96,7 @@ export default function AdminLoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="h-14 bg-canvas-soft/50 border-hairline rounded-2xl pl-14 text-sm font-bold text-ink placeholder:text-muted/40 transition-all focus-visible:ring-2 focus-visible:ring-ink/10"
-                    placeholder="admin@jobsphere.pro"
+                    placeholder="admin@hirearc.pro"
                     required
                   />
                 </div>
@@ -151,7 +151,7 @@ export default function AdminLoginPage() {
             </form>
 
             <div className="mt-16 text-center pt-10 border-t border-hairline flex flex-col gap-4">
-              <p className="text-[10px] text-muted font-black uppercase tracking-[0.3em] opacity-40 italic">JobSphere Administrative Node • v2.1.0-Release</p>
+              <p className="text-[10px] text-muted font-black uppercase tracking-[0.3em] opacity-40 italic">HireArc Administrative Node • v2.1.0-Release</p>
               <div className="flex items-center justify-center gap-3">
                 <div className="size-2 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.5)] animate-pulse" />
                 <span className="text-[10px] text-muted font-black uppercase tracking-[0.2em] opacity-60">Authentication Systems Live</span>

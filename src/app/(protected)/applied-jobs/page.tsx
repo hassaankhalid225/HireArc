@@ -59,7 +59,7 @@ export default function AppliedJobsPage() {
               </p>
             </div>
             <Link href="/search" className="btn btn-primary">
-              <Search className="w-4 h-4 mr-2" /> Find More Roles
+              <Search className="w-4 h-4 mr-2" /> Find More Jobs
             </Link>
           </div>
         </FadeIn>

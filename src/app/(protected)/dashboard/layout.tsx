@@ -14,8 +14,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Applied Job", href: "/dashboard/applications", icon: FileText },
-    { name: "Saved Jobs", href: "/dashboard/saved", icon: Bookmark },
+    { name: "Find Jobs", href: "/search", icon: Search },
+    { name: "Applied Job", href: "/applied-jobs", icon: FileText },
+    { name: "Saved Jobs", href: "/saved-jobs", icon: Bookmark },
   ];
 
   return (
@@ -57,9 +58,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
         
         <div className="p-6">
-          <Button className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white font-bold shadow-lg mb-8 h-12 rounded-xl">
-            Update Profile
-          </Button>
+          <Link href="/profile/edit" className="block mb-8">
+            <Button className="w-full bg-[#1C261F] hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 text-white font-bold shadow-lg h-12 rounded-xl transition-colors">
+              Update Profile
+            </Button>
+          </Link>
           
           <div className="space-y-4 px-2">
             <Link href="/help" className="flex items-center gap-3 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-bold transition-colors">

@@ -48,6 +48,13 @@ export default function Navbar() {
   const { user, logout, isAuthenticated, isLoading } = useAuth();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
+  const isProtectedRoute = pathname?.startsWith("/dashboard") || 
+                           pathname?.startsWith("/applied-jobs") || 
+                           pathname?.startsWith("/saved-jobs") || 
+                           pathname?.startsWith("/profile") || 
+                           pathname?.startsWith("/settings") ||
+                           pathname?.startsWith("/notifications");
+
   // In ElevenLabs theme, the canvas is always light (off-white).
   // No separate dark hero logic needed for nav.
 
@@ -120,90 +127,115 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden lg:flex items-center gap-8">
-            <Link
-              href="/search"
-              className={`text-[15px] font-medium transition-all text-[var(--body)] hover:text-[var(--ink)]`}
-            >
-              Find Jobs
-            </Link>
-            <Link
-              href="/search?type=remote"
-              className={`text-[15px] font-medium transition-all text-[var(--body)] hover:text-[var(--ink)]`}
-            >
-              Remote
-            </Link>
+            {mounted && isProtectedRoute ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className={`text-[15px] font-medium transition-all ${pathname === '/dashboard' ? 'text-[var(--ink)] font-bold' : 'text-[var(--body)] hover:text-[var(--ink)]'}`}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/applied-jobs"
+                  className={`text-[15px] font-medium transition-all ${pathname === '/applied-jobs' ? 'text-[var(--ink)] font-bold' : 'text-[var(--body)] hover:text-[var(--ink)]'}`}
+                >
+                  Applied Jobs
+                </Link>
+                <Link
+                  href="/saved-jobs"
+                  className={`text-[15px] font-medium transition-all ${pathname === '/saved-jobs' ? 'text-[var(--ink)] font-bold' : 'text-[var(--body)] hover:text-[var(--ink)]'}`}
+                >
+                  Saved Jobs
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/search"
+                  className={`text-[15px] font-medium transition-all text-[var(--body)] hover:text-[var(--ink)]`}
+                >
+                  Find Jobs
+                </Link>
+                <Link
+                  href="/search?type=remote"
+                  className={`text-[15px] font-medium transition-all text-[var(--body)] hover:text-[var(--ink)]`}
+                >
+                  Remote
+                </Link>
 
-            {/* Companies */}
-            <div className="relative">
-              <button
-                onClick={() => toggleDropdown("companies")}
-                className={`flex items-center gap-1 text-[15px] font-medium transition-all ${
-                  activeDropdown === "companies"
-                    ? "text-[var(--ink)]"
-                    : "text-[var(--body)] hover:text-[var(--ink)]"
-                }`}
-              >
-                Companies
-                <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "companies" ? "rotate-180" : ""}`} />
-              </button>
-              {activeDropdown === "companies" && (
-                <div className="absolute top-[calc(100%+20px)] left-0 w-64 bg-[var(--surface-card)] border border-[var(--hairline-strong)] rounded-xl shadow-premium p-4 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="grid grid-cols-1 gap-1">
-                    {COMPANIES.map((c) => (
-                      <Link
-                        key={c.name}
-                        href={c.href}
-                        className="px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-gray-100 hover:text-[var(--primary)] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        {c.name}
-                      </Link>
-                    ))}
-                    <div className="border-t-2 border-[var(--border)] dark:border-white/5 mt-2 pt-2">
-                      <Link
-                        href="/companies"
-                        className="block px-3 py-2 rounded-lg text-sm font-bold text-[var(--primary)] dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        Browse all companies &rarr;
-                      </Link>
+                {/* Companies */}
+                <div className="relative">
+                  <button
+                    onClick={() => toggleDropdown("companies")}
+                    className={`flex items-center gap-1 text-[15px] font-medium transition-all ${
+                      activeDropdown === "companies"
+                        ? "text-[var(--ink)]"
+                        : "text-[var(--body)] hover:text-[var(--ink)]"
+                    }`}
+                  >
+                    Companies
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "companies" ? "rotate-180" : ""}`} />
+                  </button>
+                  {activeDropdown === "companies" && (
+                    <div className="absolute top-[calc(100%+20px)] left-0 w-64 bg-[var(--surface-card)] border border-[var(--hairline-strong)] rounded-xl shadow-premium p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="grid grid-cols-1 gap-1">
+                        {COMPANIES.map((c) => (
+                          <Link
+                            key={c.name}
+                            href={c.href}
+                            className="px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-gray-100 hover:text-[var(--primary)] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
+                            onClick={() => setActiveDropdown(null)}
+                          >
+                            {c.name}
+                          </Link>
+                        ))}
+                        <div className="border-t-2 border-[var(--border)] dark:border-white/5 mt-2 pt-2">
+                          <Link
+                            href="/companies"
+                            className="block px-3 py-2 rounded-lg text-sm font-bold text-[var(--primary)] dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            onClick={() => setActiveDropdown(null)}
+                          >
+                            Browse all companies &rarr;
+                          </Link>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Categories */}
-            <div className="relative">
-              <button
-                onClick={() => toggleDropdown("categories")}
-                className={`flex items-center gap-1 text-[15px] font-medium transition-all ${
-                  activeDropdown === "categories"
-                    ? "text-[var(--ink)]"
-                    : "text-[var(--body)] hover:text-[var(--ink)]"
-                }`}
-              >
-                Categories
-                <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "categories" ? "rotate-180" : ""}`} />
-              </button>
-              {activeDropdown === "categories" && (
-                <div className="absolute top-[calc(100%+20px)] left-0 w-72 bg-[var(--surface-card)] border border-[var(--hairline-strong)] rounded-xl shadow-premium p-4 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="grid grid-cols-1 gap-1">
-                    {CATEGORIES.map((cat) => (
-                      <Link
-                        key={cat.name}
-                        href={cat.href}
-                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-gray-100 hover:text-[var(--primary)] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        <span className="text-[var(--text-muted)] dark:text-white/50">{cat.icon}</span>
-                        {cat.name}
-                      </Link>
-                    ))}
-                  </div>
+                {/* Categories */}
+                <div className="relative">
+                  <button
+                    onClick={() => toggleDropdown("categories")}
+                    className={`flex items-center gap-1 text-[15px] font-medium transition-all ${
+                      activeDropdown === "categories"
+                        ? "text-[var(--ink)]"
+                        : "text-[var(--body)] hover:text-[var(--ink)]"
+                    }`}
+                  >
+                    Categories
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === "categories" ? "rotate-180" : ""}`} />
+                  </button>
+                  {activeDropdown === "categories" && (
+                    <div className="absolute top-[calc(100%+20px)] left-0 w-72 bg-[var(--surface-card)] border border-[var(--hairline-strong)] rounded-xl shadow-premium p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="grid grid-cols-1 gap-1">
+                        {CATEGORIES.map((cat) => (
+                          <Link
+                            key={cat.name}
+                            href={cat.href}
+                            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-gray-100 hover:text-[var(--primary)] dark:hover:bg-white/5 dark:hover:text-white transition-colors"
+                            onClick={() => setActiveDropdown(null)}
+                          >
+                            <span className="text-[var(--text-muted)] dark:text-white/50">{cat.icon}</span>
+                            {cat.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         </div>
 

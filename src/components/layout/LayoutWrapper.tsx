@@ -7,6 +7,13 @@ import DotField from "@/components/ui/DotField";
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdminPage = pathname?.startsWith("/admin");
+  
+  const isProtectedRoute = pathname?.startsWith("/dashboard") || 
+                           pathname?.startsWith("/applied-jobs") || 
+                           pathname?.startsWith("/saved-jobs") || 
+                           pathname?.startsWith("/profile") || 
+                           pathname?.startsWith("/settings") ||
+                           pathname?.startsWith("/notifications");
 
   if (isAdminPage) {
     return <main className="flex-grow w-full h-full">{children}</main>;
@@ -42,7 +49,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
       <Navbar />
       <main className="flex-grow relative z-10">{children}</main>
-      <Footer />
+      {!isProtectedRoute && <Footer />}
     </>
   );
 }

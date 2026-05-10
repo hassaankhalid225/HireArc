@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function ApplicationsPage() {
   return (
@@ -10,7 +11,9 @@ export default function ApplicationsPage() {
           <h1 className="text-3xl font-bold font-headline text-[var(--text-primary)] mb-2">Applied Jobs</h1>
           <p className="text-[var(--text-secondary)]">Track and manage your job applications.</p>
         </div>
-        <Button className="bg-[#678D63] hover:bg-[#166534] text-white">Find More Jobs</Button>
+        <Link href="/search">
+          <Button className="bg-[#678D63] hover:bg-[#166534] text-white">Find More Jobs</Button>
+        </Link>
       </div>
 
       <Card className="border-2 border-[var(--border)] shadow-sm bg-white dark:bg-white/5">

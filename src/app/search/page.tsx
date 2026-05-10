@@ -209,7 +209,7 @@ export default function SearchPage() {
                             </div>
                             
                             <div className="flex justify-between items-center text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)] pt-6 border-t border-[var(--hairline-soft)]">
-                              <span>{job.posted_at ? new Date(job.posted_at).toLocaleDateString() : "Recent"}</span>
+                              <span>{job.posted_at ? new Date(job.posted_at).toLocaleDateString("en-US", { timeZone: "UTC", month: "short", day: "numeric", year: "numeric" }) : "Recent"}</span>
                               <div className="flex items-center gap-2 text-[var(--ink)] font-medium normal-case tracking-normal text-[14px] group-hover:gap-3 transition-all">
                                 View Details <ChevronRight className="w-4 h-4" />
                               </div>

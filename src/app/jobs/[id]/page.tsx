@@ -137,7 +137,24 @@ export default function JobDetailPage({
     }
     if (!job?.apply_link) return;
     window.open(job.apply_link, "_blank", "noopener,noreferrer");
-    setShowPopup(true);
+    
+    // Wait for the user to return to the tab before showing the popup
+    const handleFocus = () => {
+      setShowPopup(true);
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        handleFocus();
+      }
+    };
+
+    setTimeout(() => {
+      window.addEventListener('focus', handleFocus);
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+    }, 1500);
   };
 
   const handlePopupYes = () => {
@@ -245,7 +262,7 @@ export default function JobDetailPage({
                   )}
                   {job.posted_at && (
                     <div className="flex items-center gap-1.5">
-                      <Clock className="w-4 h-4 text-[var(--muted)]" /> {new Date(job.posted_at).toLocaleDateString()}
+                      <Clock className="w-4 h-4 text-[var(--muted)]" /> {new Date(job.posted_at).toLocaleDateString("en-US", { timeZone: "UTC", month: "short", day: "numeric", year: "numeric" })}
                     </div>
                   )}
                   <div className="flex items-center gap-1.5">

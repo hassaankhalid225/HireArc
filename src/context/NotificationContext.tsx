@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { notificationService, Notification } from "@/services/notification.service";
+import { toast } from "sonner";
 
 interface NotificationContextValue {
   notifications: Notification[];
@@ -25,14 +26,17 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     // Listen for updates from other components or service
     window.addEventListener("notifications_updated", load);
     
-    // Simulate a random notification every 2 minutes for "real-time" feel
+    // Simulate a random notification every 20 seconds for "real-time" feel demo
     const interval = setInterval(() => {
       notificationService.addSimulatedNotification({
         type: "profile_view",
         title: "Someone viewed your profile!",
         description: "A hiring manager from a top tech company is looking at your resume."
       });
-    }, 120000);
+      toast.info("Someone viewed your profile!", {
+        description: "A hiring manager from a top tech company is looking at your resume."
+      });
+    }, 20000);
 
     return () => {
       window.removeEventListener("notifications_updated", load);
@@ -53,6 +57,9 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         notificationService.addSimulatedNotification({
           type: "job_match",
           title: "Flash Match! ⚡",
+          description: "A new role just opened up that matches your profile perfectly."
+        });
+        toast.success("Flash Match! ⚡", {
           description: "A new role just opened up that matches your profile perfectly."
         });
       }

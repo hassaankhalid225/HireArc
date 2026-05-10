@@ -86,7 +86,7 @@ export default function JobCard({ job }: { job: Job }) {
         <div className="pt-8 border-t border-hairline flex justify-between items-center mt-auto relative z-10">
           <span className="text-[10px] font-bold text-muted uppercase tracking-[0.2em]">
             {job.posted_at
-              ? new Date(job.posted_at).toLocaleDateString()
+              ? new Date(job.posted_at).toLocaleDateString("en-US", { timeZone: "UTC", month: "short", day: "numeric", year: "numeric" })
               : "Recent Entry"}
           </span>
           <div className="font-bold text-ink flex items-center gap-2 text-xs uppercase tracking-[0.15em] group-hover:gap-4 transition-all">

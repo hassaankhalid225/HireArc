@@ -5,6 +5,7 @@ import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AppProviders } from "@/context";
 import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const sora = Sora({ subsets: ["latin"], variable: "--font-headline" });
@@ -40,6 +41,7 @@ export default function RootLayout({
           <AppProviders>
             <LayoutWrapper>{children}</LayoutWrapper>
           </AppProviders>
+          <Toaster position="top-right" richColors />
         </ThemeProvider>
       </body>
     </html>

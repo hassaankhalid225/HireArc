@@ -25,50 +25,71 @@ interface RequestOptions {
 
 async function request<T>(
   path: string,
-  { method = "GET", body, headers = {}, signal }: RequestOptions = {}
+  { method = "GET", body, headers = {}, signal: signalProp }: RequestOptions = {}
 ): Promise<T> {
   // Get admin token from local storage
   const adminToken = typeof window !== 'undefined' ? localStorage.getItem("JobSphere_Admin_Token") : null;
   
-  const res = await fetch(`${BASE_URL}${path}`, {
-    method,
-    signal,
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(adminToken ? { "X-Admin-Token": adminToken } : {}),
-      ...headers,
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  // Setup timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+  
+  // Use either the passed signal or our timeout signal
+  const signal = signalProp || controller.signal;
 
-  const contentType = res.headers.get("content-type");
-  const isJson = contentType && contentType.includes("application/json");
+  try {
+    const res = await fetch(`${BASE_URL}${path}`, {
+      method,
+      signal,
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        ...(adminToken ? { "X-Admin-Token": adminToken } : {}),
+        ...headers,
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
 
-  if (!res.ok) {
-    if (isJson) {
-      const errorPayload = await res.json();
-      throw { status: res.status, ...errorPayload };
-    } else {
+    clearTimeout(timeoutId);
+
+    const contentType = res.headers.get("content-type");
+    const isJson = contentType && contentType.includes("application/json");
+
+    if (!res.ok) {
+      if (isJson) {
+        const errorPayload = await res.json();
+        throw { status: res.status, ...errorPayload };
+      } else {
+        const text = await res.text();
+        throw { 
+          status: res.status, 
+          message: `HTTP Error ${res.status}`,
+          details: text.substring(0, 100)
+        };
+      }
+    }
+
+    if (!isJson) {
       const text = await res.text();
       throw { 
         status: res.status, 
-        message: `HTTP Error ${res.status}`,
+        message: "Expected JSON response but received something else.",
         details: text.substring(0, 100)
       };
     }
-  }
 
-  if (!isJson) {
-    const text = await res.text();
-    throw { 
-      status: res.status, 
-      message: "Expected JSON response but received something else.",
-      details: text.substring(0, 100)
-    };
+    return res.json() as Promise<T>;
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw { 
+        status: 408, 
+        message: "Request timeout — backend took too long to respond.",
+        details: `Failed to fetch ${path} within 8s`
+      };
+    }
+    throw error;
   }
-
-  return res.json() as Promise<T>;
 }
 
 export const apiClient = {

@@ -3,23 +3,16 @@ const getBackendUrl = () => {
             process.env.NEXT_PUBLIC_API_URL || 
             "http://127.0.0.1:8000/api";
   
-  // Ensure the URL has a protocol, otherwise browser treats it as a relative path
+  // Ensure the URL has a protocol
   if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
     url = `https://${url}`;
   }
 
-  // Ensure the URL ends with /api for consistency with FastAPI routers
-  if (url && !url.endsWith("/api") && !url.endsWith("/api/")) {
+  // Ensure the URL ends with /api but avoid double /api
+  if (url && !url.includes("/api")) {
     url = url.endsWith("/") ? `${url}api` : `${url}/api`;
   }
 
-  // If we're on a Vercel domain and using localhost, it's likely a config error
-  if (typeof window !== "undefined" && 
-      window.location.hostname.includes("vercel.app") && 
-      url.includes("127.0.0.1")) {
-    console.error("⚠️ HireArc: NEXT_PUBLIC_BACKEND_URL is not set on Vercel. Falling back to localhost will fail.");
-  }
-  
   return url;
 };
 

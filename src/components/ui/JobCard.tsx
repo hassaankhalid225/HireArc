@@ -3,6 +3,7 @@ import { Job } from "@/types";
 import Link from "next/link";
 import { Bookmark, MapPin, Globe, DollarSign, ArrowRight } from "lucide-react";
 import { useSavedJobs } from "@/context";
+import { cn } from "@/lib/utils";
 
 export default function JobCard({ job }: { job: Job }) {
   const { toggleSave, isSaved } = useSavedJobs();

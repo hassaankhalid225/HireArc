@@ -25,22 +25,9 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     load();
     // Listen for updates from other components or service
     window.addEventListener("notifications_updated", load);
-    
-    // Simulate a random notification every 20 seconds for "real-time" feel demo
-    const interval = setInterval(() => {
-      notificationService.addSimulatedNotification({
-        type: "profile_view",
-        title: "Someone viewed your profile!",
-        description: "A hiring manager from a top tech company is looking at your resume."
-      });
-      toast.info("Someone viewed your profile!", {
-        description: "A hiring manager from a top tech company is looking at your resume."
-      });
-    }, 20000);
 
     return () => {
       window.removeEventListener("notifications_updated", load);
-      clearInterval(interval);
     };
   }, []);
 

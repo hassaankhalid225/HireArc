@@ -375,40 +375,13 @@ export default function Navbar() {
                       </div>
                     </div>
 
-                    {/* Notifications mini */}
-                    <div className="px-4 py-2.5 border-b-2 border-[var(--border)] dark:border-white/5">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Notifications</p>
-                        {unreadCount > 0 && (
-                          <span className="text-[10px] font-bold text-[var(--primary)] dark:text-white bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded-full">
-                            {unreadCount} new
-                          </span>
-                        )}
-                      </div>
-                      {notifications.slice(0, 2).map((n) => (
-                        <div key={n.id} className="flex items-center gap-2 py-1">
-                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${n.unread ? "bg-[var(--primary)] dark:bg-white" : "bg-gray-300 dark:bg-white/20"}`} />
-                          <p className="text-xs text-[var(--text-secondary)] truncate">{n.title}</p>
-                        </div>
-                      ))}
-                      <Link
-                        href="/notifications"
-                        className="text-[11px] font-semibold text-[var(--primary)] hover:underline mt-1 inline-block"
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        See all &rarr;
-                      </Link>
-                    </div>
-
                     {/* Nav links */}
                     <div className="py-1.5 px-2">
                       {[
                         { name: "Dashboard",     icon: <BarChart className="w-4 h-4" />, href: "/dashboard" },
                         { name: "My Profile",    icon: <Users className="w-4 h-4" />,    href: "/profile" },
-                        { name: "Edit Profile",  icon: <Target className="w-4 h-4" />,   href: "/profile/edit" },
                         { name: "Saved Jobs",    icon: <Bookmark className="w-4 h-4" />, href: "/saved-jobs" },
                         { name: "Applied Jobs",  icon: <Zap className="w-4 h-4" />,      href: "/applied-jobs" },
-                        ...(user?.role === "admin" ? [{ name: "Admin Panel", icon: <Shield className="w-4 h-4" />, href: "/admin/dashboard" }] : []),
                         { name: "Settings",      icon: <Layout className="w-4 h-4" />,   href: "/settings" },
                       ].map((item) => (
                         <Link

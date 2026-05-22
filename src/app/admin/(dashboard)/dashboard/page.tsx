@@ -14,7 +14,8 @@ import {
   Zap,
   Globe,
   Database,
-  ChevronRight
+  ChevronRight,
+  Activity
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { apiClient } from "@/services/api";

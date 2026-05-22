@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useMemo } from "react";
 
 interface DotFieldProps {
   dotRadius?: number;
@@ -54,9 +54,9 @@ export default function DotField({
   const mouse     = useRef({ x: -99999, y: -99999 });
   const time      = useRef(0);
 
-  const colorA = hexToRgb(gradientFrom);
-  const colorB = hexToRgb(gradientTo);
-  const glowRGB = hexToRgb(glowColor);
+  const colorA = useMemo(() => hexToRgb(gradientFrom), [gradientFrom]);
+  const colorB = useMemo(() => hexToRgb(gradientTo), [gradientTo]);
+  const glowRGB = useMemo(() => hexToRgb(glowColor), [glowColor]);
 
   const render = useCallback(() => {
     const canvas = canvasRef.current;
@@ -152,7 +152,6 @@ export default function DotField({
 
     ctx.globalAlpha = 1;
     time.current   += 0.016;
-    animRef.current = requestAnimationFrame(render);
   }, [
     dotRadius, dotSpacing, bulgeStrength, glowRadius,
     sparkle, waveAmplitude, cursorRadius, cursorForce,
@@ -190,10 +189,15 @@ export default function DotField({
     window.addEventListener("mousemove", onMove);
     canvas.addEventListener("mouseleave", onLeave);
 
-    animRef.current = requestAnimationFrame(render);
+    let frameId: number;
+    const loop = () => {
+      render();
+      frameId = requestAnimationFrame(loop);
+    };
+    frameId = requestAnimationFrame(loop);
 
     return () => {
-      cancelAnimationFrame(animRef.current);
+      cancelAnimationFrame(frameId);
       ro.disconnect();
       window.removeEventListener("mousemove", onMove);
       canvas.removeEventListener("mouseleave", onLeave);

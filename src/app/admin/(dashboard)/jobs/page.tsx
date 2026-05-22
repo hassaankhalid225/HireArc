@@ -56,10 +56,6 @@ export default function JobManagement() {
   const [page, setPage] = useState(0);
   const limit = 20;
 
-  useEffect(() => {
-    fetchJobs();
-  }, [page]);
-
   const fetchJobs = async () => {
     try {
       setIsLoading(true);
@@ -77,6 +73,10 @@ export default function JobManagement() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchJobs();
+  }, [page]);
 
   const toggleJobStatus = async (jobId: string, currentStatus: boolean) => {
     try {

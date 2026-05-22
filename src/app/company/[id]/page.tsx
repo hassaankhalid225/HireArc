@@ -6,11 +6,12 @@ import Link from "next/link";
 import { 
   MapPin, Building2, ExternalLink, Users, Calendar, 
   CheckCircle2, ArrowRight, Share2, Link as LinkIcon, Globe,
-  Briefcase, ShieldCheck, Zap, Loader2
+  Briefcase, ShieldCheck, Zap, Loader2, Sparkles
 } from "lucide-react";
 import JobCard, { JobCardSkeleton } from "@/components/ui/JobCard";
 import { jobsService } from "@/services/jobs.service";
 import { Job } from "@/types";
+import { Button } from "@/components/ui/button";
 
 const COMPANIES_DB: Record<string, any> = {
   google: {

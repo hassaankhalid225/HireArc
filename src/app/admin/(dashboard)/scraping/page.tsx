@@ -42,10 +42,6 @@ export default function ScrapingLogs() {
   const [logs, setLogs] = useState<ScrapingLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    fetchLogs();
-  }, []);
-
   const fetchLogs = async () => {
     try {
       setIsLoading(true);
@@ -57,6 +53,10 @@ export default function ScrapingLogs() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchLogs();
+  }, []);
 
   const lastLog = logs[0];
 
